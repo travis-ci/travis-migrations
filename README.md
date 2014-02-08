@@ -1,29 +1,27 @@
 travis-migrations
 =================
 
-Skeleton app to allow migrations to be run for our infrastructures
+Skeleton app to allow migrations to be run for our infrastructures.
 
-Use
-=================
-```
-git clone git@github.com:travis-ci/travis-migrations.git
-```
+Installing
+----------
+
+    git clone https://github.com/travis-ci/travis-migrations.git
+
 
 Updating migrations
-===================
+-------------------
 
-Whenever new migrations are added to travis-core, you need to update the
-travis-core Gem and push this app to Heroku.
+This pull in the latest migrations from [travis-core](https://github.com/travis-ci/travis-core).
 
-```
-bundle update --source travis-core
-git add Gemfile.lock && git commit
-git push git@heroku.com:<APP>.git
-```
+    bundle update --source travis-core
+    git add Gemfile.lock && git commit -m "Update travis-core"
 
-Running migrations
-==================
-```
-cd travis-migrations
-heroku run rake db:migrate --app <APP>
-```
+
+Deploy latest migrations
+------------------------
+
+Replace `<app>` with the name of the app that contains the database you want to run migrations on.
+
+    git push git@heroku.com:<app>.git
+    heroku run bundle exec rake db:migrate --app <app>
