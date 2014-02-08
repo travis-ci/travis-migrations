@@ -131,6 +131,11 @@ GEM
       activesupport (= 3.2.16)
       bundler (~> 1.0)
       railties (= 3.2.16)
+    rails_12factor (0.0.2)
+      rails_serve_static_assets
+      rails_stdout_logging
+    rails_serve_static_assets (0.0.2)
+    rails_stdout_logging (0.0.3)
     railties (3.2.16)
       actionpack (= 3.2.16)
       activesupport (= 3.2.16)
@@ -179,6 +184,7 @@ DEPENDENCIES
   newrelic_rpm (~> 3.4.2)
   pg (~> 0.13.2)
   rails (~> 3.2.12)
+  rails_12factor
   rake
   travis-core!
   travis-sidekiqs!

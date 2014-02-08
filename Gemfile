@@ -11,6 +11,8 @@ gem 'newrelic_rpm', '~> 3.4.2' # required by travis-core, apparently
 gem 'rails',                '~> 3.2.12'
 gem 'rake'
 
+gem 'rails_12factor'
+
 # db
 gem 'pg',                   '~> 0.13.2'
 gem 'micro_migrations'
