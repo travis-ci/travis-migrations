@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/travis-ci/travis-core
-  revision: 321a66eefd290daeb2321651f1e6fa8666916364
+  revision: aed9d2ff3a1890d652cc48b1823038c69f5ca395
   specs:
     travis-core (0.0.1)
       actionmailer (~> 3.2.19)
@@ -72,7 +72,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    backports (3.6.0)
+    backports (3.6.1)
     builder (3.0.4)
     celluloid (0.12.4)
       facter (>= 1.6.12)
