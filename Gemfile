@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 
 ruby '2.1.2'
 
-gem 'travis-core',    git: 'git://github.com/travis-ci/travis-core'
-gem 'travis-support', git: 'git://github.com/travis-ci/travis-support'
+gem 'travis-core',     github: 'travis-ci/travis-core'
+gem 'travis-support',  github: 'travis-ci/travis-support'
 gem 'travis-sidekiqs', github: 'travis-ci/travis-sidekiqs', require: nil
 
 gem 'newrelic_rpm', '~> 3.4.2' # required by travis-core, apparently
