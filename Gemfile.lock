@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/travis-ci/travis-core.git
-  revision: c4638798f31cd3d94ed456d298dec5f9dbd4fa6e
+  revision: ce0eebb249de515871f1d276094836a56d8e013e
   branch: master
   specs:
     travis-core (0.0.1)
@@ -120,7 +120,7 @@ GEM
       activerecord
       railties
     mime-types (1.25.1)
-    multi_json (1.10.1)
+    multi_json (1.11.0)
     multipart-post (2.0.0)
     net-http-persistent (2.9.4)
     net-http-pipeline (1.0.1)
