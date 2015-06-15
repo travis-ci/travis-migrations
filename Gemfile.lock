@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/travis-ci/travis-core.git
-  revision: 7067d5bec31e98cbd07cda3cd32b3542c88a8926
+  revision: 2671687e52adaf9c798e69f2cdc5b359c04b171f
   branch: master
   specs:
     travis-core (0.0.1)
@@ -108,7 +108,7 @@ GEM
     i18n (0.7.0)
     ice_nine (0.11.1)
     journey (1.0.4)
-    json (1.8.2)
+    json (1.8.3)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -120,7 +120,7 @@ GEM
       activerecord
       railties
     mime-types (1.25.1)
-    multi_json (1.11.0)
+    multi_json (1.11.1)
     multipart-post (2.0.0)
     net-http-persistent (2.9.4)
     net-http-pipeline (1.0.1)
@@ -128,7 +128,7 @@ GEM
     pg (0.13.2)
     polyglot (0.3.5)
     proxies (0.2.1)
-    pusher (0.14.4)
+    pusher (0.14.5)
       httpclient (~> 2.5)
       multi_json (~> 1.0)
       signature (~> 0.1.8)
@@ -193,7 +193,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.43)
+    tzinfo (0.3.44)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
