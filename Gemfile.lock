@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/travis-ci/travis-core.git
-  revision: 22a14769a2679bc19ab70c0da6108df1424d752b
-  branch: cd-starred-repositories
+  revision: 3fab2ce3c79debcdf69436bd9dc27896ae88fa68
+  branch: master
   specs:
     travis-core (0.0.1)
       actionmailer (~> 3.2.19)
