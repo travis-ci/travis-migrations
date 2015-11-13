@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/travis-ci/travis-core.git
-  revision: b4ef238a9e98c49099f894e35e1f15dab1a1e5f0
+  revision: 038fcff9ffba516b3fd9ae31193777da18fc16e5
   branch: cd-starred-repo-index
   specs:
     travis-core (0.0.1)
