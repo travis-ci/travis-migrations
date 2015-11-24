@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/travis-ci/travis-core.git
-  revision: 94ff907b922e8cec691c2d7d039d7e376181e24b
-  branch: master
+  revision: dfdfb5f87d92289ddb1534ce30fd2bc62ba54cd2
+  branch: cd-starred-repo-index
   specs:
     travis-core (0.0.1)
       actionmailer (~> 3.2.19)
@@ -163,7 +163,7 @@ GEM
     rake (10.4.2)
     rdoc (3.12.2)
       json (~> 1.4)
-    redis (3.2.1)
+    redis (3.2.2)
     redis-namespace (1.5.1)
       redis (~> 3.0, >= 3.0.4)
     rollout (1.1.0)
