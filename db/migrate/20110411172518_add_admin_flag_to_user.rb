@@ -4,12 +4,12 @@ class AddAdminFlagToUser < ActiveRecord::Migration
       t.boolean :is_admin, :default => false, :allow_null => false
     end
 
-    User.reset_column_information
-
-    if u = User.first
-      u.is_admin = true
-      u.save(false)
-    end
+    # User.reset_column_information
+    #
+    # if u = User.first
+    #   u.is_admin = true
+    #   u.save(false)
+    # end
   end
 
   def self.down

@@ -1,5 +1,5 @@
-$: << 'lib' unless $:.include?('lib')
-require 'travis/model/repository'
+# $: << 'lib' unless $:.include?('lib')
+# require 'travis/model/repository'
 
 class RepositoriesDenormalizeLastBuildAttributes < ActiveRecord::Migration
   def self.up
@@ -11,9 +11,9 @@ class RepositoriesDenormalizeLastBuildAttributes < ActiveRecord::Migration
       t.datetime :last_build_finished_at
     end
 
-    Repository.all.each do |repository|
-      repository.last_build.denormalize_to_repository if repository.last_build
-    end
+    # Repository.all.each do |repository|
+    #   repository.last_build.denormalize_to_repository if repository.last_build
+    # end
   end
 
   def self.down

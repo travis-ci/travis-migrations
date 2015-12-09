@@ -9,13 +9,6 @@ class RepositoriesAddOwnerNameAndOwnerEmail < ActiveRecord::Migration
       t.string :owner_email
     end rescue nil
 
-    Repository.all.each do |r|
-      r.update_attributes!(
-        :owner_name  => r.owner_name  || r.url.split('/')[-2],
-        :owner_email => r.owner_email || fetch_owner_email(r.url.split('/')[-2, 2].join('/'))
-      )
-    end
-
     remove_column :repositories, :username rescue nil
   end
 
@@ -23,10 +16,6 @@ class RepositoriesAddOwnerNameAndOwnerEmail < ActiveRecord::Migration
     change_table :repositories do |t|
       t.string :username
     end rescue nil
-
-    Repository.all.each do |r|
-      r.update_attributes!(:username => r.url.split('/')[-2]) unless r.owner_name.nil?
-    end
 
     remove_column :repositories, :owner_name  rescue nil
     remove_column :repositories, :owner_email rescue nil

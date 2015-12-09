@@ -16,3 +16,4 @@ gem 'rails_12factor'
 # db
 gem 'pg',                   '~> 0.13.2'
 gem 'micro_migrations'
+gem 'data_migrations'
