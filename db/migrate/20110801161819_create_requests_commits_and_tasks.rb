@@ -101,7 +101,12 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration
     execute 'UPDATE builds SET commit_id = (SELECT commits.id FROM commits WHERE commits.commit = builds.commit LIMIT 1)'
 
     # execute "DROP SEQUENCE shared_builds_tasks_seq" rescue nil
-    execute "CREATE SEQUENCE shared_builds_tasks_seq START WITH #{[Build.maximum(:id), (Task.maximum(:id) rescue 0)].compact.max.to_i + 1} CACHE 30"
+
+    # do we still need to create this sequence as it seems it was a requiremnet for a backbone client we no longer use.
+    # Could we also just removethe STARE WITH, Do we need CACHE 30?
+    #  Ask Sven
+    # execute "CREATE SEQUENCE shared_builds_tasks_seq START WITH #{[Build.maximum(:id), (Task.maximum(:id) rescue 0)].compact.max.to_i + 1} CACHE 30"
+    execute "CREATE SEQUENCE shared_builds_tasks_seq CACHE 30"
     execute "ALTER TABLE builds ALTER COLUMN id TYPE BIGINT"
     execute "ALTER TABLE builds ALTER COLUMN id SET DEFAULT nextval('shared_builds_tasks_seq')"
     execute "ALTER TABLE tasks  ALTER COLUMN id TYPE BIGINT"
@@ -163,4 +168,3 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration
     # drop_table :requests
   end
 end
-
