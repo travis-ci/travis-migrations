@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version      = TravisMigrations::VERSION
   s.authors      = ["Travis CI"]
   s.email        = "contact@travis-ci.org"
-  spec.summary   = %q{Gem for migrations on Travis CI.}
+  s.summary   = %q{Gem for migrations on Travis CI.}
   s.homepage     = "https://github.com/travis-ci/travis-migrations"
   s.summary      = "The Migrations of Travis"
 
