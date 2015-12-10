@@ -8,8 +8,8 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  database: travis_development
+  database: carlad_api_development
 
 test:
   <<: *defaults
-  database: travis_test
+  database: carlad_api_test
