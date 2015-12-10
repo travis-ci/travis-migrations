@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
 
   # db
   s.add_dependency 'data_migrations',   '~> 0.0.1'
-  s.add_dependency 'pg',                '~> 0.13.2'
+  s.add_dependency 'pg'
   s.add_dependency 'micro_migrations'
 
   # Disallow pushing to rubygems
