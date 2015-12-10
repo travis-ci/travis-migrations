@@ -34,6 +34,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'micro_migrations'
 
   # Disallow pushing to rubygems
-  s.metadata['allowed_push_host'] = 'https://nonexistent-host.example.com' if spec.respond_to?(:metadata)
+  s.metadata['allowed_push_host'] = 'https://nonexistent-host.example.com' if s.respond_to?(:metadata)
 
 end
