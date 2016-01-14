@@ -24,6 +24,20 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
+-- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQL statements executed';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -35,6 +49,20 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+
+
+--
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 SET search_path = public, pg_catalog;
@@ -295,8 +323,8 @@ CREATE TABLE builds (
     number character varying(255),
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     config text,
     commit_id integer,
     request_id integer,
@@ -311,6 +339,7 @@ CREATE TABLE builds (
     branch character varying(255),
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
+    tag character varying(255),
     received_at timestamp without time zone
 );
 
@@ -351,8 +380,9 @@ CREATE TABLE commits (
     committer_email character varying(255),
     author_name character varying(255),
     author_email character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    tag character varying(255)
 );
 
 
@@ -425,8 +455,8 @@ CREATE TABLE jobs (
     worker character varying(255),
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     tags text,
     allow_failure boolean DEFAULT false,
     owner_id integer,
@@ -436,25 +466,6 @@ CREATE TABLE jobs (
     canceled_at timestamp without time zone,
     received_at timestamp without time zone
 );
-
-
---
--- Name: jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE jobs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE jobs_id_seq OWNED BY jobs.id;
 
 
 --
@@ -638,8 +649,8 @@ CREATE TABLE repositories (
     id integer NOT NULL,
     name character varying(255),
     url character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     last_build_id integer,
     last_build_number character varying(255),
     last_build_started_at timestamp without time zone,
@@ -649,14 +660,15 @@ CREATE TABLE repositories (
     active boolean,
     description text,
     last_build_duration integer,
+    private boolean DEFAULT false,
     owner_id integer,
     owner_type character varying(255),
-    private boolean DEFAULT false,
     last_build_state character varying(255),
     github_id integer,
     default_branch character varying(255),
     github_language character varying(255),
     settings json,
+    last_sync timestamp without time zone,
     next_build_number integer,
     invalidated_at timestamp without time zone
 );
@@ -696,14 +708,14 @@ CREATE TABLE requests (
     config text,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    owner_id integer,
+    owner_type character varying(255),
     event_type character varying(255),
     comments_url character varying(255),
     base_commit character varying(255),
     head_commit character varying(255),
-    owner_id integer,
-    owner_type character varying(255),
     result character varying(255),
     message character varying(255)
 );
@@ -746,8 +758,8 @@ CREATE TABLE ssl_keys (
     repository_id integer,
     public_key text,
     private_key text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -803,6 +815,25 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 
 
 --
+-- Name: tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE tasks_id_seq OWNED BY jobs.id;
+
+
+--
 -- Name: tokens; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -810,8 +841,8 @@ CREATE TABLE tokens (
     id integer NOT NULL,
     user_id integer,
     token character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -875,8 +906,8 @@ CREATE TABLE users (
     name character varying(255),
     login character varying(255),
     email character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     is_admin boolean DEFAULT false,
     github_id integer,
     github_oauth_token character varying(255),
@@ -1266,6 +1297,13 @@ CREATE INDEX index_builds_on_state ON builds USING btree (state);
 
 
 --
+-- Name: index_builds_on_state_and_started_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_builds_on_state_and_started_at ON builds USING btree (state, started_at DESC);
+
+
+--
 -- Name: index_commits_on_repository_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1585,7 +1623,7 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 --
 
 ALTER TABLE ONLY log_parts
-    ADD CONSTRAINT log_parts_log_id_fk FOREIGN KEY (log_id) REFERENCES logs(id);
+    ADD CONSTRAINT log_parts_log_id_fk FOREIGN KEY (log_id) REFERENCES logs(id) MATCH FULL;
 
 
 --
@@ -1606,9 +1644,13 @@ INSERT INTO schema_migrations (version) VALUES ('20110130102621');
 
 INSERT INTO schema_migrations (version) VALUES ('20110301071656');
 
+INSERT INTO schema_migrations (version) VALUES ('20110302035313');
+
 INSERT INTO schema_migrations (version) VALUES ('20110316174721');
 
 INSERT INTO schema_migrations (version) VALUES ('20110321075539');
+
+INSERT INTO schema_migrations (version) VALUES ('20110321171101');
 
 INSERT INTO schema_migrations (version) VALUES ('20110411171936');
 
@@ -1818,6 +1860,8 @@ INSERT INTO schema_migrations (version) VALUES ('20130702123456');
 
 INSERT INTO schema_migrations (version) VALUES ('20130702144325');
 
+INSERT INTO schema_migrations (version) VALUES ('20130702154300');
+
 INSERT INTO schema_migrations (version) VALUES ('20130705123456');
 
 INSERT INTO schema_migrations (version) VALUES ('20130707164854');
@@ -1844,6 +1888,14 @@ INSERT INTO schema_migrations (version) VALUES ('20131104101056');
 
 INSERT INTO schema_migrations (version) VALUES ('20131109101056');
 
+INSERT INTO schema_migrations (version) VALUES ('20131227155535');
+
+INSERT INTO schema_migrations (version) VALUES ('20131227160256');
+
+INSERT INTO schema_migrations (version) VALUES ('20131230093907');
+
+INSERT INTO schema_migrations (version) VALUES ('20131230094201');
+
 INSERT INTO schema_migrations (version) VALUES ('20140120225125');
 
 INSERT INTO schema_migrations (version) VALUES ('20140121003026');
@@ -1854,9 +1906,13 @@ INSERT INTO schema_migrations (version) VALUES ('20140210003014');
 
 INSERT INTO schema_migrations (version) VALUES ('20140210012509');
 
+INSERT INTO schema_migrations (version) VALUES ('20140301072543');
+
 INSERT INTO schema_migrations (version) VALUES ('20140612131826');
 
 INSERT INTO schema_migrations (version) VALUES ('20140827121945');
+
+INSERT INTO schema_migrations (version) VALUES ('20140922133258');
 
 INSERT INTO schema_migrations (version) VALUES ('20150121135400');
 
