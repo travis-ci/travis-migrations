@@ -57,3 +57,5 @@ git push git@heroku.com:<app>.git
 heroku run bundle exec rake db:migrate VERSION=<timestamp> -a <app>
 ```
 Any .com related migrations must be run using `travis-pro-migrations`.
+
+----
