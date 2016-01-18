@@ -5,8 +5,6 @@ require "micro_migrations"
 
 
 ActiveRecord::Base.schema_format = :sql
-# Rails.application.config.paths.add("db/structure.sql", with: "#{Gem.loaded_specs['travis-core'].full_gem_path}/db/structure.sql")
-# Rails.application.config.paths.add("db/migrate", with: "#{Gem.loaded_specs['travis-core'].full_gem_path}/db/migrate")
 # Rails.logger = Logger.new("/dev/null")
 # ActiveRecord::Base.logger = Logger.new("/dev/null")
 
