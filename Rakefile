@@ -10,8 +10,7 @@ ActiveRecord::Base.schema_format = :sql
 # Rails.logger = Logger.new("/dev/null")
 # ActiveRecord::Base.logger = Logger.new("/dev/null")
 
-# db:structure:dump would dump the DB structure to the checked out travis-core gem
-# Rake::Task["db:structure:dump"].clear
+Rake::Task["db:structure:dump"].clear unless Rails.env.development?
 
 module ActiveRecord
   class Migration
