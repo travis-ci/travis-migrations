@@ -5,6 +5,7 @@ require "micro_migrations"
 
 
 ActiveRecord::Base.schema_format = :sql
+
 # Rails.logger = Logger.new("/dev/null")
 # ActiveRecord::Base.logger = Logger.new("/dev/null")
 
