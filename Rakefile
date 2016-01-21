@@ -3,11 +3,7 @@
 require "bundler/setup"
 require "micro_migrations"
 
-
 ActiveRecord::Base.schema_format = :sql
-
-# Rails.logger = Logger.new("/dev/null")
-# ActiveRecord::Base.logger = Logger.new("/dev/null")
 
 Rake::Task["db:structure:dump"].clear unless Rails.env.development?
 
