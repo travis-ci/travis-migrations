@@ -1,7 +1,7 @@
 travis-migrations
 =================
 
-Central repository for storing migrations, and executing them in against production and development databases.
+Central repository for storing migrations, and executing them against production and development databases.
 
 In short, migrations should be run locally while standing in this repository during development. For tests (e.g. via `.travis.yml`) applications should contain their own tooling that loads the schema (e.g. see [travis-hub](https://github.com/travis-ci/travis-hub/blob/master/Rakefile#L12)).
 
