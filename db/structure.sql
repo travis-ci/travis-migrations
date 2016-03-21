@@ -376,6 +376,39 @@ ALTER SEQUENCE commits_id_seq OWNED BY commits.id;
 
 
 --
+-- Name: crons; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE crons (
+    id integer NOT NULL,
+    branch_id integer,
+    "interval" character varying(255) NOT NULL,
+    disable_by_build boolean DEFAULT true NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: crons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE crons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: crons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE crons_id_seq OWNED BY crons.id;
+
+
+--
 -- Name: emails; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -434,7 +467,8 @@ CREATE TABLE jobs (
     result integer,
     queued_at timestamp without time zone,
     canceled_at timestamp without time zone,
-    received_at timestamp without time zone
+    received_at timestamp without time zone,
+    debug_options text
 );
 
 
@@ -948,6 +982,13 @@ ALTER TABLE ONLY commits ALTER COLUMN id SET DEFAULT nextval('commits_id_seq'::r
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY crons ALTER COLUMN id SET DEFAULT nextval('crons_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::regclass);
 
 
@@ -1081,6 +1122,14 @@ ALTER TABLE ONLY builds
 
 ALTER TABLE ONLY commits
     ADD CONSTRAINT commits_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: crons_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY crons
+    ADD CONSTRAINT crons_pkey PRIMARY KEY (id);
 
 
 --
@@ -1943,3 +1992,7 @@ INSERT INTO schema_migrations (version) VALUES ('20151127154200');
 INSERT INTO schema_migrations (version) VALUES ('20151127154600');
 
 INSERT INTO schema_migrations (version) VALUES ('20151202122200');
+
+INSERT INTO schema_migrations (version) VALUES ('20160107120927');
+
+INSERT INTO schema_migrations (version) VALUES ('20160303165750');
