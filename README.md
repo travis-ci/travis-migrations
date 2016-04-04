@@ -12,6 +12,8 @@ Installing
 git clone https://github.com/travis-ci/travis-migrations.git
 ```
 
+Use Postgresql 9.4.5 
+
 Adding migrations
 -------------------
 
