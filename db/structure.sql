@@ -409,6 +409,36 @@ ALTER SEQUENCE crons_id_seq OWNED BY crons.id;
 
 
 --
+-- Name: dependencies; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE dependencies (
+    id integer NOT NULL,
+    dependency_id integer,
+    dependant_id integer
+);
+
+
+--
+-- Name: dependencies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE dependencies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: dependencies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE dependencies_id_seq OWNED BY dependencies.id;
+
+
+--
 -- Name: emails; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -989,6 +1019,13 @@ ALTER TABLE ONLY crons ALTER COLUMN id SET DEFAULT nextval('crons_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY dependencies ALTER COLUMN id SET DEFAULT nextval('dependencies_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::regclass);
 
 
@@ -1130,6 +1167,14 @@ ALTER TABLE ONLY commits
 
 ALTER TABLE ONLY crons
     ADD CONSTRAINT crons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dependencies_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY dependencies
+    ADD CONSTRAINT dependencies_pkey PRIMARY KEY (id);
 
 
 --
@@ -1996,3 +2041,5 @@ INSERT INTO schema_migrations (version) VALUES ('20151202122200');
 INSERT INTO schema_migrations (version) VALUES ('20160107120927');
 
 INSERT INTO schema_migrations (version) VALUES ('20160303165750');
+
+INSERT INTO schema_migrations (version) VALUES ('20160405120927');
