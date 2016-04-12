@@ -1287,13 +1287,6 @@ CREATE INDEX index_builds_on_owner_id ON builds USING btree (owner_id);
 
 
 --
--- Name: index_builds_on_owner_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_builds_on_owner_type ON builds USING btree (owner_type);
-
-
---
 -- Name: index_builds_on_repository_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1371,24 +1364,10 @@ CREATE INDEX index_jobs_on_source_id ON jobs USING btree (source_id);
 
 
 --
--- Name: index_jobs_on_source_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_jobs_on_source_type ON jobs USING btree (source_type);
-
-
---
 -- Name: index_jobs_on_state; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_jobs_on_state ON jobs USING btree (state);
-
-
---
--- Name: index_jobs_on_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_jobs_on_type ON jobs USING btree (type);
 
 
 --
@@ -1473,13 +1452,6 @@ CREATE INDEX index_repositories_on_active ON repositories USING btree (active);
 --
 
 CREATE UNIQUE INDEX index_repositories_on_github_id ON repositories USING btree (github_id);
-
-
---
--- Name: index_repositories_on_last_build_started_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_repositories_on_last_build_started_at ON repositories USING btree (last_build_started_at);
 
 
 --
@@ -1996,3 +1968,11 @@ INSERT INTO schema_migrations (version) VALUES ('20151202122200');
 INSERT INTO schema_migrations (version) VALUES ('20160107120927');
 
 INSERT INTO schema_migrations (version) VALUES ('20160303165750');
+
+INSERT INTO schema_migrations (version) VALUES ('201604121130200');
+
+INSERT INTO schema_migrations (version) VALUES ('201604121130700');
+
+INSERT INTO schema_migrations (version) VALUES ('20160412121405');
+
+INSERT INTO schema_migrations (version) VALUES ('20160412123900');
