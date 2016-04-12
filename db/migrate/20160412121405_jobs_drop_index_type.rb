@@ -1,11 +1,11 @@
-class JobsDropIndexSourceType < ActiveRecord::Migration
+class JobsDropIndexType < ActiveRecord::Migration
   self.disable_ddl_transaction!
 
   def up
-    execute "DROP INDEX CONCURRENTLY index_jobs_on_source_type"
+    execute "DROP INDEX CONCURRENTLY index_jobs_on_type"
   end
 
   def down
-    execute "CREATE INDEX CONCURRENTLY index_jobs_on_source_type ON jobs (source_type)"
+    execute "CREATE INDEX CONCURRENTLY index_jobs_on_type ON jobs (type)"
   end
 end
