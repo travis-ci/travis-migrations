@@ -63,6 +63,6 @@ Replace `<timestamp>` with the timestamp of the migration you want to run.
 git push git@heroku.com:<app>.git
 heroku run bundle exec rake db:migrate VERSION=<timestamp> -a <app>
 ```
-Any .com related migrations must be run using `travis-pro-migrations`.
+<em>PLEASE NOTE: Any .com related migrations must be run using [`travis-pro-migrations`](https://github.com/travis-pro/travis-pro-migrations). Please refer to the README in that repository.</em>
 
 ----
