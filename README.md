@@ -22,6 +22,8 @@ Adding migrations
 
 To add a migration, create a file and add it to the `db/migrate` folder, making sure the filename contains a timestamp later than the one used in the most recent migration file. See [this guide](http://edgeguides.rubyonrails.org/active_record_migrations.html#creating-a-standalone-migration) for creating standalone migrations.
 
+When you have added a migration, and run `rake db:migrate` make sure to commit and push these changes to Github. This will add any new migrations, plus the updated `structure.sql` to the repository.
+
 Updating migrations
 -------------------
 
