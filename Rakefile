@@ -2,16 +2,10 @@
 
 require "bundler/setup"
 require "micro_migrations"
-require "travis"
 
 ActiveRecord::Base.schema_format = :sql
-Rails.application.config.paths.add("db/structure.sql", with: "#{Gem.loaded_specs['travis-core'].full_gem_path}/db/structure.sql")
-Rails.application.config.paths.add("db/migrate", with: "#{Gem.loaded_specs['travis-core'].full_gem_path}/db/migrate")
-Rails.logger = Logger.new("/dev/null")
-ActiveRecord::Base.logger = Logger.new("/dev/null")
 
-# db:structure:dump would dump the DB structure to the checked out travis-core gem
-Rake::Task["db:structure:dump"].clear
+Rake::Task["db:structure:dump"].clear unless Rails.env.development?
 
 module ActiveRecord
   class Migration
@@ -95,4 +89,3 @@ module ActiveRecord
     delegate :disable_ddl_transaction, to: :migration
   end
 end
-
