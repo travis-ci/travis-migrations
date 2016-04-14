@@ -1350,6 +1350,13 @@ CREATE INDEX index_jobs_on_queue ON jobs USING btree (queue);
 
 
 --
+-- Name: index_jobs_on_queued_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_jobs_on_queued_at ON jobs USING btree (queued_at);
+
+
+--
 -- Name: index_jobs_on_repository_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1976,3 +1983,5 @@ INSERT INTO schema_migrations (version) VALUES ('201604121130700');
 INSERT INTO schema_migrations (version) VALUES ('20160412121405');
 
 INSERT INTO schema_migrations (version) VALUES ('20160412123900');
+
+INSERT INTO schema_migrations (version) VALUES ('20160414214442');
