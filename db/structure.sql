@@ -1976,9 +1976,9 @@ INSERT INTO schema_migrations (version) VALUES ('20160107120927');
 
 INSERT INTO schema_migrations (version) VALUES ('20160303165750');
 
-INSERT INTO schema_migrations (version) VALUES ('201604121130200');
+INSERT INTO schema_migrations (version) VALUES ('20160412113020');
 
-INSERT INTO schema_migrations (version) VALUES ('201604121130700');
+INSERT INTO schema_migrations (version) VALUES ('20160412113070');
 
 INSERT INTO schema_migrations (version) VALUES ('20160412121405');
 
