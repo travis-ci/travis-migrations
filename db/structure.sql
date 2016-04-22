@@ -1280,6 +1280,13 @@ CREATE INDEX index_builds_on_event_type ON builds USING btree (event_type);
 
 
 --
+-- Name: index_builds_on_number; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_builds_on_number ON builds USING btree (number);
+
+
+--
 -- Name: index_builds_on_owner_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1985,3 +1992,5 @@ INSERT INTO schema_migrations (version) VALUES ('20160412121405');
 INSERT INTO schema_migrations (version) VALUES ('20160412123900');
 
 INSERT INTO schema_migrations (version) VALUES ('20160414214442');
+
+INSERT INTO schema_migrations (version) VALUES ('20160422104300');
