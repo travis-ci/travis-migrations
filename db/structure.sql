@@ -1301,6 +1301,13 @@ CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id)
 
 
 --
+-- Name: index_builds_on_repository_id_and_number_and_event_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_builds_on_repository_id_and_number_and_event_type ON builds USING btree (repository_id, number, event_type);
+
+
+--
 -- Name: index_builds_on_request_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1994,3 +2001,5 @@ INSERT INTO schema_migrations (version) VALUES ('20160412123900');
 INSERT INTO schema_migrations (version) VALUES ('20160414214442');
 
 INSERT INTO schema_migrations (version) VALUES ('20160422104300');
+
+INSERT INTO schema_migrations (version) VALUES ('20160422121400');
