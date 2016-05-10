@@ -311,7 +311,8 @@ CREATE TABLE builds (
     branch character varying(255),
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
-    received_at timestamp without time zone
+    received_at timestamp without time zone,
+    private boolean DEFAULT true
 );
 
 
@@ -468,7 +469,8 @@ CREATE TABLE jobs (
     queued_at timestamp without time zone,
     canceled_at timestamp without time zone,
     received_at timestamp without time zone,
-    debug_options text
+    debug_options text,
+    private boolean DEFAULT true
 );
 
 
@@ -739,7 +741,8 @@ CREATE TABLE requests (
     owner_id integer,
     owner_type character varying(255),
     result character varying(255),
-    message character varying(255)
+    message character varying(255),
+    private boolean DEFAULT true
 );
 
 
@@ -2021,3 +2024,9 @@ INSERT INTO schema_migrations (version) VALUES ('20160422121400');
 INSERT INTO schema_migrations (version) VALUES ('20160510125000');
 
 INSERT INTO schema_migrations (version) VALUES ('20160510142700');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510144200');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510150300');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510150400');
