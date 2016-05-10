@@ -1301,6 +1301,13 @@ CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id)
 
 
 --
+-- Name: index_builds_on_repository_id_and_id_desc; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_builds_on_repository_id_and_id_desc ON builds USING btree (repository_id, id DESC NULLS LAST);
+
+
+--
 -- Name: index_builds_on_repository_id_and_number_and_event_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1340,6 +1347,13 @@ CREATE INDEX index_emails_on_email ON emails USING btree (email);
 --
 
 CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
+
+
+--
+-- Name: index_jobs_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_jobs_on_created_at ON jobs USING btree (created_at);
 
 
 --
@@ -2003,3 +2017,7 @@ INSERT INTO schema_migrations (version) VALUES ('20160414214442');
 INSERT INTO schema_migrations (version) VALUES ('20160422104300');
 
 INSERT INTO schema_migrations (version) VALUES ('20160422121400');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510125000');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510142700');
