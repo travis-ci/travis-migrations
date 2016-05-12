@@ -1,7 +1,7 @@
 class BuildsAddPrivate < ActiveRecord::Migration
   def up
     change_table :builds do |t|
-      t.boolean :private, :default => true
+      t.boolean :private
     end
   end
 

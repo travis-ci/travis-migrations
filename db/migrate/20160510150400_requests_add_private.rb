@@ -1,7 +1,7 @@
 class RequestsAddPrivate < ActiveRecord::Migration
   def up
     change_table :requests do |t|
-      t.boolean :private, :default => true
+      t.boolean :private
     end
   end
 
