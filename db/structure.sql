@@ -312,7 +312,7 @@ CREATE TABLE builds (
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
-    private boolean DEFAULT true
+    private boolean
 );
 
 
@@ -470,7 +470,7 @@ CREATE TABLE jobs (
     canceled_at timestamp without time zone,
     received_at timestamp without time zone,
     debug_options text,
-    private boolean DEFAULT true
+    private boolean
 );
 
 
@@ -743,7 +743,7 @@ CREATE TABLE requests (
     owner_type character varying(255),
     result character varying(255),
     message character varying(255),
-    private boolean DEFAULT true
+    private boolean
 );
 
 
@@ -1302,6 +1302,13 @@ CREATE INDEX index_builds_on_owner_id ON builds USING btree (owner_id);
 --
 
 CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id);
+
+
+--
+-- Name: index_builds_on_repository_id_and_id_desc; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_builds_on_repository_id_and_id_desc ON builds USING btree (repository_id, id DESC NULLS LAST);
 
 
 --
@@ -2034,5 +2041,3 @@ INSERT INTO schema_migrations (version) VALUES ('20160510150300');
 INSERT INTO schema_migrations (version) VALUES ('20160510150400');
 
 INSERT INTO schema_migrations (version) VALUES ('20160513074300');
-
-INSERT INTO schema_migrations (version) VALUES ('20160513082500');
