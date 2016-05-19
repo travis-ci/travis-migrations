@@ -37,6 +37,7 @@ module ActiveRecord
     end
 
     def migrate(&block)
+      puts "Custom migrate in Rakefile is being called."
       current = migrations.detect { |m| m.version == current_version }
       target = migrations.detect { |m| m.version == @target_version }
 

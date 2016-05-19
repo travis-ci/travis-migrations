@@ -15,7 +15,7 @@ Installing
 git clone https://github.com/travis-ci/travis-migrations.git
 ```
 
-Use Postgresql 9.4.5 
+Use Postgresql
 
 Adding migrations
 -------------------
@@ -32,10 +32,10 @@ Running migrations locally
 --------------------------
 
 To setup the database from scratch:
-(this creates the database, loads the schema, and initializes it with the seed data.)
+(this creates the database)
 
 ``` bash
-bundle exec rake db:setup
+bundle exec rake db:create
 ```
 
 To run migrations after the database has been set up:
