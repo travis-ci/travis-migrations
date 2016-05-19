@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    travis-migrations (0.0.1)
-      activerecord (~> 4.2.5)
-      data_migrations (~> 0.0.1)
-      micro_migrations (~> 0.0.2)
+    travis-migrations (0.0.2)
+      activerecord (~> 4.2)
+      data_migrations (~> 0.0)
+      micro_migrations (~> 0.0)
       pg (~> 0.18)
       rake (~> 10.4)
 
