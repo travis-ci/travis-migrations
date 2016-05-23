@@ -2,11 +2,6 @@ PATH
   remote: .
   specs:
     travis-migrations (0.0.2)
-      activerecord (~> 4.2)
-      data_migrations (~> 0.0)
-      micro_migrations (~> 0.0)
-      pg (~> 0.18)
-      rake (~> 10.4)
 
 GEM
   remote: https://rubygems.org/
@@ -81,7 +76,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord (~> 4.2)
   bundler (~> 1.7)
+  data_migrations (~> 0.0)
+  micro_migrations (~> 0.0)
+  pg (~> 0.18)
+  rake (~> 10.4)
   travis-migrations!
 
 BUNDLED WITH
