@@ -5,6 +5,14 @@ require "micro_migrations"
 
 ActiveRecord::Base.schema_format = :sql
 
+begin
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:spec)
+rescue LoadError
+end
+
+task :default => [:spec]
+
 Rake::Task["db:structure:dump"].clear unless Rails.env.development?
 
 module ActiveRecord
