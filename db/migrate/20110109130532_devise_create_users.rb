@@ -4,7 +4,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string :name
       t.string :login
       t.string :email
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :users, :login, :unique => true

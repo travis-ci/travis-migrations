@@ -6,7 +6,7 @@ class CreateSslKeys < ActiveRecord::Migration
       t.text    :public_key
       t.text    :private_key
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index "ssl_keys", ["repository_id"], :name => "index_ssl_key_on_repository_id"

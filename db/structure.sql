@@ -148,8 +148,8 @@ CREATE TABLE annotation_providers (
     name character varying,
     api_username character varying,
     api_key character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -181,8 +181,8 @@ CREATE TABLE annotations (
     job_id integer NOT NULL,
     url character varying,
     description text NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     annotation_provider_id integer NOT NULL,
     status character varying
 );
@@ -217,8 +217,8 @@ CREATE TABLE branches (
     last_build_id integer,
     name character varying NOT NULL,
     exists_on_github boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -252,8 +252,8 @@ CREATE TABLE broadcasts (
     kind character varying,
     message character varying,
     expired boolean,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     category character varying
 );
 
@@ -299,8 +299,8 @@ CREATE TABLE builds (
     number character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     config text,
     commit_id integer,
     request_id integer,
@@ -356,8 +356,8 @@ CREATE TABLE commits (
     committer_email character varying,
     author_name character varying,
     author_email character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -389,8 +389,8 @@ CREATE TABLE crons (
     branch_id integer,
     "interval" character varying NOT NULL,
     disable_by_build boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -421,8 +421,8 @@ CREATE TABLE emails (
     id integer NOT NULL,
     user_id integer,
     email character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -463,8 +463,8 @@ CREATE TABLE jobs (
     worker character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     tags text,
     allow_failure boolean DEFAULT false,
     owner_id integer,
@@ -608,8 +608,8 @@ CREATE TABLE organizations (
     name character varying,
     login character varying,
     github_id integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     avatar_url character varying,
     location character varying,
     email character varying,
@@ -678,8 +678,8 @@ CREATE TABLE repositories (
     id integer NOT NULL,
     name character varying,
     url character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     last_build_id integer,
     last_build_number character varying,
     last_build_started_at timestamp without time zone,
@@ -737,8 +737,8 @@ CREATE TABLE requests (
     config text,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     event_type character varying,
     comments_url character varying,
     base_commit character varying,
@@ -788,8 +788,8 @@ CREATE TABLE ssl_keys (
     repository_id integer,
     public_key text,
     private_key text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -820,8 +820,8 @@ CREATE TABLE stars (
     id integer NOT NULL,
     repository_id integer,
     user_id integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -852,8 +852,8 @@ CREATE TABLE tokens (
     id integer NOT NULL,
     user_id integer,
     token character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -884,8 +884,8 @@ CREATE TABLE urls (
     id integer NOT NULL,
     url character varying,
     code character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -917,8 +917,8 @@ CREATE TABLE users (
     name character varying,
     login character varying,
     email character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     is_admin boolean DEFAULT false,
     github_id integer,
     github_oauth_token character varying,

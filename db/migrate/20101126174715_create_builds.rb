@@ -16,7 +16,7 @@ class CreateBuilds < ActiveRecord::Migration
       t.string     :author_email
       t.string     :job_id
       t.string     :agent
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

@@ -5,7 +5,7 @@ class AddCronTable < ActiveRecord::Migration
       t.references :branch
       t.string :interval, :null => false
       t.boolean :disable_by_build, :default => true, :null => false
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

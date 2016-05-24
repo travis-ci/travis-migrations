@@ -4,7 +4,7 @@ class CreateUrls < ActiveRecord::Migration
       t.string   :url
       t.string   :code
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
