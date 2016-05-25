@@ -3,8 +3,6 @@ defaults: &defaults
   encoding: unicode
   pool: 5
   min_messages: warning
-  username: <%= ENV['USER'] %>
-  host: localhost
 
 development:
   <<: *defaults
