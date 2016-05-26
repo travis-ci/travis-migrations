@@ -8,6 +8,8 @@ This is the central repository for storing migrations, and executing them agains
 
 In short, migrations should be run locally while standing in this repository during development. For tests (e.g. via `.travis.yml`) applications should contain their own tooling that loads the schema (e.g. see [travis-hub](https://github.com/travis-ci/travis-hub/blob/master/Rakefile#L12)).
 
+Please use Postgresql 9.4 for local development and testing.
+
 Installing
 ----------
 
