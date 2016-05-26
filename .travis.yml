@@ -5,6 +5,9 @@ sudo: false
 services:
   - postgresql
 
+addons:
+  postgresql: "9.3"
+
 cache:
   directories:
     - vendor/bundle
