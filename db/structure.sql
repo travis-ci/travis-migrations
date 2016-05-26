@@ -11,7 +11,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -2043,4 +2042,3 @@ INSERT INTO schema_migrations (version) VALUES ('20160510150300');
 INSERT INTO schema_migrations (version) VALUES ('20160510150400');
 
 INSERT INTO schema_migrations (version) VALUES ('20160513074300');
-
