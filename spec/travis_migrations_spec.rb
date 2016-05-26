@@ -2,15 +2,7 @@ require 'spec_helper'
 require 'yaml'
 
 describe "Travis Migrations Custom Rake Tasks" do
-  it "doesn't break on migrate (exits cleanly)" do
-    expect(system('RAILS_ENV=test bundle exec rake db:create')).to be_truthy
-    expect(system('RAILS_ENV=test bundle exec rake db:migrate')).to be_truthy
-  end
-  it "setups the database" do
-    expect(system('RAILS_ENV=test bundle exec rake db:drop')).to be_truthy
-    expect(system('RAILS_ENV=test bundle exec rake db:create')).to be_truthy
-    expect(system('RAILS_ENV=test bundle exec rake db:migrate')).to be_truthy
-
+  it "setups the database with the correct tables" do
     dbconfig = YAML.load(ERB.new(File.read('config/database.yml')).result)
     ActiveRecord::Base.establish_connection dbconfig['test']
     ActiveRecord::Base.connection_pool.with_connection do |connection|
