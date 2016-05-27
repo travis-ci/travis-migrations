@@ -3,7 +3,7 @@ class CreateTokens < ActiveRecord::Migration
     create_table :tokens do |t|
       t.belongs_to :user
       t.string     :token
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

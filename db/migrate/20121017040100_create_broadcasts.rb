@@ -5,8 +5,7 @@ class CreateBroadcasts < ActiveRecord::Migration
       t.string :kind
       t.string :message
       t.boolean :expired
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
-

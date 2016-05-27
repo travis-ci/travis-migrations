@@ -7,7 +7,7 @@ class CreateAnnotations < ActiveRecord::Migration
       t.string :image_url
       t.string :image_alt
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

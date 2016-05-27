@@ -2,7 +2,7 @@ class JobsDropIndexTypeAndSourceIdAndSourceType < ActiveRecord::Migration
   self.disable_ddl_transaction!
 
   def up
-    execute "DROP INDEX CONCURRENTLY index_jobs_on_type_and_owner_id_and_owner_type"
+    execute "DROP INDEX CONCURRENTLY index_jobs_on_type_and_owner_id_and_owner_type" if index_exists?(:jobs, :index_jobs_on_type_and_owner_id_and_owner_type)
   end
 
   def down

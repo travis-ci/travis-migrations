@@ -7,7 +7,7 @@ class CreateArtifacts < ActiveRecord::Migration
       t.integer :job_id
       t.string  :type
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     migrate_table :jobs, :to => :artifacts do |t|

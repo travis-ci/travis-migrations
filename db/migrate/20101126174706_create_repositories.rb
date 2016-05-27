@@ -5,7 +5,7 @@ class CreateRepositories < ActiveRecord::Migration
       t.string   :url
       t.integer  :last_duration
       t.datetime :last_built_at
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

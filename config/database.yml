@@ -1,10 +1,13 @@
+# This is only used for standalone_migrations. In other contexts
+# Travis.config.database will be used.
+
 defaults: &defaults
   adapter: postgresql
   encoding: unicode
   pool: 5
   min_messages: warning
   username: <%= ENV['USER'] %>
-  host: localhost
+  host: <%= ENV.fetch('PGHOST', 'localhost') %>
 
 development:
   <<: *defaults

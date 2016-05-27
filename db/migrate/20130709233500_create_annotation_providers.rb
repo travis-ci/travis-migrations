@@ -5,7 +5,7 @@ class CreateAnnotationProviders < ActiveRecord::Migration
       t.string :api_username
       t.string :api_key
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

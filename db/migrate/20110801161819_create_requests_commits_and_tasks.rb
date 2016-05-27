@@ -23,7 +23,7 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration
       t.string   :author_name
       t.string   :author_email
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :requests, :force => true do |t|
@@ -39,7 +39,7 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration
 
       t.datetime :started_at
       t.datetime :finished_at
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :tasks, :force => true do |t|
@@ -60,7 +60,7 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration
 
       t.datetime :started_at
       t.datetime :finished_at
-      t.timestamps
+      t.timestamps null: false
     end
 
     migrate_table :builds, :to => :commits do |t|

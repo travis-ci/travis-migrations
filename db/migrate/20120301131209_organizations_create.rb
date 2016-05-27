@@ -4,7 +4,7 @@ class OrganizationsCreate < ActiveRecord::Migration
       t.string   :name
       t.string   :login
       t.integer  :github_id
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

@@ -8,6 +8,8 @@ This is the central repository for storing migrations, and executing them agains
 
 In short, migrations should be run locally while standing in this repository during development. For tests (e.g. via `.travis.yml`) applications should contain their own tooling that loads the schema (e.g. see [travis-hub](https://github.com/travis-ci/travis-hub/blob/master/Rakefile#L12)).
 
+Please use Postgresql 9.4 for local development and testing.
+
 Installing
 ----------
 
@@ -15,7 +17,7 @@ Installing
 git clone https://github.com/travis-ci/travis-migrations.git
 ```
 
-Use Postgresql 9.4.5 
+Use Postgresql
 
 Adding migrations
 -------------------
@@ -32,10 +34,10 @@ Running migrations locally
 --------------------------
 
 To setup the database from scratch:
-(this creates the database, loads the schema, and initializes it with the seed data.)
+(this creates the database)
 
 ``` bash
-bundle exec rake db:setup
+bundle exec rake db:create
 ```
 
 To run migrations after the database has been set up:

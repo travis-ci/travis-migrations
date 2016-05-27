@@ -18,14 +18,13 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency 'rails', '~> 3.2'
-  spec.add_development_dependency 'bundler', '~> 1.7'
-  spec.add_development_dependency 'rake', '~> 10.4'
-  spec.add_development_dependency 'rails_12factor', '~>0.0.3'
-
+  spec.add_development_dependency 'activerecord', '~> 4.2'
   spec.add_development_dependency 'pg', '~> 0.18'
-  spec.add_development_dependency 'micro_migrations', '~> 0.0.2'
-  spec.add_development_dependency 'data_migrations', '~> 0.0.1'
+  spec.add_development_dependency 'rake', '~> 10.4'
+  spec.add_development_dependency 'micro_migrations', '~> 0.0'
+  spec.add_development_dependency 'data_migrations', '~> 0.0'
+  spec.add_development_dependency 'bundler', '~> 1.7'
+  spec.add_development_dependency 'rspec', '~>3.4'
 
   # Disallow pushing to rubygems
   spec.metadata['allowed_push_host'] = 'https://nonexistent-host.example.com' if spec.respond_to?(:metadata)

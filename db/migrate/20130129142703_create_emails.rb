@@ -3,7 +3,7 @@ class CreateEmails < ActiveRecord::Migration
     create_table :emails do |t|
       t.integer :user_id
       t.string :email
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :emails, :user_id

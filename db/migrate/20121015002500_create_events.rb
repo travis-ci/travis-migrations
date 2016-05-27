@@ -5,7 +5,7 @@ class CreateEvents < ActiveRecord::Migration
       t.belongs_to :repository
       t.string :event
       t.string :data
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
