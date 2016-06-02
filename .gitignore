@@ -1,5 +1,4 @@
 .bundle
-.ruby-version
 .ruby-gemset
 log
 *.gem
