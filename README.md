@@ -33,8 +33,9 @@ Migrations now live in this repo, in the `db/migrate` folder.
 Running migrations locally
 --------------------------
 
+
 To setup the database from scratch:
-(this creates the database)
+(this creates the DEVELOPMENT database, to create the TEST database, append RAILS_ENV=test to each command)
 
 ``` bash
 bundle exec rake db:create
