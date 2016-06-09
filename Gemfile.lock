@@ -1,8 +1,3 @@
-PATH
-  remote: .
-  specs:
-    travis-migrations (0.0.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -99,7 +94,6 @@ DEPENDENCIES
   pg (~> 0.18)
   rake (~> 10.4)
   rspec (~> 3.4)
-  travis-migrations!
 
 BUNDLED WITH
    1.12.4
