@@ -98,6 +98,29 @@ CREATE FUNCTION insert_log_part() RETURNS trigger
 
 
 --
+-- Name: save_state_change(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION save_state_change() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+      DECLARE
+        previous_job_state_id BIGINT;
+      BEGIN
+        if TG_OP='UPDATE' then
+          UPDATE previous_job_states SET ended_at = NOW() WHERE id = OLD.previous_job_state_id;
+        end if;
+
+        INSERT INTO previous_job_states (job_id, set_at, state) VALUES(NEW.id, NOW(), NEW.state)
+          RETURNING id INTO previous_job_state_id;
+        NEW.previous_job_state_id = previous_job_state_id;
+
+        RETURN NEW;
+      END;
+      $$;
+
+
+--
 -- Name: update_log(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -312,7 +335,7 @@ CREATE TABLE builds (
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
-    private boolean DEFAULT true
+    private boolean
 );
 
 
@@ -470,7 +493,8 @@ CREATE TABLE jobs (
     canceled_at timestamp without time zone,
     received_at timestamp without time zone,
     debug_options text,
-    private boolean DEFAULT true
+    private boolean,
+    previous_job_state_id bigint
 );
 
 
@@ -667,6 +691,38 @@ ALTER SEQUENCE permissions_id_seq OWNED BY permissions.id;
 
 
 --
+-- Name: previous_job_states; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE previous_job_states (
+    id integer NOT NULL,
+    job_id integer,
+    set_at timestamp without time zone,
+    ended_at timestamp without time zone,
+    state character varying
+);
+
+
+--
+-- Name: previous_job_states_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE previous_job_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: previous_job_states_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE previous_job_states_id_seq OWNED BY previous_job_states.id;
+
+
+--
 -- Name: repositories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -743,7 +799,7 @@ CREATE TABLE requests (
     owner_type character varying(255),
     result character varying(255),
     message character varying(255),
-    private boolean DEFAULT true
+    private boolean
 );
 
 
@@ -1035,6 +1091,13 @@ ALTER TABLE ONLY permissions ALTER COLUMN id SET DEFAULT nextval('permissions_id
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY previous_job_states ALTER COLUMN id SET DEFAULT nextval('previous_job_states_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY repositories ALTER COLUMN id SET DEFAULT nextval('repositories_id_seq'::regclass);
 
 
@@ -1185,6 +1248,14 @@ ALTER TABLE ONLY permissions
 
 
 --
+-- Name: previous_job_states_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY previous_job_states
+    ADD CONSTRAINT previous_job_states_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: repositories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1302,6 +1373,13 @@ CREATE INDEX index_builds_on_owner_id ON builds USING btree (owner_id);
 --
 
 CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id);
+
+
+--
+-- Name: index_builds_on_repository_id_and_id_desc; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_builds_on_repository_id_and_id_desc ON builds USING btree (repository_id, id DESC NULLS LAST);
 
 
 --
@@ -1638,6 +1716,20 @@ CREATE INDEX index_users_on_lower_login ON users USING btree (lower((login)::tex
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+
+
+--
+-- Name: save_state_change_on_insert; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER save_state_change_on_insert BEFORE INSERT ON jobs FOR EACH ROW EXECUTE PROCEDURE save_state_change();
+
+
+--
+-- Name: save_state_change_on_update; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER save_state_change_on_update BEFORE UPDATE ON jobs FOR EACH ROW WHEN (((old.state)::text IS DISTINCT FROM (new.state)::text)) EXECUTE PROCEDURE save_state_change();
 
 
 --
@@ -2042,7 +2134,9 @@ INSERT INTO schema_migrations (version) VALUES ('20160510150400');
 
 INSERT INTO schema_migrations (version) VALUES ('20160513074300');
 
-INSERT INTO schema_migrations (version) VALUES ('20160513082500');
-
 INSERT INTO schema_migrations (version) VALUES ('20160609163600');
+
+INSERT INTO schema_migrations (version) VALUES ('20160623133900');
+
+INSERT INTO schema_migrations (version) VALUES ('20160623133901');
 
