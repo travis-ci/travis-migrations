@@ -94,6 +94,3 @@ DEPENDENCIES
   pg (~> 0.18)
   rake (~> 10.4)
   rspec (~> 3.4)
-
-BUNDLED WITH
-   1.12.4
