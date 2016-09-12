@@ -141,9 +141,9 @@ SET default_with_oids = false;
 
 CREATE TABLE annotation_providers (
     id integer NOT NULL,
-    name character varying(255),
-    api_username character varying(255),
-    api_key character varying(255),
+    name character varying,
+    api_username character varying,
+    api_key character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -175,12 +175,12 @@ ALTER SEQUENCE annotation_providers_id_seq OWNED BY annotation_providers.id;
 CREATE TABLE annotations (
     id integer NOT NULL,
     job_id integer NOT NULL,
-    url character varying(255),
+    url character varying,
     description text NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     annotation_provider_id integer NOT NULL,
-    status character varying(255)
+    status character varying
 );
 
 
@@ -211,7 +211,7 @@ CREATE TABLE branches (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     last_build_id integer,
-    name character varying(255) NOT NULL,
+    name character varying NOT NULL,
     exists_on_github boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -244,13 +244,13 @@ ALTER SEQUENCE branches_id_seq OWNED BY branches.id;
 CREATE TABLE broadcasts (
     id integer NOT NULL,
     recipient_id integer,
-    recipient_type character varying(255),
-    kind character varying(255),
-    message character varying(255),
+    recipient_type character varying,
+    kind character varying,
+    message character varying,
     expired boolean,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    category character varying(255)
+    category character varying
 );
 
 
@@ -292,7 +292,7 @@ CREATE SEQUENCE shared_builds_tasks_seq
 CREATE TABLE builds (
     id bigint DEFAULT nextval('shared_builds_tasks_seq'::regclass) NOT NULL,
     repository_id integer,
-    number character varying(255),
+    number character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
@@ -300,15 +300,15 @@ CREATE TABLE builds (
     config text,
     commit_id integer,
     request_id integer,
-    state character varying(255),
+    state character varying,
     duration integer,
     owner_id integer,
-    owner_type character varying(255),
-    event_type character varying(255),
-    previous_state character varying(255),
+    owner_type character varying,
+    event_type character varying,
+    previous_state character varying,
     pull_request_title text,
     pull_request_number integer,
-    branch character varying(255),
+    branch character varying,
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
@@ -342,16 +342,16 @@ ALTER SEQUENCE builds_id_seq OWNED BY builds.id;
 CREATE TABLE commits (
     id integer NOT NULL,
     repository_id integer,
-    commit character varying(255),
-    ref character varying(255),
-    branch character varying(255),
+    commit character varying,
+    ref character varying,
+    branch character varying,
     message text,
-    compare_url character varying(255),
+    compare_url character varying,
     committed_at timestamp without time zone,
-    committer_name character varying(255),
-    committer_email character varying(255),
-    author_name character varying(255),
-    author_email character varying(255),
+    committer_name character varying,
+    committer_email character varying,
+    author_name character varying,
+    author_email character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -383,7 +383,7 @@ ALTER SEQUENCE commits_id_seq OWNED BY commits.id;
 CREATE TABLE crons (
     id integer NOT NULL,
     branch_id integer,
-    "interval" character varying(255) NOT NULL,
+    "interval" character varying NOT NULL,
     disable_by_build boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -416,7 +416,7 @@ ALTER SEQUENCE crons_id_seq OWNED BY crons.id;
 CREATE TABLE emails (
     id integer NOT NULL,
     user_id integer,
-    email character varying(255),
+    email character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -450,13 +450,13 @@ CREATE TABLE jobs (
     repository_id integer,
     commit_id integer,
     source_id integer,
-    source_type character varying(255),
-    queue character varying(255),
-    type character varying(255),
-    state character varying(255),
-    number character varying(255),
+    source_type character varying,
+    queue character varying,
+    type character varying,
+    state character varying,
+    number character varying,
     config text,
-    worker character varying(255),
+    worker character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
@@ -464,7 +464,7 @@ CREATE TABLE jobs (
     tags text,
     allow_failure boolean DEFAULT false,
     owner_id integer,
-    owner_type character varying(255),
+    owner_type character varying,
     result integer,
     queued_at timestamp without time zone,
     canceled_at timestamp without time zone,
@@ -601,16 +601,16 @@ ALTER SEQUENCE memberships_id_seq OWNED BY memberships.id;
 
 CREATE TABLE organizations (
     id integer NOT NULL,
-    name character varying(255),
-    login character varying(255),
+    name character varying,
+    login character varying,
     github_id integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    avatar_url character varying(255),
-    location character varying(255),
-    email character varying(255),
-    company character varying(255),
-    homepage character varying(255)
+    avatar_url character varying,
+    location character varying,
+    email character varying,
+    company character varying,
+    homepage character varying
 );
 
 
@@ -672,26 +672,26 @@ ALTER SEQUENCE permissions_id_seq OWNED BY permissions.id;
 
 CREATE TABLE repositories (
     id integer NOT NULL,
-    name character varying(255),
-    url character varying(255),
+    name character varying,
+    url character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     last_build_id integer,
-    last_build_number character varying(255),
+    last_build_number character varying,
     last_build_started_at timestamp without time zone,
     last_build_finished_at timestamp without time zone,
-    owner_name character varying(255),
+    owner_name character varying,
     owner_email text,
     active boolean,
     description text,
     last_build_duration integer,
     owner_id integer,
-    owner_type character varying(255),
+    owner_type character varying,
     private boolean DEFAULT false,
-    last_build_state character varying(255),
+    last_build_state character varying,
     github_id integer,
-    default_branch character varying(255),
-    github_language character varying(255),
+    default_branch character varying,
+    github_language character varying,
     settings json,
     next_build_number integer,
     invalidated_at timestamp without time zone,
@@ -726,23 +726,23 @@ CREATE TABLE requests (
     id integer NOT NULL,
     repository_id integer,
     commit_id integer,
-    state character varying(255),
-    source character varying(255),
+    state character varying,
+    source character varying,
     payload text,
-    token character varying(255),
+    token character varying,
     config text,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    event_type character varying(255),
-    comments_url character varying(255),
-    base_commit character varying(255),
-    head_commit character varying(255),
+    event_type character varying,
+    comments_url character varying,
+    base_commit character varying,
+    head_commit character varying,
     owner_id integer,
-    owner_type character varying(255),
-    result character varying(255),
-    message character varying(255),
+    owner_type character varying,
+    result character varying,
+    message character varying,
     private boolean
 );
 
@@ -771,7 +771,7 @@ ALTER SEQUENCE requests_id_seq OWNED BY requests.id;
 --
 
 CREATE TABLE schema_migrations (
-    version character varying(255) NOT NULL
+    version character varying NOT NULL
 );
 
 
@@ -847,7 +847,7 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 CREATE TABLE tokens (
     id integer NOT NULL,
     user_id integer,
-    token character varying(255),
+    token character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -878,8 +878,8 @@ ALTER SEQUENCE tokens_id_seq OWNED BY tokens.id;
 
 CREATE TABLE urls (
     id integer NOT NULL,
-    url character varying(255),
-    code character varying(255),
+    url character varying,
+    code character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -910,16 +910,16 @@ ALTER SEQUENCE urls_id_seq OWNED BY urls.id;
 
 CREATE TABLE users (
     id integer NOT NULL,
-    name character varying(255),
-    login character varying(255),
-    email character varying(255),
+    name character varying,
+    login character varying,
+    email character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     is_admin boolean DEFAULT false,
     github_id integer,
-    github_oauth_token character varying(255),
-    gravatar_id character varying(255),
-    locale character varying(255),
+    github_oauth_token character varying,
+    gravatar_id character varying,
+    locale character varying,
     is_syncing boolean,
     synced_at timestamp without time zone,
     github_scopes text,
