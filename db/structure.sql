@@ -397,10 +397,10 @@ ALTER SEQUENCE commits_id_seq OWNED BY commits.id;
 CREATE TABLE coupons (
     id integer NOT NULL,
     percent_off integer,
-    coupon_id character varying,
+    coupon_id character varying(255),
     redeem_by timestamp without time zone,
     amount_off integer,
-    duration character varying,
+    duration character varying(255),
     duration_in_months integer,
     max_redemptions integer,
     redemptions integer
@@ -498,11 +498,11 @@ ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
 CREATE TABLE invoices (
     id integer NOT NULL,
     object text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     subscription_id integer,
-    invoice_id character varying,
-    stripe_id character varying
+    invoice_id character varying(255),
+    stripe_id character varying(255)
 );
 
 
@@ -756,13 +756,13 @@ ALTER SEQUENCE permissions_id_seq OWNED BY permissions.id;
 
 CREATE TABLE plans (
     id integer NOT NULL,
-    name character varying,
-    coupon character varying,
+    name character varying(255),
+    coupon character varying(255),
     subscription_id integer,
     valid_from timestamp without time zone,
     valid_to timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     amount integer
 );
 
@@ -965,14 +965,33 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 --
 
 CREATE TABLE stripe_events (
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     event_object text,
-    id character varying,
-    event_type character varying,
+    event_type character varying(255),
     date timestamp without time zone,
-    event_id character varying
+    event_id character varying(255)
 );
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE stripe_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE stripe_events_id_seq OWNED BY stripe_events.id;
 
 
 --
@@ -981,33 +1000,33 @@ CREATE TABLE stripe_events (
 
 CREATE TABLE subscriptions (
     id integer NOT NULL,
-    cc_token character varying,
+    cc_token character varying(255),
     valid_to timestamp without time zone,
     owner_id integer,
-    owner_type character varying,
-    first_name character varying,
-    last_name character varying,
-    company character varying,
-    zip_code character varying,
-    address character varying,
-    address2 character varying,
-    city character varying,
-    state character varying,
-    country character varying,
-    vat_id character varying,
-    customer_id character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    cc_owner character varying,
-    cc_last_digits character varying,
-    cc_expiration_date character varying,
-    billing_email character varying,
-    selected_plan character varying,
-    coupon character varying,
+    owner_type character varying(255),
+    first_name character varying(255),
+    last_name character varying(255),
+    company character varying(255),
+    zip_code character varying(255),
+    address character varying(255),
+    address2 character varying(255),
+    city character varying(255),
+    state character varying(255),
+    country character varying(255),
+    vat_id character varying(255),
+    customer_id character varying(255),
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    cc_owner character varying(255),
+    cc_last_digits character varying(255),
+    cc_expiration_date character varying(255),
+    billing_email character varying(255),
+    selected_plan character varying(255),
+    coupon character varying(255),
     contact_id integer,
     canceled_at timestamp without time zone,
     canceled_by_id integer,
-    status character varying
+    status character varying(255)
 );
 
 
@@ -1274,6 +1293,13 @@ ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_events_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 
@@ -1464,6 +1490,14 @@ ALTER TABLE ONLY ssl_keys
 
 ALTER TABLE ONLY stars
     ADD CONSTRAINT stars_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY stripe_events
+    ADD CONSTRAINT stripe_events_pkey PRIMARY KEY (id);
 
 
 --
