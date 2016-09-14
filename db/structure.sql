@@ -37,6 +37,20 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
+--
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
 SET search_path = public, pg_catalog;
 
 --
@@ -377,6 +391,42 @@ ALTER SEQUENCE commits_id_seq OWNED BY commits.id;
 
 
 --
+-- Name: coupons; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE coupons (
+    id integer NOT NULL,
+    percent_off integer,
+    coupon_id character varying,
+    redeem_by timestamp without time zone,
+    amount_off integer,
+    duration character varying,
+    duration_in_months integer,
+    max_redemptions integer,
+    redemptions integer
+);
+
+
+--
+-- Name: coupons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE coupons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: coupons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE coupons_id_seq OWNED BY coupons.id;
+
+
+--
 -- Name: crons; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -439,6 +489,40 @@ CREATE SEQUENCE emails_id_seq
 --
 
 ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
+
+
+--
+-- Name: invoices; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE invoices (
+    id integer NOT NULL,
+    object text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    subscription_id integer,
+    invoice_id character varying,
+    stripe_id character varying
+);
+
+
+--
+-- Name: invoices_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE invoices_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: invoices_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE invoices_id_seq OWNED BY invoices.id;
 
 
 --
@@ -667,6 +751,42 @@ ALTER SEQUENCE permissions_id_seq OWNED BY permissions.id;
 
 
 --
+-- Name: plans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE plans (
+    id integer NOT NULL,
+    name character varying,
+    coupon character varying,
+    subscription_id integer,
+    valid_from timestamp without time zone,
+    valid_to timestamp without time zone,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    amount integer
+);
+
+
+--
+-- Name: plans_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE plans_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: plans_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
+
+
+--
 -- Name: repositories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -841,6 +961,76 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 
 
 --
+-- Name: stripe_events; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE stripe_events (
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    event_object text,
+    id character varying,
+    event_type character varying,
+    date timestamp without time zone,
+    event_id character varying
+);
+
+
+--
+-- Name: subscriptions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE subscriptions (
+    id integer NOT NULL,
+    cc_token character varying,
+    valid_to timestamp without time zone,
+    owner_id integer,
+    owner_type character varying,
+    first_name character varying,
+    last_name character varying,
+    company character varying,
+    zip_code character varying,
+    address character varying,
+    address2 character varying,
+    city character varying,
+    state character varying,
+    country character varying,
+    vat_id character varying,
+    customer_id character varying,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    cc_owner character varying,
+    cc_last_digits character varying,
+    cc_expiration_date character varying,
+    billing_email character varying,
+    selected_plan character varying,
+    coupon character varying,
+    contact_id integer,
+    canceled_at timestamp without time zone,
+    canceled_by_id integer,
+    status character varying
+);
+
+
+--
+-- Name: subscriptions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE subscriptions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: subscriptions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE subscriptions_id_seq OWNED BY subscriptions.id;
+
+
+--
 -- Name: tokens; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -986,6 +1176,13 @@ ALTER TABLE ONLY commits ALTER COLUMN id SET DEFAULT nextval('commits_id_seq'::r
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY coupons ALTER COLUMN id SET DEFAULT nextval('coupons_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY crons ALTER COLUMN id SET DEFAULT nextval('crons_id_seq'::regclass);
 
 
@@ -994,6 +1191,13 @@ ALTER TABLE ONLY crons ALTER COLUMN id SET DEFAULT nextval('crons_id_seq'::regcl
 --
 
 ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq'::regclass);
 
 
 --
@@ -1035,6 +1239,13 @@ ALTER TABLE ONLY permissions ALTER COLUMN id SET DEFAULT nextval('permissions_id
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY repositories ALTER COLUMN id SET DEFAULT nextval('repositories_id_seq'::regclass);
 
 
@@ -1057,6 +1268,13 @@ ALTER TABLE ONLY ssl_keys ALTER COLUMN id SET DEFAULT nextval('ssl_keys_id_seq':
 --
 
 ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 
 --
@@ -1129,6 +1347,14 @@ ALTER TABLE ONLY commits
 
 
 --
+-- Name: coupons_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY coupons
+    ADD CONSTRAINT coupons_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: crons_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1142,6 +1368,14 @@ ALTER TABLE ONLY crons
 
 ALTER TABLE ONLY emails
     ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: invoices_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY invoices
+    ADD CONSTRAINT invoices_pkey PRIMARY KEY (id);
 
 
 --
@@ -1193,6 +1427,14 @@ ALTER TABLE ONLY permissions
 
 
 --
+-- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY plans
+    ADD CONSTRAINT plans_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: repositories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1222,6 +1464,14 @@ ALTER TABLE ONLY ssl_keys
 
 ALTER TABLE ONLY stars
     ADD CONSTRAINT stars_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY subscriptions
+    ADD CONSTRAINT subscriptions_pkey PRIMARY KEY (id);
 
 
 --
@@ -1344,6 +1594,13 @@ CREATE INDEX index_emails_on_email ON emails USING btree (email);
 --
 
 CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
+
+
+--
+-- Name: index_invoices_on_stripe_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_invoices_on_stripe_id ON invoices USING btree (stripe_id);
 
 
 --
@@ -1599,6 +1856,27 @@ CREATE UNIQUE INDEX index_stars_on_user_id_and_repository_id ON stars USING btre
 
 
 --
+-- Name: index_stripe_events_on_date; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_stripe_events_on_date ON stripe_events USING btree (date);
+
+
+--
+-- Name: index_stripe_events_on_event_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_stripe_events_on_event_id ON stripe_events USING btree (event_id);
+
+
+--
+-- Name: index_stripe_events_on_event_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_stripe_events_on_event_type ON stripe_events USING btree (event_type);
+
+
+--
 -- Name: index_tokens_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1785,23 +2063,47 @@ INSERT INTO schema_migrations (version) VALUES ('20120521174400');
 
 INSERT INTO schema_migrations (version) VALUES ('20120527235800');
 
+INSERT INTO schema_migrations (version) VALUES ('20120702111126');
+
+INSERT INTO schema_migrations (version) VALUES ('20120703114226');
+
 INSERT INTO schema_migrations (version) VALUES ('20120713140816');
 
 INSERT INTO schema_migrations (version) VALUES ('20120713153215');
 
 INSERT INTO schema_migrations (version) VALUES ('20120725005300');
 
+INSERT INTO schema_migrations (version) VALUES ('201207261749');
+
 INSERT INTO schema_migrations (version) VALUES ('20120727151900');
 
 INSERT INTO schema_migrations (version) VALUES ('20120731005301');
 
+INSERT INTO schema_migrations (version) VALUES ('20120731074000');
+
 INSERT INTO schema_migrations (version) VALUES ('20120802001001');
+
+INSERT INTO schema_migrations (version) VALUES ('20120803164000');
+
+INSERT INTO schema_migrations (version) VALUES ('20120803182300');
+
+INSERT INTO schema_migrations (version) VALUES ('20120804122700');
+
+INSERT INTO schema_migrations (version) VALUES ('20120806120400');
+
+INSERT INTO schema_migrations (version) VALUES ('20120820164000');
+
+INSERT INTO schema_migrations (version) VALUES ('20120905093300');
+
+INSERT INTO schema_migrations (version) VALUES ('20120905171300');
 
 INSERT INTO schema_migrations (version) VALUES ('20120911160000');
 
 INSERT INTO schema_migrations (version) VALUES ('20120911230000');
 
 INSERT INTO schema_migrations (version) VALUES ('20120911230001');
+
+INSERT INTO schema_migrations (version) VALUES ('20120913143800');
 
 INSERT INTO schema_migrations (version) VALUES ('20120915012000');
 
@@ -1859,6 +2161,8 @@ INSERT INTO schema_migrations (version) VALUES ('20130208135801');
 
 INSERT INTO schema_migrations (version) VALUES ('20130208215252');
 
+INSERT INTO schema_migrations (version) VALUES ('20130306154311');
+
 INSERT INTO schema_migrations (version) VALUES ('20130311211101');
 
 INSERT INTO schema_migrations (version) VALUES ('20130327100801');
@@ -1881,6 +2185,8 @@ INSERT INTO schema_migrations (version) VALUES ('20130521134800');
 
 INSERT INTO schema_migrations (version) VALUES ('20130521141357');
 
+INSERT INTO schema_migrations (version) VALUES ('20130618084205');
+
 INSERT INTO schema_migrations (version) VALUES ('20130629122945');
 
 INSERT INTO schema_migrations (version) VALUES ('20130629133531');
@@ -1888,6 +2194,8 @@ INSERT INTO schema_migrations (version) VALUES ('20130629133531');
 INSERT INTO schema_migrations (version) VALUES ('20130629174449');
 
 INSERT INTO schema_migrations (version) VALUES ('20130701123456');
+
+INSERT INTO schema_migrations (version) VALUES ('20130701175200');
 
 INSERT INTO schema_migrations (version) VALUES ('20130702123456');
 
@@ -1981,6 +2289,8 @@ INSERT INTO schema_migrations (version) VALUES ('20150528101610');
 
 INSERT INTO schema_migrations (version) VALUES ('20150528101611');
 
+INSERT INTO schema_migrations (version) VALUES ('20150609175200');
+
 INSERT INTO schema_migrations (version) VALUES ('20150610143500');
 
 INSERT INTO schema_migrations (version) VALUES ('20150610143501');
@@ -2002,6 +2312,8 @@ INSERT INTO schema_migrations (version) VALUES ('20150610143508');
 INSERT INTO schema_migrations (version) VALUES ('20150610143509');
 
 INSERT INTO schema_migrations (version) VALUES ('20150610143510');
+
+INSERT INTO schema_migrations (version) VALUES ('20150615103059');
 
 INSERT INTO schema_migrations (version) VALUES ('20150629231300');
 

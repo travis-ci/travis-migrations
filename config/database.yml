@@ -11,8 +11,8 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  database: travis_development
+  database: <%= ENV.fetch('DATABASE_NAME', 'travis_development') %>
 
 test:
   <<: *defaults
-  database: travis_test
+  database: <%= ENV.fetch('DATABASE_NAME', 'travis_test') %>
