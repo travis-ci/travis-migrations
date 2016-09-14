@@ -13,7 +13,7 @@ describe "Travis Migrations Custom Rake Tasks" do
         "commits", "requests", "ssl_keys", "memberships", "urls",
         "permissions", "jobs", "broadcasts", "emails", "logs", "log_parts",
         "organizations", "annotation_providers", "annotations", "branches",
-        "stars", "crons"].each do |table_name|
+        "stars", "crons", "subscriptions", "plans", "coupons", "stripe_events", "invoices"].each do |table_name|
         expect(tables).to include(table_name)
       end
     end
