@@ -1,10 +1,8 @@
 travis-migrations
 =================
-
-<em>PLEASE NOTE: Any .com related migrations must be run using [`travis-pro-migrations`](https://github.com/travis-pro/travis-pro-migrations). Please refer to the README in that repository.</em>
 _________________
 
-This is the central repository for storing migrations, and executing them against production and development databases.
+This is the central repository for storing migrations, and executing them against production and development databases on both .org and .com.
 
 In short, migrations should be run locally while standing in this repository during development. For tests (e.g. via `.travis.yml`) applications should contain their own tooling that loads the schema (e.g. see [travis-hub](https://github.com/travis-ci/travis-hub/blob/master/Rakefile#L12)).
 
