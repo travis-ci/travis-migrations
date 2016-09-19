@@ -1114,7 +1114,8 @@ CREATE TABLE users (
     synced_at timestamp without time zone,
     github_scopes text,
     education boolean,
-    first_logged_in_at timestamp without time zone
+    first_logged_in_at timestamp without time zone,
+    avatar_url character varying
 );
 
 
@@ -2366,4 +2367,6 @@ INSERT INTO schema_migrations (version) VALUES ('20160623133900');
 INSERT INTO schema_migrations (version) VALUES ('20160623133901');
 
 INSERT INTO schema_migrations (version) VALUES ('20160712125400');
+
+INSERT INTO schema_migrations (version) VALUES ('20161908103700');
 
