@@ -650,13 +650,14 @@ ALTER SEQUENCE logs_id_seq OWNED BY logs.id;
 
 
 --
--- Name: memberships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: memberships; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE memberships (
     id integer NOT NULL,
     organization_id integer,
-    user_id integer
+    user_id integer,
+    role character varying
 );
 
 
@@ -2370,3 +2371,4 @@ INSERT INTO schema_migrations (version) VALUES ('20160712125400');
 
 INSERT INTO schema_migrations (version) VALUES ('20161908103700');
 
+INSERT INTO schema_migrations (version) VALUES ('20160920220400');
