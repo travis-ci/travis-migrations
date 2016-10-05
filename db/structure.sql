@@ -342,11 +342,12 @@ CREATE TABLE crons (
     id integer NOT NULL,
     branch_id integer,
     "interval" character varying NOT NULL,
-    run_only_when_new_commit boolean DEFAULT false NOT NULL,
+    disable_by_build boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     next_run timestamp without time zone,
-    last_run timestamp without time zone
+    last_run timestamp without time zone,
+    dont_run_if_recent_build_exists boolean DEFAULT false
 );
 
 
@@ -2133,6 +2134,4 @@ INSERT INTO schema_migrations (version) VALUES ('20161028154600');
 INSERT INTO schema_migrations (version) VALUES ('20160906000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20160912000000');
-
-INSERT INTO schema_migrations (version) VALUES ('20160912000001');
 
