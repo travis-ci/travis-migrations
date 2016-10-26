@@ -32,7 +32,8 @@ Running migrations locally
 
 
 To setup the database from scratch:
-<em>(PLEASE NOTE: the DATABASE_NAME is the heroku app name of the local database you wish to create or run migrations on)</em>
+
+<em>(PLEASE NOTE: the DATABASE_NAME is the name of the local database you wish to create or run migrations on, either `travis_development`, `travis_pro_development`, `travis_test`, or `travis_pro_test`)</em>
 
 ``` bash
 DATABASE_NAME=<database_name> bundle exec rake db:create
