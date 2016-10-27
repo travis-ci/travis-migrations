@@ -100,3 +100,6 @@ DEPENDENCIES
   rails_12factor
   rake (~> 10.4)
   rspec (~> 3.4)
+
+BUNDLED WITH
+   1.13.1
