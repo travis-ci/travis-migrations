@@ -436,7 +436,10 @@ CREATE TABLE crons (
     "interval" character varying NOT NULL,
     disable_by_build boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    next_run timestamp without time zone,
+    last_run timestamp without time zone,
+    dont_run_if_recent_build_exists boolean DEFAULT false
 );
 
 
@@ -650,7 +653,7 @@ ALTER SEQUENCE logs_id_seq OWNED BY logs.id;
 
 
 --
--- Name: memberships; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: memberships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE TABLE memberships (
@@ -2369,6 +2372,11 @@ INSERT INTO schema_migrations (version) VALUES ('20160623133901');
 
 INSERT INTO schema_migrations (version) VALUES ('20160712125400');
 
-INSERT INTO schema_migrations (version) VALUES ('20161908103700');
+INSERT INTO schema_migrations (version) VALUES ('20160819103700');
+
+INSERT INTO schema_migrations (version) VALUES ('20160906000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20160912000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20160920220400');
+
