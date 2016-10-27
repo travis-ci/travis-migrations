@@ -17,8 +17,8 @@ describe 'Rake tasks' do
     it 'creates the expected tables' do
       expect(tables.sort).to eq %w(
         schema_migrations tokens users builds repositories commits requests
-        ssl_keys memberships urls permissions jobs broadcasts emails logs
-        log_parts organizations annotation_providers annotations branches stars
+        ssl_keys memberships urls permissions jobs broadcasts emails 
+        organizations annotation_providers annotations branches stars
         crons subscriptions plans coupons stripe_events invoices
       ).sort
     end
