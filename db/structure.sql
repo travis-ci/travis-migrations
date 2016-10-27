@@ -53,98 +53,6 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 SET search_path = public, pg_catalog;
 
---
--- Name: delete_log(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION delete_log() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-        BEGIN
-          DELETE FROM logs WHERE id = OLD.id;
-          RETURN OLD;
-        END;
-      $$;
-
-
---
--- Name: delete_log_part(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION delete_log_part() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-        BEGIN
-          DELETE FROM log_parts WHERE id = OLD.id;
-          RETURN OLD;
-        END;
-      $$;
-
-
---
--- Name: insert_log(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION insert_log() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-        BEGIN
-          INSERT INTO logs VALUES (NEW.id, NEW.job_id, NEW.content, NEW.created_at, NEW.updated_at,
-            NEW.aggregated_at, NEW.archiving, NEW.archived_at, NEW.archive_verified);
-          RETURN NEW;
-        END;
-      $$;
-
-
---
--- Name: insert_log_part(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION insert_log_part() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-        BEGIN
-          INSERT INTO log_parts VALUES (NEW.id, NEW.artifact_id, NEW.content, NEW.number, NEW.final,
-            NEW.created_at);
-          RETURN NEW;
-        END;
-      $$;
-
-
---
--- Name: update_log(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION update_log() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-        BEGIN
-          UPDATE logs
-          SET job_id=NEW.job_id, content=NEW.content, created_at=NEW.created_at,
-            updated_at=NEW.updated_at, aggregated_at=NEW.aggregated_at, archiving=NEW.archiving,
-            archived_at=NEW.archived_at, archive_verified=NEW.archive_verified
-          WHERE id = NEW.id;
-          RETURN NEW;
-        END;
-      $$;
-
-
---
--- Name: update_log_part(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION update_log_part() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-        BEGIN
-          UPDATE logs
-          SET log_id=NEW.artifact_id, content=NEW.content, number=NEW.number, created_at=NEW.created_at
-          WHERE id = NEW.id;
-          RETURN NEW;
-        END;
-      $$;
-
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -578,79 +486,7 @@ ALTER SEQUENCE jobs_id_seq OWNED BY jobs.id;
 
 
 --
--- Name: log_parts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE log_parts (
-    id integer NOT NULL,
-    log_id integer NOT NULL,
-    content text,
-    number integer,
-    final boolean,
-    created_at timestamp without time zone
-);
-
-
---
--- Name: log_parts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE log_parts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: log_parts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE log_parts_id_seq OWNED BY log_parts.id;
-
-
---
--- Name: logs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE logs (
-    id integer NOT NULL,
-    job_id integer,
-    content text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    aggregated_at timestamp without time zone,
-    archiving boolean,
-    archived_at timestamp without time zone,
-    archive_verified boolean,
-    purged_at timestamp without time zone,
-    removed_at timestamp without time zone,
-    removed_by integer
-);
-
-
---
--- Name: logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE logs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE logs_id_seq OWNED BY logs.id;
-
-
---
--- Name: memberships; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: memberships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE TABLE memberships (
@@ -1206,20 +1042,6 @@ ALTER TABLE ONLY invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq':
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY log_parts ALTER COLUMN id SET DEFAULT nextval('log_parts_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY logs ALTER COLUMN id SET DEFAULT nextval('logs_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY memberships ALTER COLUMN id SET DEFAULT nextval('memberships_id_seq'::regclass);
 
 
@@ -1386,22 +1208,6 @@ ALTER TABLE ONLY invoices
 
 ALTER TABLE ONLY jobs
     ADD CONSTRAINT jobs_pkey PRIMARY KEY (id);
-
-
---
--- Name: log_parts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY log_parts
-    ADD CONSTRAINT log_parts_pkey PRIMARY KEY (id);
-
-
---
--- Name: logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY logs
-    ADD CONSTRAINT logs_pkey PRIMARY KEY (id);
 
 
 --
@@ -1669,34 +1475,6 @@ CREATE INDEX index_jobs_on_type_and_source_id_and_source_type ON jobs USING btre
 
 
 --
--- Name: index_log_parts_on_log_id_and_number; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_log_parts_on_log_id_and_number ON log_parts USING btree (log_id, number);
-
-
---
--- Name: index_logs_on_archive_verified; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_logs_on_archive_verified ON logs USING btree (archive_verified);
-
-
---
--- Name: index_logs_on_archived_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_logs_on_archived_at ON logs USING btree (archived_at);
-
-
---
--- Name: index_logs_on_job_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_logs_on_job_id ON logs USING btree (job_id);
-
-
---
 -- Name: index_memberships_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1936,14 +1714,6 @@ ALTER TABLE ONLY repositories
 
 
 --
--- Name: log_parts_log_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY log_parts
-    ADD CONSTRAINT log_parts_log_id_fk FOREIGN KEY (log_id) REFERENCES logs(id);
-
-
---
 -- PostgreSQL database dump complete
 --
 
@@ -2151,17 +1921,9 @@ INSERT INTO schema_migrations (version) VALUES ('20130125171100');
 
 INSERT INTO schema_migrations (version) VALUES ('20130129142703');
 
-INSERT INTO schema_migrations (version) VALUES ('20130207030700');
-
-INSERT INTO schema_migrations (version) VALUES ('20130207030701');
-
-INSERT INTO schema_migrations (version) VALUES ('20130208124253');
-
 INSERT INTO schema_migrations (version) VALUES ('20130208135800');
 
 INSERT INTO schema_migrations (version) VALUES ('20130208135801');
-
-INSERT INTO schema_migrations (version) VALUES ('20130208215252');
 
 INSERT INTO schema_migrations (version) VALUES ('20130306154311');
 
@@ -2194,8 +1956,6 @@ INSERT INTO schema_migrations (version) VALUES ('20130629122945');
 INSERT INTO schema_migrations (version) VALUES ('20130629133531');
 
 INSERT INTO schema_migrations (version) VALUES ('20130629174449');
-
-INSERT INTO schema_migrations (version) VALUES ('20130701123456');
 
 INSERT INTO schema_migrations (version) VALUES ('20130701175200');
 
@@ -2369,6 +2129,7 @@ INSERT INTO schema_migrations (version) VALUES ('20160623133901');
 
 INSERT INTO schema_migrations (version) VALUES ('20160712125400');
 
-INSERT INTO schema_migrations (version) VALUES ('20161908103700');
+INSERT INTO schema_migrations (version) VALUES ('20160819103700');
 
 INSERT INTO schema_migrations (version) VALUES ('20160920220400');
+
