@@ -58,7 +58,7 @@ DATABASE_NAME=<database_name> bundle exec rake db:migrate VERSION=<timestamp>
 Deploy latest migrations
 ------------------------
 
-Replace `<app>` with the name of the app that contains the database you want to run migrations on.
+Replace `<app>` with the name of the app that contains the database you want to run migrations on (e.g. travis-staging).
 Replace `<timestamp>` with the timestamp of the migration you want to run.
 
 
