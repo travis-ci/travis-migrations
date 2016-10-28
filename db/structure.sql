@@ -1426,13 +1426,6 @@ CREATE INDEX index_jobs_on_owner_id ON jobs USING btree (owner_id);
 
 
 --
--- Name: index_jobs_on_owner_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_jobs_on_owner_type ON jobs USING btree (owner_type);
-
-
---
 -- Name: index_jobs_on_queue; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2132,4 +2125,6 @@ INSERT INTO schema_migrations (version) VALUES ('20160712125400');
 INSERT INTO schema_migrations (version) VALUES ('20160819103700');
 
 INSERT INTO schema_migrations (version) VALUES ('20160920220400');
+
+INSERT INTO schema_migrations (version) VALUES ('20161028154600');
 
