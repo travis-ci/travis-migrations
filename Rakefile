@@ -3,6 +3,8 @@
 require "bundler/setup"
 require "micro_migrations"
 
+require 'sequel'
+
 ActiveRecord::Base.schema_format = :sql
 
 begin
@@ -14,6 +16,48 @@ end
 task :default => [:spec]
 
 Rake::Task["db:structure:dump"].clear unless Rails.env.development?
+
+def connect_sequel
+  if ENV['LOGS_DATABASE_URL'].nil?
+    raise 'No logs database URL set, you must set LOGS_DATABASE_URL env var'
+  end
+
+  Sequel.connect(ENV['LOGS_DATABASE_URL']).tap do |db|
+    db.timezone = :utc
+  end
+end
+
+namespace 'logs:db' do
+  desc 'Apply migrations'
+  task :migrate, [:version] do |_t, args|
+    Sequel.extension(:migration)
+    db = connect_sequel
+
+    if args[:version]
+      puts "Migrating to version #{args[:version]}"
+      Sequel::Migrator.run(db, 'db/migrate_logs', target: args[:version].to_i)
+    else
+      puts 'Migrating to latest'
+      Sequel::Migrator.run(db, 'db/migrate_logs')
+    end
+  end
+
+  desc 'List status for migrations'
+  task :status do
+    Sequel.extension(:migration)
+    db = connect_sequel
+
+    applied = Sequel::TimestampMigrator.new(db, 'db/migrations').applied_migrations
+    all_migrations = Dir['db/migrations/*.rb'].map { |file| File.basename(file) }.sort
+    all_migrations.each do |migration_file|
+      if applied.include?(migration_file)
+        puts "   up   #{migration_file}"
+      else
+        puts "  down  #{migration_file}"
+      end
+    end
+  end
+end
 
 module ActiveRecord
   class Migration

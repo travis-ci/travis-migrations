@@ -8,3 +8,5 @@ gem 'data_migrations', '~> 0.0'
 gem 'bundler', '~> 1.7'
 gem 'rspec', '~>3.4'
 gem 'rails_12factor'
+
+gem 'sequel'
