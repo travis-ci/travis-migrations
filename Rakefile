@@ -47,8 +47,8 @@ namespace 'logs:db' do
     Sequel.extension(:migration)
     db = connect_sequel
 
-    applied = Sequel::TimestampMigrator.new(db, 'db/migrations').applied_migrations
-    all_migrations = Dir['db/migrations/*.rb'].map { |file| File.basename(file) }.sort
+    applied = Sequel::TimestampMigrator.new(db, 'db/migrate_logs').applied_migrations
+    all_migrations = Dir['db/migrate_logs/*.rb'].map { |file| File.basename(file) }.sort
     all_migrations.each do |migration_file|
       if applied.include?(migration_file)
         puts "   up   #{migration_file}"
