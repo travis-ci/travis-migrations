@@ -17,7 +17,7 @@ task :default => [:spec]
 
 Rake::Task["db:structure:dump"].clear unless Rails.env.development?
 
-def connect_sequel
+def self.connect_sequel
   if ENV['LOGS_DATABASE_URL'].nil?
     raise 'No logs database URL set, you must set LOGS_DATABASE_URL env var'
   end
