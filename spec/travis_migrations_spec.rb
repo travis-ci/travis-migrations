@@ -17,7 +17,7 @@ describe 'Rake tasks' do
     it 'creates the expected tables' do
       expect(tables.sort).to eq %w(
         schema_migrations tokens users builds repositories commits requests
-        ssl_keys memberships urls permissions jobs broadcasts emails 
+        ssl_keys memberships urls permissions jobs broadcasts emails
         organizations annotation_providers annotations branches stars
         crons subscriptions plans coupons stripe_events invoices
       ).sort
@@ -26,12 +26,14 @@ describe 'Rake tasks' do
 
   describe 'rake db:create' do
     before { run 'rake db:drop db:create db:migrate' }
+    before { run 'LOGS_DATABASE=1 rake db:drop db:create db:migrate' }
     include_examples 'creates the expected tables'
 
   end
 
   describe 'rake db:schema:load' do
     before { run 'rake db:drop db:create db:structure:load' }
+    before { run 'LOGS_DATABASE=1 rake db:drop db:create db:structure:load' }
     include_examples 'creates the expected tables'
   end
 end
