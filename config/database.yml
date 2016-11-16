@@ -8,11 +8,14 @@ defaults: &defaults
   min_messages: warning
   username: <%= ENV['USER'] %>
   host: <%= ENV.fetch('PGHOST', 'localhost') %>
+  eager_load: true
 
 development:
   <<: *defaults
   database: <%= ENV.fetch('DATABASE_NAME', 'travis_development') %>
+  eager_load: false
 
 test:
   <<: *defaults
   database: <%= ENV.fetch('DATABASE_NAME', 'travis_test') %>
+  eager_load: false
