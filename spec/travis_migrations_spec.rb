@@ -5,8 +5,8 @@ require 'yaml'
 describe 'Rake tasks' do
   let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result) }
   let(:conn)   { ActiveRecord::Base.connection }
-  let(:main_tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") }
-  let(:logs_tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'logs'") }
+  let(:main_tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_catalog = 'main' AND table_schema = 'public'") }
+  let(:logs_tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_catalog = 'logs' AND table_schema = 'public'") }
   before       { ActiveRecord::Base.establish_connection(config['test']) }
 
   def run(cmd, env_str = '')
@@ -34,24 +34,22 @@ describe 'Rake tasks' do
   end
 
   describe 'rake db:create' do
-    before { run 'rake db:drop db:create db:migrate' }
+    before { run 'rake db:drop db:create db:migrate', 'DATABASE_NAME=main' }
     include_examples 'creates the expected main tables'
-
   end
 
   describe 'rake db:schema:load' do
-    before { run 'rake db:drop db:create db:structure:load' }
+    before { run 'rake db:drop db:create db:structure:load', 'DATABASE_NAME=main' }
     include_examples 'creates the expected main tables'
   end
 
   describe 'rake db:create logs database' do
-    before { run 'rake db:drop db:create db:migrate', 'LOGS_DATABASE=1 DATABASE_NAME=logs' }
+    before { run 'rake db:drop db:create db:migrate', 'DATABASE_NAME=logs LOGS_DATABASE=1' }
     include_examples 'creates the expected logs tables'
-
   end
 
   describe 'rake db:schema:load logs database' do
-    before { run 'rake db:drop db:create db:structure:load', 'LOGS_DATABASE=1 DATABASE_NAME=logs' }
+    before { run 'rake db:drop db:create db:structure:load', 'DATABASE_NAME=logs LOGS_DATABASE=1' }
     include_examples 'creates the expected logs tables'
   end
 end
