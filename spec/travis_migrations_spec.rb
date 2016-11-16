@@ -8,8 +8,8 @@ describe 'Rake tasks' do
   let(:tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") }
   before       { ActiveRecord::Base.establish_connection(config['test']) }
 
-  def run(cmd)
-    system "RAILS_ENV=test bundle exec #{cmd}"
+  def run(cmd, env_str = '')
+    system "RAILS_ENV=test #{env_str} bundle exec #{cmd}"
     expect($?.exitstatus).to eq 0
   end
 
@@ -26,14 +26,14 @@ describe 'Rake tasks' do
 
   describe 'rake db:create' do
     before { run 'rake db:drop db:create db:migrate' }
-    before { run 'LOGS_DATABASE=1 rake db:drop db:create db:migrate' }
+    before { run 'rake db:drop db:create db:migrate', 'LOGS_DATABASE=1' }
     include_examples 'creates the expected tables'
 
   end
 
   describe 'rake db:schema:load' do
     before { run 'rake db:drop db:create db:structure:load' }
-    before { run 'LOGS_DATABASE=1 rake db:drop db:create db:structure:load' }
+    before { run 'rake db:drop db:create db:structure:load', 'LOGS_DATABASE=1' }
     include_examples 'creates the expected tables'
   end
 end
