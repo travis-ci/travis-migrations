@@ -5,7 +5,8 @@ require 'yaml'
 describe 'Rake tasks' do
   let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result) }
   let(:conn)   { ActiveRecord::Base.connection }
-  let(:tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") }
+  let(:main_tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") }
+  let(:logs_tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'logs'") }
   before       { ActiveRecord::Base.establish_connection(config['test']) }
 
   def run(cmd, env_str = '')
@@ -13,9 +14,9 @@ describe 'Rake tasks' do
     expect($?.exitstatus).to eq 0
   end
 
-  shared_examples_for 'creates the expected tables' do
+  shared_examples_for 'creates the expected main tables' do
     it 'creates the expected tables' do
-      expect(tables.sort).to eq %w(
+      expect(main_tables.sort).to eq %w(
         schema_migrations tokens users builds repositories commits requests
         ssl_keys memberships urls permissions jobs broadcasts emails
         organizations annotation_providers annotations branches stars
@@ -24,25 +25,33 @@ describe 'Rake tasks' do
     end
   end
 
+  shared_examples_for 'creates the expected logs tables' do
+    it 'creates the expected tables' do
+      expect(logs_tables.sort).to eq %w(
+        schema_migrations logs log_parts
+      ).sort
+    end
+  end
+
   describe 'rake db:create' do
     before { run 'rake db:drop db:create db:migrate' }
-    include_examples 'creates the expected tables'
+    include_examples 'creates the expected main tables'
 
   end
 
   describe 'rake db:schema:load' do
     before { run 'rake db:drop db:create db:structure:load' }
-    include_examples 'creates the expected tables'
+    include_examples 'creates the expected main tables'
   end
 
   describe 'rake db:create logs database' do
     before { run 'rake db:drop db:create db:migrate', 'LOGS_DATABASE=1 DATABASE_NAME=logs' }
-    include_examples 'creates the expected tables'
+    include_examples 'creates the expected logs tables'
 
   end
 
   describe 'rake db:schema:load logs database' do
     before { run 'rake db:drop db:create db:structure:load', 'LOGS_DATABASE=1 DATABASE_NAME=logs' }
-    include_examples 'creates the expected tables'
+    include_examples 'creates the expected logs tables'
   end
 end
