@@ -26,14 +26,23 @@ describe 'Rake tasks' do
 
   describe 'rake db:create' do
     before { run 'rake db:drop db:create db:migrate' }
-    before { run 'rake db:drop db:create db:migrate', 'LOGS_DATABASE=1' }
     include_examples 'creates the expected tables'
 
   end
 
   describe 'rake db:schema:load' do
     before { run 'rake db:drop db:create db:structure:load' }
-    before { run 'rake db:drop db:create db:structure:load', 'LOGS_DATABASE=1' }
+    include_examples 'creates the expected tables'
+  end
+
+  describe 'rake db:create logs database' do
+    before { run 'rake db:drop db:create db:migrate', 'LOGS_DATABASE=1 DATABASE_NAME=logs' }
+    include_examples 'creates the expected tables'
+
+  end
+
+  describe 'rake db:schema:load logs database' do
+    before { run 'rake db:drop db:create db:structure:load', 'LOGS_DATABASE=1 DATABASE_NAME=logs' }
     include_examples 'creates the expected tables'
   end
 end
