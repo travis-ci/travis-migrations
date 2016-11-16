@@ -83,10 +83,10 @@ ALTER SEQUENCE logs_id_seq OWNED BY logs.id;
 
 
 --
--- Name: schema_migrations_logs; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
-CREATE TABLE schema_migrations_logs (
+CREATE TABLE schema_migrations (
     version character varying NOT NULL
 );
 
@@ -145,7 +145,7 @@ CREATE INDEX index_logs_on_job_id ON logs USING btree (job_id);
 -- Name: unique_schema_migrations_logs; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
-CREATE UNIQUE INDEX unique_schema_migrations_logs ON schema_migrations_logs USING btree (version);
+CREATE UNIQUE INDEX unique_schema_migrations_logs ON schema_migrations USING btree (version);
 
 
 --
@@ -154,6 +154,6 @@ CREATE UNIQUE INDEX unique_schema_migrations_logs ON schema_migrations_logs USIN
 
 SET search_path TO "$user",public;
 
-INSERT INTO schema_migrations_logs (version) VALUES ('20161116162355');
+INSERT INTO schema_migrations (version) VALUES ('20161116162355');
 
-INSERT INTO schema_migrations_logs (version) VALUES ('20161116162356');
+INSERT INTO schema_migrations (version) VALUES ('20161116162356');
