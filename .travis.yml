@@ -15,7 +15,7 @@ cache:
 rvm: "2.3.1"
 
 env:
-  - DATABASE_NAME=travis_ci_test
+  - DATABASE_NAME=main
 
 before_install:
   - gem install bundler -v 1.12.4
