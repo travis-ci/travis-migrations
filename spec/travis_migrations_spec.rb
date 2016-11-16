@@ -1,7 +1,6 @@
 require 'spec_helper'
 require 'yaml'
 
-
 describe 'Rake tasks' do
   let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result) }
   let(:conn)   { ActiveRecord::Base.connection }
