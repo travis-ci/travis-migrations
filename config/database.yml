@@ -1,5 +1,5 @@
 # This is only used for standalone_migrations. In other contexts
-# Travis.config.database will be used.
+# Travis.config.database and Travis.config.logs_database will be used.
 
 defaults: &defaults
   adapter: postgresql

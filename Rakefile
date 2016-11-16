@@ -3,7 +3,6 @@
 require "bundler/setup"
 require "micro_migrations"
 
-
 ActiveRecord::Base.schema_format = :sql
 
 if ENV['LOGS_DATABASE'] == '1'
