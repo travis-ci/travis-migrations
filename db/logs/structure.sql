@@ -2,26 +2,22 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.4
--- Dumped by pg_dump version 9.5.4
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -; Tablespace:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -; Tablespace:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -34,7 +30,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: log_parts; Type: TABLE; Schema: public; Owner: -
+-- Name: log_parts; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE log_parts (
@@ -48,7 +44,7 @@ CREATE TABLE log_parts (
 
 
 --
--- Name: logs; Type: TABLE; Schema: public; Owner: -
+-- Name: logs; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE logs (
@@ -68,7 +64,7 @@ CREATE TABLE logs (
 
 
 --
--- Name: logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE SEQUENCE logs_id_seq
@@ -80,14 +76,14 @@ CREATE SEQUENCE logs_id_seq
 
 
 --
--- Name: logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER SEQUENCE logs_id_seq OWNED BY logs.id;
 
 
 --
--- Name: schema_migrations_logs; Type: TABLE; Schema: public; Owner: -
+-- Name: schema_migrations_logs; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE schema_migrations_logs (
@@ -96,14 +92,14 @@ CREATE TABLE schema_migrations_logs (
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY logs ALTER COLUMN id SET DEFAULT nextval('logs_id_seq'::regclass);
 
 
 --
--- Name: logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY logs
@@ -111,42 +107,42 @@ ALTER TABLE ONLY logs
 
 
 --
--- Name: index_log_parts_on_created_at; Type: INDEX; Schema: public; Owner: -
+-- Name: index_log_parts_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_log_parts_on_created_at ON log_parts USING btree (created_at);
 
 
 --
--- Name: index_log_parts_on_log_id_and_number; Type: INDEX; Schema: public; Owner: -
+-- Name: index_log_parts_on_log_id_and_number; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_log_parts_on_log_id_and_number ON log_parts USING btree (log_id, number);
 
 
 --
--- Name: index_logs_on_archive_verified; Type: INDEX; Schema: public; Owner: -
+-- Name: index_logs_on_archive_verified; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_logs_on_archive_verified ON logs USING btree (archive_verified);
 
 
 --
--- Name: index_logs_on_archived_at; Type: INDEX; Schema: public; Owner: -
+-- Name: index_logs_on_archived_at; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_logs_on_archived_at ON logs USING btree (archived_at);
 
 
 --
--- Name: index_logs_on_job_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_logs_on_job_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_logs_on_job_id ON logs USING btree (job_id);
 
 
 --
--- Name: unique_schema_migrations_logs; Type: INDEX; Schema: public; Owner: -
+-- Name: unique_schema_migrations_logs; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations_logs ON schema_migrations_logs USING btree (version);
@@ -156,9 +152,8 @@ CREATE UNIQUE INDEX unique_schema_migrations_logs ON schema_migrations_logs USIN
 -- PostgreSQL database dump complete
 --
 
-SET search_path TO "$user", public;
+SET search_path TO "$user",public;
 
 INSERT INTO schema_migrations_logs (version) VALUES ('20161116162355');
 
 INSERT INTO schema_migrations_logs (version) VALUES ('20161116162356');
-
