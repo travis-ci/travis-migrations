@@ -34,7 +34,7 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE log_parts (
-    id bigint,
+    id bigint NOT NULL,
     log_id integer NOT NULL,
     content text,
     number integer,
@@ -99,6 +99,14 @@ ALTER TABLE ONLY logs ALTER COLUMN id SET DEFAULT nextval('logs_id_seq'::regclas
 
 
 --
+-- Name: log_parts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY log_parts
+    ADD CONSTRAINT log_parts_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
@@ -142,10 +150,10 @@ CREATE INDEX index_logs_on_job_id ON logs USING btree (job_id);
 
 
 --
--- Name: unique_schema_migrations_logs; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
-CREATE UNIQUE INDEX unique_schema_migrations_logs ON schema_migrations USING btree (version);
+CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
 
 
 --

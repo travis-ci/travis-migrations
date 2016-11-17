@@ -1,7 +1,7 @@
 class CreateLogParts < ActiveRecord::Migration
   def self.up
     create_table :log_parts, id: false do |t|
-      t.integer   :id, :limit => 8 # bigint
+      t.integer   :id, primary_key: true, limit: 8 # bigint
       t.integer   :log_id, null: false
       t.text      :content
       t.integer   :number
