@@ -44,6 +44,25 @@ CREATE TABLE log_parts (
 
 
 --
+-- Name: log_parts_id_seq; Type: SEQUENCE; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE SEQUENCE log_parts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: log_parts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER SEQUENCE log_parts_id_seq OWNED BY log_parts.id;
+
+
+--
 -- Name: logs; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
@@ -89,6 +108,13 @@ ALTER SEQUENCE logs_id_seq OWNED BY logs.id;
 CREATE TABLE schema_migrations (
     version character varying NOT NULL
 );
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY log_parts ALTER COLUMN id SET DEFAULT nextval('log_parts_id_seq'::regclass);
 
 
 --
