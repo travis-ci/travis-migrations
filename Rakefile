@@ -5,7 +5,7 @@ require "micro_migrations"
 
 ActiveRecord::Base.schema_format = :sql
 
-if ENV['LOGS_DATABASE'] == '1'
+if Rails.env.to_s.include?("logs")
   Rails.application.config.paths['db'] = 'db/logs'
   Rails.application.config.paths['db/migrate'] = 'db/logs/migrate'
 else

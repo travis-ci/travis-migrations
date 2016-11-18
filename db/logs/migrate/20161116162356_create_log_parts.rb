@@ -1,4 +1,5 @@
-class CreateLogParts < ActiveRecord::Migration
+require_relative 'logs_migration'
+class CreateLogParts < LogsMigration
   def self.up
     create_table :log_parts do |t|
       t.integer   :log_id, null: false

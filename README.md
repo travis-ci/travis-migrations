@@ -69,16 +69,16 @@ git push git@heroku.com:<app>.git HEAD:master
 Logs database
 -------------
 
-To run the migration commands for the logs database, set `LOGS_DATABASE=1` as an environment variable.
+To run the migration commands for the logs database, set `RAILS_ENV=development_logs` as an environment variable.
 
 Running locally:
 
 ``` bash
-LOGS_DATABASE=1 bundle exec rake db:migrate
+RAILS_ENV=development_logs bundle exec rake db:migrate
 ```
 
 Running remotely:
 
 ``` bash
-heroku run LOGS_DATABASE=1 bundle exec rake db:migrate VERSION=<timestamp> -a <app>
+heroku run RAILS_ENV=production_logs bundle exec rake db:migrate VERSION=<timestamp> -a <app>
 ```
