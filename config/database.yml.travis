@@ -1,4 +1,4 @@
-# This is only used for standalone_migrations. In other contexts
+# This is only used for testing on travis. In other contexts
 # Travis.config.database and Travis.config.logs_database will be used.
 
 defaults: &defaults
@@ -24,7 +24,7 @@ test:
   <<: *defaults
   database: <%= ENV.fetch('DATABASE_NAME', 'travis_test') %>
   eager_load: false
-
+  
 test_logs:
   <<: *defaults
   database:  <%= ENV.fetch('LOGS_DATABASE_NAME', 'travis_logs_test') %>

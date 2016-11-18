@@ -1,4 +1,5 @@
-class CreateLogs < ActiveRecord::Migration
+require_relative 'logs_migration'
+class CreateLogs < LogsMigration
   def self.up
     create_table :logs do |t|
       t.integer   :job_id
