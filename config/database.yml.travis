@@ -1,3 +1,31 @@
-test:
+# This is only used for testing on travis. In other contexts
+# Travis.config.database and Travis.config.logs_database will be used.
+
+defaults: &defaults
   adapter: postgresql
-  database: travis_ci_test
+  encoding: unicode
+  pool: 5
+  min_messages: warning
+  username: <%= ENV['USER'] %>
+  host: <%= ENV.fetch('PGHOST', 'localhost') %>
+  eager_load: true
+
+development:
+  <<: *defaults
+  database: <%= ENV.fetch('DATABASE_NAME', 'travis_development') %>
+  eager_load: false
+
+development_logs:
+  <<: *defaults
+  database: <%= ENV.fetch('LOGS_DATABASE_NAME', 'travis_logs_development') %>
+  eager_load: false
+
+test:
+  <<: *defaults
+  database: <%= ENV.fetch('DATABASE_NAME', 'travis_test') %>
+  eager_load: false
+  
+test_logs:
+  <<: *defaults
+  database:  <%= ENV.fetch('LOGS_DATABASE_NAME', 'travis_logs_test') %>
+  eager_load: false

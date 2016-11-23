@@ -19,13 +19,7 @@ git clone https://github.com/travis-ci/travis-migrations.git
 Adding migrations
 -------------------
 
-To add a migration, create a file and add it to the `db/migrate` folder, making sure the filename contains a timestamp later than the one used in the most recent migration file. See [this guide](http://edgeguides.rubyonrails.org/active_record_migrations.html#creating-a-standalone-migration) for creating standalone migrations.
-
-Updating migrations
--------------------
-
-It's no longer necessary to pull in migrations from `travis-core`.
-Migrations now live in this repo, in the `db/migrate` folder.
+To add a migration, create a file and add it to the `db/main/migrate` or `db/logs/migrate` folders, making sure the filename contains a timestamp later than the one used in the most recent migration file. See [this guide](http://edgeguides.rubyonrails.org/active_record_migrations.html#creating-a-standalone-migration) for creating standalone migrations.
 
 Running migrations locally
 --------------------------
@@ -72,6 +66,19 @@ Append `HEAD:master` to the pit push if you are on a branch and want to push tha
 git push git@heroku.com:<app>.git HEAD:master
 ```
 
+Logs database
+-------------
 
+To run the migration commands for the logs database, set `RAILS_ENV=development_logs` as an environment variable.
 
-----
+Running locally:
+
+``` bash
+RAILS_ENV=development_logs bundle exec rake db:migrate
+```
+
+Running remotely:
+
+``` bash
+heroku run RAILS_ENV=production_logs bundle exec rake db:migrate VERSION=<timestamp> -a <app>
+```

@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby '2.3.1'
+
 gem 'activerecord', '~> 4.2'
 gem 'pg', '~> 0.18'
 gem 'rake', '~> 10.4'
