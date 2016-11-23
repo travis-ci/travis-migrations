@@ -15,7 +15,6 @@ Installing
 git clone https://github.com/travis-ci/travis-migrations.git
 ```
 
-
 Adding migrations
 -------------------
 
@@ -24,30 +23,31 @@ To add a migration, create a file and add it to the `db/main/migrate` or `db/log
 Running migrations locally
 --------------------------
 
+<em>PLEASE NOTE: the `DATABASE_URL` (or `LOGS_DATABASE_URL` for logs migrations) is the url of the local database you wish to create or run migrations on. You can override it by setting the corresponding environment variable:</em>
+
+``` bash
+export DATABASE_URL=postgresql://<host>/<database_name>
+export LOGS_DATABASE_URL=postgresql://<host>/<database_name>
+```
 
 To setup the database from scratch:
 
-<em>(PLEASE NOTE: the DATABASE_NAME is the name of the local database you wish to create or run migrations on, either `travis_development`, `travis_pro_development`, `travis_test`, or `travis_pro_test`)</em>
-
 ``` bash
-DATABASE_NAME=<database_name> bundle exec rake db:create
+bundle exec rake db:create
 ```
 
 To run migrations after the database has been set up:
 
 ``` bash
-DATABASE_NAME=<database_name> bundle exec rake db:migrate
+bundle exec rake db:migrate
 ```
-
-
 
 To run a standalone migration:
 (replace `<timestamp>`with the timestamp of the migration you want to run.)
 
 ``` bash
-DATABASE_NAME=<database_name> bundle exec rake db:migrate VERSION=<timestamp>
+bundle exec rake db:migrate VERSION=<timestamp>
 ```
-
 
 Deploy latest migrations
 ------------------------
