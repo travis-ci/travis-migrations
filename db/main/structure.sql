@@ -403,6 +403,44 @@ ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
 
 
 --
+-- Name: features; Type: TABLE; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE TABLE features (
+    id integer NOT NULL,
+    name character varying,
+    feedback_url character varying,
+    owner_id integer,
+    owner_type character varying,
+    public boolean,
+    modifiable boolean,
+    active boolean,
+    expires_on timestamp without time zone,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: features_id_seq; Type: SEQUENCE; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE SEQUENCE features_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: features_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE features_id_seq OWNED BY features.id;
+
+
+--
 -- Name: invoices; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
@@ -1038,6 +1076,13 @@ ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::reg
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY features ALTER COLUMN id SET DEFAULT nextval('features_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq'::regclass);
 
 
@@ -1195,6 +1240,14 @@ ALTER TABLE ONLY crons
 
 ALTER TABLE ONLY emails
     ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: features_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY features
+    ADD CONSTRAINT features_pkey PRIMARY KEY (id);
 
 
 --
@@ -2134,4 +2187,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161028154600');
 INSERT INTO schema_migrations (version) VALUES ('20161101000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20161101000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20161124171800');
 
