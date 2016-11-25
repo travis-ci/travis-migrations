@@ -1251,7 +1251,7 @@ ALTER TABLE ONLY features
 
 
 --
--- Name: invoices_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: invoices_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY invoices
