@@ -126,6 +126,41 @@ ALTER SEQUENCE annotations_id_seq OWNED BY annotations.id;
 
 
 --
+-- Name: beta_features; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE beta_features (
+    id integer NOT NULL,
+    name character varying,
+    description text,
+    feedback_url character varying,
+    staff_only boolean,
+    default_enabled boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: beta_features_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE beta_features_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: beta_features_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE beta_features_id_seq OWNED BY beta_features.id;
+
+
+--
 -- Name: branches; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
@@ -935,6 +970,39 @@ ALTER SEQUENCE urls_id_seq OWNED BY urls.id;
 
 
 --
+-- Name: user_beta_features; Type: TABLE; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE TABLE user_beta_features (
+    id integer NOT NULL,
+    user_id integer,
+    beta_feature_id integer,
+    enabled boolean,
+    last_deactivated_at timestamp without time zone,
+    last_activated_at timestamp without time zone
+);
+
+
+--
+-- Name: user_beta_features_id_seq; Type: SEQUENCE; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE SEQUENCE user_beta_features_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_beta_features_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER SEQUENCE user_beta_features_id_seq OWNED BY user_beta_features.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
@@ -990,6 +1058,13 @@ ALTER TABLE ONLY annotation_providers ALTER COLUMN id SET DEFAULT nextval('annot
 --
 
 ALTER TABLE ONLY annotations ALTER COLUMN id SET DEFAULT nextval('annotations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY beta_features ALTER COLUMN id SET DEFAULT nextval('beta_features_id_seq'::regclass);
 
 
 --
@@ -1139,6 +1214,14 @@ ALTER TABLE ONLY annotation_providers
 
 ALTER TABLE ONLY annotations
     ADD CONSTRAINT annotations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY beta_features
+    ADD CONSTRAINT beta_features_pkey PRIMARY KEY (id);
 
 
 --
@@ -1299,6 +1382,14 @@ ALTER TABLE ONLY tokens
 
 ALTER TABLE ONLY urls
     ADD CONSTRAINT urls_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY user_beta_features
+    ADD CONSTRAINT user_beta_features_pkey PRIMARY KEY (id);
 
 
 --
@@ -2135,3 +2226,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161101000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20161101000001');
 
+INSERT INTO schema_migrations (version) VALUES ('20161201112200');
+
+INSERT INTO schema_migrations (version) VALUES ('20161201112600');
