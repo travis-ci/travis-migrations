@@ -61,7 +61,7 @@ git push git@heroku.com:<app>.git
 heroku run bundle exec rake db:migrate VERSION=<timestamp> -a <app>
 ```
 
-Append `HEAD:master` to the pit push if you are on a branch and want to push that to staging eg:
+Append `HEAD:master` to the git push if you are on a branch and want to push that to staging eg:
 ``` bash
 git push git@heroku.com:<app>.git HEAD:master
 ```
