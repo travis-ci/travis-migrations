@@ -654,7 +654,7 @@ CREATE MATERIALIZED VIEW recent_builds AS
     builds.private,
     (builds.number)::integer AS number
    FROM builds
-  WHERE (builds.created_at > (('now'::text)::date - '1 day'::interval))
+  WHERE (builds.created_at > (('now'::text)::date - '3 mons'::interval))
   WITH NO DATA;
 
 

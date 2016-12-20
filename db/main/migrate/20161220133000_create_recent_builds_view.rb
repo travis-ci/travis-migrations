@@ -1,5 +1,5 @@
 class CreateRecentBuildsView < ActiveRecord::Migration
-  def change
+  def up
     execute <<-SQL
       CREATE MATERIALIZED VIEW recent_builds AS
         SELECT
@@ -28,7 +28,13 @@ class CreateRecentBuildsView < ActiveRecord::Migration
         FROM
           builds
         WHERE
-          created_at > CURRENT_DATE - INTERVAL '1 day'
+          created_at > CURRENT_DATE - INTERVAL '3 months'
+    SQL
+  end
+
+  def down
+    execute <<-SQL
+      DROP MATERIALIZED VIEW IF EXISTS recent_builds 
     SQL
   end
 end
