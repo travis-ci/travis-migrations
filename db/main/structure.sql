@@ -626,7 +626,40 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
--- Name: repositories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: recent_builds; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW recent_builds AS
+ SELECT builds.id,
+    builds.repository_id,
+    builds.started_at,
+    builds.finished_at,
+    builds.created_at,
+    builds.updated_at,
+    builds.config,
+    builds.commit_id,
+    builds.request_id,
+    builds.state,
+    builds.duration,
+    builds.owner_id,
+    builds.owner_type,
+    builds.event_type,
+    builds.previous_state,
+    builds.pull_request_title,
+    builds.pull_request_number,
+    builds.branch,
+    builds.canceled_at,
+    builds.cached_matrix_ids,
+    builds.received_at,
+    builds.private,
+    (builds.number)::integer AS number
+   FROM builds
+  WHERE (builds.created_at > (('now'::text)::date - '1 day'::interval))
+  WITH NO DATA;
+
+
+--
+-- Name: repositories; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE repositories (
@@ -2135,4 +2168,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161101000000');
 INSERT INTO schema_migrations (version) VALUES ('20161101000001');
 
 INSERT INTO schema_migrations (version) VALUES ('20161202000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20161220133000');
 
