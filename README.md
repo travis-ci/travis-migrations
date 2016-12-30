@@ -25,7 +25,7 @@ To add a migration, create a file and add it to the `db/main/migrate` or `db/log
 Running migrations locally
 --------------------------
 
-<em>PLEASE NOTE: the `DATABASE_URL` (or `LOGS_DATABASE_URL` for logs migrations) is the url of the local database that will be created or have migrations run on it. This is configured in the `config/database.yml`. To specify an environment append `RAILS_ENV=` to each bash command, eg to create the test database use:
+<em>PLEASE NOTE: the `DATABASE_URL` (or `LOGS_DATABASE_URL` for logs migrations) is the url of the local database that will be created or have migrations run on it. This is configured in the `config/database.yml`. To specify an environment append `RAILS_ENV=` to each bash command, eg to create the test database use:</em>
 
 ```bash
 RAILS_ENV=test bundle exec rake db:create
