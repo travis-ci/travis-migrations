@@ -1364,7 +1364,7 @@ CREATE INDEX index_builds_on_owner_id ON builds USING btree (owner_id);
 
 CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id);
 
-
+--
 -- Name: index_builds_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
