@@ -641,7 +641,7 @@ CREATE TABLE repositories (
     last_build_finished_at timestamp without time zone,
     owner_name character varying,
     owner_email text,
-    active boolean,
+    enabled boolean,
     description text,
     last_build_duration integer,
     owner_id integer,
@@ -1526,10 +1526,10 @@ CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON permission
 
 
 --
--- Name: index_repositories_on_active; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_repositories_on_enabled; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_repositories_on_active ON repositories USING btree (active);
+CREATE INDEX index_repositories_on_enabled ON repositories USING btree (enabled);
 
 
 --
@@ -2144,4 +2144,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161101000001');
 INSERT INTO schema_migrations (version) VALUES ('20161202000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20161221171300');
+
+INSERT INTO schema_migrations (version) VALUES ('20170117161600');
 
