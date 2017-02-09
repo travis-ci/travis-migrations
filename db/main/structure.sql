@@ -568,7 +568,8 @@ CREATE TABLE organizations (
     location character varying,
     email character varying,
     company character varying,
-    homepage character varying
+    homepage character varying,
+    billing_admin_only boolean
 );
 
 
@@ -839,14 +840,33 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 --
 
 CREATE TABLE stripe_events (
+    id integer NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     event_object text,
-    id character varying,
     event_type character varying,
     date timestamp without time zone,
     event_id character varying
 );
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE stripe_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE stripe_events_id_seq OWNED BY stripe_events.id;
 
 
 --
@@ -1175,6 +1195,13 @@ ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_events_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 
@@ -1367,6 +1394,14 @@ ALTER TABLE ONLY stars
 
 
 --
+-- Name: stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stripe_events
+    ADD CONSTRAINT stripe_events_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1460,6 +1495,13 @@ CREATE INDEX index_builds_on_owner_id ON builds USING btree (owner_id);
 --
 
 CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id);
+
+
+--
+-- Name: index_builds_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_repository_id_and_number ON builds USING btree (repository_id, ((number)::integer));
 
 
 --
@@ -2245,3 +2287,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161201112600');
 
 INSERT INTO schema_migrations (version) VALUES ('20161202000000');
 
+INSERT INTO schema_migrations (version) VALUES ('20161206155800');
+
+INSERT INTO schema_migrations (version) VALUES ('20161221171300');

@@ -4,6 +4,8 @@ _________________
 
 This is the central repository for storing migrations, and executing them against production and development databases on both .org and .com.
 
+Any changes to this document should also be reflected in the [Travis Builders Manual](https://builders.travis-ci.com/engineering/database/migration-processes)
+
 In short, migrations should be run locally while standing in this repository during development. For tests (e.g. via `.travis.yml`) applications should contain their own tooling that loads the schema (e.g. see [travis-hub](https://github.com/travis-ci/travis-hub/blob/master/Rakefile#L12)).
 
 Please use Postgresql 9.4 for local development and testing.
@@ -23,11 +25,10 @@ To add a migration, create a file and add it to the `db/main/migrate` or `db/log
 Running migrations locally
 --------------------------
 
-<em>PLEASE NOTE: the `DATABASE_URL` (or `LOGS_DATABASE_URL` for logs migrations) is the url of the local database you wish to create or run migrations on. You can override it by setting the corresponding environment variable:</em>
+<em>PLEASE NOTE: the `DATABASE_URL` (or `LOGS_DATABASE_URL` for logs migrations) is the url of the local database that will be created or have migrations run on it. This is configured in the `config/database.yml`. To specify an environment append `RAILS_ENV=` to each bash command, eg to create the test database use:</em>
 
-``` bash
-export DATABASE_URL=postgresql://<host>/<database_name>
-export LOGS_DATABASE_URL=postgresql://<host>/<database_name>
+```bash
+RAILS_ENV=test bundle exec rake db:create
 ```
 
 To setup the database from scratch:
@@ -61,7 +62,7 @@ git push git@heroku.com:<app>.git
 heroku run bundle exec rake db:migrate VERSION=<timestamp> -a <app>
 ```
 
-Append `HEAD:master` to the pit push if you are on a branch and want to push that to staging eg:
+Append `HEAD:master` to the git push if you are on a branch and want to push that to staging eg:
 ``` bash
 git push git@heroku.com:<app>.git HEAD:master
 ```
@@ -69,7 +70,7 @@ git push git@heroku.com:<app>.git HEAD:master
 Logs database
 -------------
 
-To run the migration commands for the logs database, set `RAILS_ENV=development_logs` as an environment variable.
+To run the migration commands for the logs database, set `RAILS_ENV=development_logs` or `RAILS_ENV=test_logs`as an environment variable.
 
 Running locally:
 
