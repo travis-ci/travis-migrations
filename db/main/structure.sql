@@ -126,6 +126,41 @@ ALTER SEQUENCE annotations_id_seq OWNED BY annotations.id;
 
 
 --
+-- Name: beta_features; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE beta_features (
+    id integer NOT NULL,
+    name character varying,
+    description text,
+    feedback_url character varying,
+    staff_only boolean,
+    default_enabled boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: beta_features_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE beta_features_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: beta_features_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE beta_features_id_seq OWNED BY beta_features.id;
+
+
+--
 -- Name: branches; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -805,14 +840,33 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 --
 
 CREATE TABLE stripe_events (
+    id integer NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     event_object text,
-    id character varying,
     event_type character varying,
     date timestamp without time zone,
     event_id character varying
 );
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE stripe_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE stripe_events_id_seq OWNED BY stripe_events.id;
 
 
 --
@@ -935,6 +989,39 @@ ALTER SEQUENCE urls_id_seq OWNED BY urls.id;
 
 
 --
+-- Name: user_beta_features; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE user_beta_features (
+    id integer NOT NULL,
+    user_id integer,
+    beta_feature_id integer,
+    enabled boolean,
+    last_deactivated_at timestamp without time zone,
+    last_activated_at timestamp without time zone
+);
+
+
+--
+-- Name: user_beta_features_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE user_beta_features_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_beta_features_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE user_beta_features_id_seq OWNED BY user_beta_features.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -990,6 +1077,13 @@ ALTER TABLE ONLY annotation_providers ALTER COLUMN id SET DEFAULT nextval('annot
 --
 
 ALTER TABLE ONLY annotations ALTER COLUMN id SET DEFAULT nextval('annotations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY beta_features ALTER COLUMN id SET DEFAULT nextval('beta_features_id_seq'::regclass);
 
 
 --
@@ -1101,6 +1195,13 @@ ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_events_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 
@@ -1116,6 +1217,13 @@ ALTER TABLE ONLY tokens ALTER COLUMN id SET DEFAULT nextval('tokens_id_seq'::reg
 --
 
 ALTER TABLE ONLY urls ALTER COLUMN id SET DEFAULT nextval('urls_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY user_beta_features ALTER COLUMN id SET DEFAULT nextval('user_beta_features_id_seq'::regclass);
 
 
 --
@@ -1139,6 +1247,14 @@ ALTER TABLE ONLY annotation_providers
 
 ALTER TABLE ONLY annotations
     ADD CONSTRAINT annotations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY beta_features
+    ADD CONSTRAINT beta_features_pkey PRIMARY KEY (id);
 
 
 --
@@ -1278,6 +1394,14 @@ ALTER TABLE ONLY stars
 
 
 --
+-- Name: stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY stripe_events
+    ADD CONSTRAINT stripe_events_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1299,6 +1423,14 @@ ALTER TABLE ONLY tokens
 
 ALTER TABLE ONLY urls
     ADD CONSTRAINT urls_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY user_beta_features
+    ADD CONSTRAINT user_beta_features_pkey PRIMARY KEY (id);
 
 
 --
@@ -1671,6 +1803,13 @@ CREATE INDEX index_tokens_on_token ON tokens USING btree (token);
 --
 
 CREATE INDEX index_tokens_on_user_id ON tokens USING btree (user_id);
+
+
+--
+-- Name: index_user_beta_features_on_user_id_and_beta_feature_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_user_beta_features_on_user_id_and_beta_feature_id ON user_beta_features USING btree (user_id, beta_feature_id);
 
 
 --
@@ -2148,6 +2287,10 @@ INSERT INTO schema_migrations (version) VALUES ('20161028154600');
 INSERT INTO schema_migrations (version) VALUES ('20161101000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20161101000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20161201112200');
+
+INSERT INTO schema_migrations (version) VALUES ('20161201112600');
 
 INSERT INTO schema_migrations (version) VALUES ('20161202000000');
 

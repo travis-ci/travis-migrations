@@ -1,9 +1,8 @@
 class CreateStripeEvents < ActiveRecord::Migration
   def change
-    create_table :stripe_events, id: false do |t|
+    create_table :stripe_events do |t|
       t.timestamps
       t.text :event_object
-      t.string :id
       t.string :event_type
       t.datetime :date
     end
