@@ -1,6 +1,6 @@
 class AddConstraintForOwnerIdToSubscriptions < ActiveRecord::Migration
   def up
-    execute "ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_owner_id UNIQUE (owner_id, owner_type);"
+    execute "CREATE UNIQUE INDEX subscriptions_owner ON subscriptions (owner_id, owner_type) WHERE (status = 'subscribed');"
   end
 
 end

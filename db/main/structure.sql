@@ -1278,14 +1278,6 @@ ALTER TABLE ONLY stars
 
 
 --
--- Name: subscriptions_owner_id; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY subscriptions
-    ADD CONSTRAINT subscriptions_owner_id UNIQUE (owner_id, owner_type);
-
-
---
 -- Name: subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1707,6 +1699,13 @@ CREATE INDEX index_users_on_login ON users USING btree (login);
 --
 
 CREATE INDEX index_users_on_lower_login ON users USING btree (lower((login)::text));
+
+
+--
+-- Name: subscriptions_owner; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX subscriptions_owner ON subscriptions USING btree (owner_id, owner_type) WHERE ((status)::text = 'subscribed'::text);
 
 
 --
