@@ -818,7 +818,10 @@ CREATE TABLE stages (
     id integer NOT NULL,
     build_id integer,
     number integer,
-    name character varying
+    name character varying,
+    state character varying,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone
 );
 
 
@@ -2356,6 +2359,8 @@ INSERT INTO schema_migrations (version) VALUES ('20170211000000');
 INSERT INTO schema_migrations (version) VALUES ('20170211000001');
 
 INSERT INTO schema_migrations (version) VALUES ('20170211000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000003');
 
 INSERT INTO schema_migrations (version) VALUES ('20170213124000');
 
