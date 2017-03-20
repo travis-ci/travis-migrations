@@ -6,10 +6,10 @@ describe 'Rake tasks' do
   let(:conn)   { ActiveRecord::Base.connection }
   let(:tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") }
   let(:expected_main_tables) { %w(
-    schema_migrations tokens users builds repositories commits requests
-    ssl_keys memberships urls permissions jobs broadcasts emails beta_features
-    user_beta_features organizations annotation_providers annotations branches
-    stars crons subscriptions plans coupons stripe_events invoices
+      schema_migrations tokens users builds repositories commits requests
+      pull_requests ssl_keys memberships urls permissions jobs broadcasts emails
+      beta_features user_beta_features organizations annotation_providers annotations
+      branches stars crons subscriptions plans coupons stripe_events invoices
     )
   }
   let(:expected_logs_tables){ %w(
