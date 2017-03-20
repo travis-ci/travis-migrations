@@ -1,4 +1,4 @@
-gs--
+--
 -- PostgreSQL database dump
 --
 
