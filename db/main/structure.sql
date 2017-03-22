@@ -908,14 +908,33 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 --
 
 CREATE TABLE stripe_events (
+    id integer NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     event_object text,
-    id character varying,
     event_type character varying,
     date timestamp without time zone,
     event_id character varying
 );
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE stripe_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE stripe_events_id_seq OWNED BY stripe_events.id;
 
 
 --
@@ -1258,6 +1277,13 @@ ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_events_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 
@@ -1463,6 +1489,14 @@ ALTER TABLE ONLY ssl_keys
 
 ALTER TABLE ONLY stars
     ADD CONSTRAINT stars_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY stripe_events
+    ADD CONSTRAINT stripe_events_pkey PRIMARY KEY (id);
 
 
 --
@@ -1818,6 +1852,13 @@ CREATE INDEX index_requests_on_head_commit ON requests USING btree (head_commit)
 --
 
 CREATE INDEX index_requests_on_repository_id ON requests USING btree (repository_id);
+
+
+--
+-- Name: index_requests_on_repository_id_and_id_desc; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_requests_on_repository_id_and_id_desc ON requests USING btree (repository_id, id DESC);
 
 
 --
@@ -2380,4 +2421,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170318000000');
 INSERT INTO schema_migrations (version) VALUES ('20170318000001');
 
 INSERT INTO schema_migrations (version) VALUES ('20170318000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170322000000');
 
