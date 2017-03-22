@@ -662,6 +662,35 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
+-- Name: queueable_jobs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE queueable_jobs (
+    id integer NOT NULL,
+    job_id integer
+);
+
+
+--
+-- Name: queueable_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE queueable_jobs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: queueable_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE queueable_jobs_id_seq OWNED BY queueable_jobs.id;
+
+
+--
 -- Name: repositories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1148,6 +1177,13 @@ ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY queueable_jobs ALTER COLUMN id SET DEFAULT nextval('queueable_jobs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY repositories ALTER COLUMN id SET DEFAULT nextval('repositories_id_seq'::regclass);
 
 
@@ -1333,6 +1369,14 @@ ALTER TABLE ONLY permissions
 
 ALTER TABLE ONLY plans
     ADD CONSTRAINT plans_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: queueable_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY queueable_jobs
+    ADD CONSTRAINT queueable_jobs_pkey PRIMARY KEY (id);
 
 
 --
@@ -1622,6 +1666,13 @@ CREATE INDEX index_permissions_on_user_id ON permissions USING btree (user_id);
 --
 
 CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON permissions USING btree (user_id, repository_id);
+
+
+--
+-- Name: index_queueable_jobs_on_job_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_queueable_jobs_on_job_id ON queueable_jobs USING btree (job_id);
 
 
 --
@@ -2265,4 +2316,8 @@ INSERT INTO schema_migrations (version) VALUES ('20161206155800');
 INSERT INTO schema_migrations (version) VALUES ('20161221171300');
 
 INSERT INTO schema_migrations (version) VALUES ('20170213124000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170316000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170316000001');
 
