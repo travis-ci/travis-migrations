@@ -7,6 +7,8 @@ class AddPurgedAtToLogs < LogsMigration
   end
 
   def self.down
-    remove_column :logs, :purged_at
+    if column_exists?(:logs, :purged_at)
+      remove_column :logs, :purged_at
+    end
   end
 end
