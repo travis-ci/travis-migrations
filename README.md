@@ -80,6 +80,12 @@ If you are on a branch and want to push that to staging, ensure the branch has b
 .deploy migrations/<branch-name> to <env>
 ```
 
+If your push is rejected because the tip of your branch is behind the remote counterpart, append `!`
+
+```
+.deploy! migrations/<branch-name> to <env>
+```
+
 Logs database
 -------------
 
@@ -92,8 +98,7 @@ RAILS_ENV=development_logs bundle exec rake db:migrate
 ```
 
 Running remotely:
-PLEASE NOTE: Logs migrations are run from our _main_ databases. Replace <app> with the name of the _main database_ app that contains the database you want to run migrations on (e.g. travis-staging, travis-pro-staging etc):
-
+**PLEASE NOTE: Logs migrations are run from our _main_ databases.** Replace <app> with the name of the _main database_ app that contains the database you want to run migrations on (e.g. travis-staging, travis-pro-staging etc):
 
 ``` bash
 heroku run RAILS_ENV=production_logs bundle exec rake db:migrate VERSION=<timestamp> -a <app>
