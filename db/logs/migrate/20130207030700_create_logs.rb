@@ -11,7 +11,6 @@ class CreateLogs < LogsMigration
 
       t.datetime  :aggregated_at
       t.datetime  :archived_at
-      t.datetime  :purged_at
       t.datetime  :removed_at
 
       t.boolean  :archiving

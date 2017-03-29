@@ -53,18 +53,37 @@ bundle exec rake db:migrate VERSION=<timestamp>
 Deploy latest migrations
 ------------------------
 
-Replace `<app>` with the name of the app that contains the database you want to run migrations on (e.g. travis-staging).
-Replace `<timestamp>` with the timestamp of the migration you want to run.
+`travis-migrations` is deployed to our database apps, and migrations are run from these apps.
 
+Deployments are done using Slack.
+Replace `<env>` with the environment of database you want to run migrations on (e.g. org-staging, com-production).
+
+```
+.deploy migrations to <env>
+```
+
+To run migrations, from your terminal use `heroku run`.
+Replace <app> with the name of the app that contains the database you want to run migrations on (e.g. travis-staging):
 
 ``` bash
-git push git@heroku.com:<app>.git
+heroku run bundle exec rake db:migrate -a <app>
+```
+
+Replace <timestamp> with the timestamp of the migration you want to run if required:
+
+``` bash
 heroku run bundle exec rake db:migrate VERSION=<timestamp> -a <app>
 ```
 
-Append `HEAD:master` to the git push if you are on a branch and want to push that to staging eg:
-``` bash
-git push git@heroku.com:<app>.git HEAD:master
+If you are on a branch and want to push that to staging, ensure the branch has been pushed to GitHub then:
+```
+.deploy migrations/<branch-name> to <env>
+```
+
+If your push is rejected because the tip of your branch is behind the remote counterpart, append `!`
+
+```
+.deploy! migrations/<branch-name> to <env>
 ```
 
 Logs database
@@ -79,6 +98,7 @@ RAILS_ENV=development_logs bundle exec rake db:migrate
 ```
 
 Running remotely:
+**PLEASE NOTE: Logs migrations are run from our _main_ databases.** Replace <app> with the name of the _main database_ app that contains the database you want to run migrations on (e.g. travis-staging, travis-pro-staging etc):
 
 ``` bash
 heroku run RAILS_ENV=production_logs bundle exec rake db:migrate VERSION=<timestamp> -a <app>

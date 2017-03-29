@@ -274,7 +274,8 @@ CREATE TABLE builds (
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
-    private boolean
+    private boolean,
+    pull_request_id integer
 );
 
 
@@ -669,7 +670,71 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
--- Name: repositories; Type: TABLE; Schema: public; Owner: -
+
+CREATE TABLE pull_requests (
+    id integer NOT NULL,
+    repository_id integer,
+    number integer,
+    title character varying,
+    state character varying,
+    head_repo_github_id integer,
+    head_repo_slug character varying,
+    head_ref character varying,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: pull_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE pull_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: pull_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE pull_requests_id_seq OWNED BY pull_requests.id;
+
+
+--
+-- Name: queueable_jobs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE queueable_jobs (
+    id integer NOT NULL,
+    job_id integer
+);
+
+
+--
+-- Name: queueable_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE queueable_jobs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: queueable_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE queueable_jobs_id_seq OWNED BY queueable_jobs.id;
+
+
+--
+-- Name: repositories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE TABLE repositories (
@@ -745,7 +810,8 @@ CREATE TABLE requests (
     owner_type character varying,
     result character varying,
     message character varying,
-    private boolean
+    private boolean,
+    pull_request_id integer
 );
 
 
@@ -911,7 +977,6 @@ ALTER SEQUENCE stripe_events_id_seq OWNED BY stripe_events.id;
 
 
 --
--- Name: subscriptions; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE subscriptions (
@@ -1208,6 +1273,20 @@ ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regcl
 -- Name: repositories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY pull_requests ALTER COLUMN id SET DEFAULT nextval('pull_requests_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY queueable_jobs ALTER COLUMN id SET DEFAULT nextval('queueable_jobs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY repositories ALTER COLUMN id SET DEFAULT nextval('repositories_id_seq'::regclass);
 
 
@@ -1248,6 +1327,13 @@ ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_event
 
 --
 -- Name: subscriptions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_events_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
@@ -1410,7 +1496,20 @@ ALTER TABLE ONLY plans
 
 
 --
--- Name: repositories repositories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+ALTER TABLE ONLY pull_requests
+    ADD CONSTRAINT pull_requests_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: queueable_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY queueable_jobs
+    ADD CONSTRAINT queueable_jobs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: repositories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY repositories
@@ -1449,8 +1548,7 @@ ALTER TABLE ONLY stars
     ADD CONSTRAINT stars_pkey PRIMARY KEY (id);
 
 
---
--- Name: stripe_events stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY stripe_events
@@ -1458,7 +1556,7 @@ ALTER TABLE ONLY stripe_events
 
 
 --
--- Name: subscriptions subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY subscriptions
@@ -1714,9 +1812,9 @@ CREATE INDEX index_permissions_on_user_id ON permissions USING btree (user_id);
 CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON permissions USING btree (user_id, repository_id);
 
 
---
--- Name: index_repositories_on_active; Type: INDEX; Schema: public; Owner: -
---
+
+CREATE INDEX index_queueable_jobs_on_job_id ON queueable_jobs USING btree (job_id);
+
 
 CREATE INDEX index_repositories_on_active ON repositories USING btree (active);
 
@@ -1806,7 +1904,9 @@ CREATE INDEX index_requests_on_repository_id ON requests USING btree (repository
 
 
 --
--- Name: index_ssl_key_on_repository_id; Type: INDEX; Schema: public; Owner: -
+
+CREATE INDEX index_requests_on_repository_id_and_id_desc ON requests USING btree (repository_id, id DESC);
+
 --
 
 CREATE INDEX index_ssl_key_on_repository_id ON ssl_keys USING btree (repository_id);
@@ -2363,4 +2463,16 @@ INSERT INTO schema_migrations (version) VALUES ('20170211000002');
 INSERT INTO schema_migrations (version) VALUES ('20170211000003');
 
 INSERT INTO schema_migrations (version) VALUES ('20170213124000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170316000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170316000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170318000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170318000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170318000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170322000000');
 
