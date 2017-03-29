@@ -64,8 +64,10 @@ heroku run bundle exec rake db:migrate -a <app>
 
 Replace <timestamp> with the timestamp of the migration you want to run if required:
 
+**PLEASE NOTE: running this command without `:up` included will result in migrations after the timestamp being reverted**
+
 ``` bash
-heroku run bundle exec rake db:migrate VERSION=<timestamp> -a <app>
+heroku run bundle exec rake db:migrate:up VERSION=<timestamp> -a <app>
 ```
 
 If you are on a branch and want to push that to staging, ensure the branch has been pushed to GitHub then:
@@ -91,7 +93,9 @@ RAILS_ENV=development_logs bundle exec rake db:migrate
 ```
 
 Running remotely:
-**PLEASE NOTE: Logs migrations are run from our _main_ databases.** Replace <app> with the name of the _main database_ app that contains the database you want to run migrations on (e.g. travis-staging, travis-pro-staging etc):
+**PLEASE NOTE: Logs migrations are run from our _main_ databases.** Replace <app> with the name of the _main database_ app that contains the database you want to run migrations on (e.g. travis-staging, travis-pro-staging etc)
+
+**ALSO NOTE: running this command without `:up` included will result in migrations after the timestamp being reverted**
 
 ``` bash
 heroku run RAILS_ENV=production_logs bundle exec rake db:migrate VERSION=<timestamp> -a <app>
