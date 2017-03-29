@@ -62,7 +62,7 @@ Replace <app> with the name of the app that contains the database you want to ru
 heroku run bundle exec rake db:migrate -a <app>
 ```
 
-Replace <timestamp> with the timestamp of the migration you want to run if required:
+To run a single migration, replace <timestamp> with the timestamp of the migration you want to run if required:
 
 **PLEASE NOTE: running this command without `:up` included will result in migrations after the timestamp being reverted**
 
