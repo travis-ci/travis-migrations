@@ -43,13 +43,6 @@ To run migrations after the database has been set up:
 bundle exec rake db:migrate
 ```
 
-To run a standalone migration:
-(replace `<timestamp>`with the timestamp of the migration you want to run.)
-
-``` bash
-bundle exec rake db:migrate VERSION=<timestamp>
-```
-
 Deploy latest migrations
 ------------------------
 
