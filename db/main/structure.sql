@@ -500,7 +500,9 @@ CREATE TABLE jobs (
     canceled_at timestamp without time zone,
     received_at timestamp without time zone,
     debug_options text,
-    private boolean
+    private boolean,
+    stage_number character varying,
+    stage_id integer
 );
 
 
@@ -872,6 +874,40 @@ ALTER SEQUENCE ssl_keys_id_seq OWNED BY ssl_keys.id;
 
 
 --
+-- Name: stages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE stages (
+    id integer NOT NULL,
+    build_id integer,
+    number integer,
+    name character varying,
+    state character varying,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone
+);
+
+
+--
+-- Name: stages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE stages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE stages_id_seq OWNED BY stages.id;
+
+
+--
 -- Name: stars; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -908,33 +944,14 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 --
 
 CREATE TABLE stripe_events (
-    id integer NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     event_object text,
+    id character varying,
     event_type character varying,
     date timestamp without time zone,
     event_id character varying
 );
-
-
---
--- Name: stripe_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE stripe_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: stripe_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE stripe_events_id_seq OWNED BY stripe_events.id;
 
 
 --
@@ -1270,14 +1287,14 @@ ALTER TABLE ONLY ssl_keys ALTER COLUMN id SET DEFAULT nextval('ssl_keys_id_seq':
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regclass);
+ALTER TABLE ONLY stages ALTER COLUMN id SET DEFAULT nextval('stages_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_events_id_seq'::regclass);
+ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regclass);
 
 
 --
@@ -1484,19 +1501,19 @@ ALTER TABLE ONLY ssl_keys
 
 
 --
+-- Name: stages_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY stages
+    ADD CONSTRAINT stages_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: stars_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY stars
     ADD CONSTRAINT stars_pkey PRIMARY KEY (id);
-
-
---
--- Name: stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY stripe_events
-    ADD CONSTRAINT stripe_events_pkey PRIMARY KEY (id);
 
 
 --
@@ -2409,6 +2426,14 @@ INSERT INTO schema_migrations (version) VALUES ('20161202000000');
 INSERT INTO schema_migrations (version) VALUES ('20161206155800');
 
 INSERT INTO schema_migrations (version) VALUES ('20161221171300');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000003');
 
 INSERT INTO schema_migrations (version) VALUES ('20170213124000');
 

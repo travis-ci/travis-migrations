@@ -9,7 +9,8 @@ describe 'Rake tasks' do
     schema_migrations tokens users builds repositories commits requests
     ssl_keys memberships urls permissions jobs broadcasts emails beta_features
     user_beta_features organizations annotation_providers annotations branches
-    stars crons subscriptions plans coupons stripe_events invoices queueable_jobs pull_requests
+    stars crons subscriptions plans coupons stripe_events invoices queueable_jobs 
+    pull_requests stages
     )
   }
   let(:expected_logs_tables){ %w(
