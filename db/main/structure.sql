@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -53,6 +54,20 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
 SET search_path = public, pg_catalog;
@@ -274,7 +289,9 @@ CREATE TABLE builds (
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
     private boolean,
-    pull_request_id integer
+    pull_request_id integer,
+    branch_id integer,
+    tag_id integer
 );
 
 
@@ -315,7 +332,9 @@ CREATE TABLE commits (
     author_name character varying,
     author_email character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    branch_id integer,
+    tag_id integer
 );
 
 
@@ -845,7 +864,9 @@ CREATE TABLE requests (
     result character varying,
     message character varying,
     private boolean,
-    pull_request_id integer
+    pull_request_id integer,
+    branch_id integer,
+    tag_id integer
 );
 
 
@@ -1063,6 +1084,40 @@ CREATE SEQUENCE subscriptions_id_seq
 --
 
 ALTER SEQUENCE subscriptions_id_seq OWNED BY subscriptions.id;
+
+
+--
+-- Name: tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE tags (
+    id integer NOT NULL,
+    repository_id integer,
+    name character varying,
+    last_build_id integer,
+    exists_on_github boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE tags_id_seq OWNED BY tags.id;
 
 
 --
@@ -1375,6 +1430,13 @@ ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscription
 
 
 --
+-- Name: tags id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
+
+
+--
 -- Name: tokens id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1608,6 +1670,14 @@ ALTER TABLE ONLY stripe_events
 
 ALTER TABLE ONLY subscriptions
     ADD CONSTRAINT subscriptions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
 
 --
@@ -2563,4 +2633,12 @@ INSERT INTO schema_migrations (version) VALUES ('20170401000000');
 INSERT INTO schema_migrations (version) VALUES ('20170401000001');
 
 INSERT INTO schema_migrations (version) VALUES ('20170401000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000003');
 
