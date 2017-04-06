@@ -16,7 +16,6 @@ rvm: "2.3.1"
 
 env:
   - RAILS_ENV=test
-  - RAILS_ENV=test_logs
 
 matrix:
   fast_finish: true
