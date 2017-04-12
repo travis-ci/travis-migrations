@@ -291,7 +291,9 @@ CREATE TABLE builds (
     private boolean,
     pull_request_id integer,
     branch_id integer,
-    tag_id integer
+    tag_id integer,
+    sender_id integer,
+    sender_type character varying
 );
 
 
@@ -866,7 +868,9 @@ CREATE TABLE requests (
     private boolean,
     pull_request_id integer,
     branch_id integer,
-    tag_id integer
+    tag_id integer,
+    sender_id integer,
+    sender_type character varying
 );
 
 
@@ -2641,4 +2645,8 @@ INSERT INTO schema_migrations (version) VALUES ('20170405000001');
 INSERT INTO schema_migrations (version) VALUES ('20170405000002');
 
 INSERT INTO schema_migrations (version) VALUES ('20170405000003');
+
+INSERT INTO schema_migrations (version) VALUES ('20170408000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170408000001');
 
