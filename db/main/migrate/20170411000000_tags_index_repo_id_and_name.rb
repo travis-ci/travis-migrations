@@ -2,7 +2,7 @@ class TagsIndexRepoIdAndName < ActiveRecord::Migration
   self.disable_ddl_transaction!
 
   def up
-    execute "CREATE INDEX CONCURRENTLY index_tags_on_repository_id_and_name ON tags (repository_id, name);"
+    execute "CREATE UNIQUE INDEX CONCURRENTLY index_tags_on_repository_id_and_name ON tags (repository_id, name);"
   end
 
   def down
