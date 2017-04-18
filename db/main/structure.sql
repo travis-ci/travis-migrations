@@ -56,20 +56,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
---
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
-
-
---
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
-
-
 SET search_path = public, pg_catalog;
 
 SET default_tablespace = '';
@@ -1871,6 +1857,13 @@ CREATE INDEX index_jobs_on_source_id ON jobs USING btree (source_id);
 
 
 --
+-- Name: index_jobs_on_stage_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_stage_id ON jobs USING btree (stage_id);
+
+
+--
 -- Name: index_jobs_on_state; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1951,7 +1944,7 @@ CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON permission
 -- Name: index_pull_requests_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_pull_requests_on_repository_id_and_number ON pull_requests USING btree (repository_id, number);
+CREATE UNIQUE INDEX index_pull_requests_on_repository_id_and_number ON pull_requests USING btree (repository_id, number);
 
 
 --
@@ -2099,6 +2092,13 @@ CREATE INDEX index_stripe_events_on_event_id ON stripe_events USING btree (event
 --
 
 CREATE INDEX index_stripe_events_on_event_type ON stripe_events USING btree (event_type);
+
+
+--
+-- Name: index_tags_on_repository_id_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_tags_on_repository_id_and_name ON tags USING btree (repository_id, name);
 
 
 --
@@ -2649,4 +2649,8 @@ INSERT INTO schema_migrations (version) VALUES ('20170405000003');
 INSERT INTO schema_migrations (version) VALUES ('20170408000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20170408000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170410000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170411000000');
 
