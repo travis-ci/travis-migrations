@@ -1064,7 +1064,7 @@ CREATE TABLE subscriptions (
     canceled_at timestamp without time zone,
     canceled_by_id integer,
     status character varying,
-    source source_type DEFAULT 'manual'::source_type
+    source source_type DEFAULT 'manual'::source_type NOT NULL
 );
 
 

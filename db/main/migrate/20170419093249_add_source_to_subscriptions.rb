@@ -3,7 +3,7 @@ class AddSourceToSubscriptions < ActiveRecord::Migration
     execute <<-SQL
       CREATE TYPE source_type AS ENUM ('manual', 'stripe', 'github');
     SQL
-    add_column :subscriptions, :source, :source_type, default: 'manual', allow_null: false
+    add_column :subscriptions, :source, :source_type, default: 'manual', null: false
   end
 
   def down
