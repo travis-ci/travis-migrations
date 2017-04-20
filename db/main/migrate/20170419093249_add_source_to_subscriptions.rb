@@ -11,6 +11,5 @@ class AddSourceToSubscriptions < ActiveRecord::Migration
       ALTER TABLE subscriptions DROP COLUMN source;
       DROP TYPE source_type;
     SQL
-    drop_column :source
   end
 end
