@@ -64,7 +64,8 @@ SET search_path = public, pg_catalog;
 CREATE TYPE source_type AS ENUM (
     'manual',
     'stripe',
-    'github'
+    'github',
+    'unknown'
 );
 
 
@@ -1064,7 +1065,7 @@ CREATE TABLE subscriptions (
     canceled_at timestamp without time zone,
     canceled_by_id integer,
     status character varying,
-    source source_type DEFAULT 'manual'::source_type NOT NULL
+    source source_type DEFAULT 'unknown'::source_type NOT NULL
 );
 
 
