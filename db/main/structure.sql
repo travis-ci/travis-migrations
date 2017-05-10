@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.6
--- Dumped by pg_dump version 9.5.6
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1264,210 +1264,210 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: annotation_providers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY annotation_providers ALTER COLUMN id SET DEFAULT nextval('annotation_providers_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: annotations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY annotations ALTER COLUMN id SET DEFAULT nextval('annotations_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: beta_features id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY beta_features ALTER COLUMN id SET DEFAULT nextval('beta_features_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: branches id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY branches ALTER COLUMN id SET DEFAULT nextval('branches_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: broadcasts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY broadcasts ALTER COLUMN id SET DEFAULT nextval('broadcasts_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: commits id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY commits ALTER COLUMN id SET DEFAULT nextval('commits_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: coupons id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY coupons ALTER COLUMN id SET DEFAULT nextval('coupons_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: crons id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY crons ALTER COLUMN id SET DEFAULT nextval('crons_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: emails id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: invoices id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: memberships id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY memberships ALTER COLUMN id SET DEFAULT nextval('memberships_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: organizations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: owner_groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY owner_groups ALTER COLUMN id SET DEFAULT nextval('owner_groups_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: permissions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY permissions ALTER COLUMN id SET DEFAULT nextval('permissions_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: plans id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: pull_requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY pull_requests ALTER COLUMN id SET DEFAULT nextval('pull_requests_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: queueable_jobs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY queueable_jobs ALTER COLUMN id SET DEFAULT nextval('queueable_jobs_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: repositories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY repositories ALTER COLUMN id SET DEFAULT nextval('repositories_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY requests ALTER COLUMN id SET DEFAULT nextval('requests_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: ssl_keys id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY ssl_keys ALTER COLUMN id SET DEFAULT nextval('ssl_keys_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: stages id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY stages ALTER COLUMN id SET DEFAULT nextval('stages_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: stars id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: stripe_events id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_events_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: subscriptions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: tags id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: tokens id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tokens ALTER COLUMN id SET DEFAULT nextval('tokens_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: urls id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY urls ALTER COLUMN id SET DEFAULT nextval('urls_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: user_beta_features id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY user_beta_features ALTER COLUMN id SET DEFAULT nextval('user_beta_features_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
--- Name: annotation_providers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: annotation_providers annotation_providers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY annotation_providers
@@ -1475,7 +1475,7 @@ ALTER TABLE ONLY annotation_providers
 
 
 --
--- Name: annotations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: annotations annotations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY annotations
@@ -1483,7 +1483,7 @@ ALTER TABLE ONLY annotations
 
 
 --
--- Name: beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: beta_features beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY beta_features
@@ -1491,7 +1491,7 @@ ALTER TABLE ONLY beta_features
 
 
 --
--- Name: branches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: branches branches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY branches
@@ -1499,7 +1499,7 @@ ALTER TABLE ONLY branches
 
 
 --
--- Name: broadcasts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: broadcasts broadcasts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY broadcasts
@@ -1507,7 +1507,7 @@ ALTER TABLE ONLY broadcasts
 
 
 --
--- Name: builds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: builds builds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY builds
@@ -1515,7 +1515,7 @@ ALTER TABLE ONLY builds
 
 
 --
--- Name: commits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: commits commits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY commits
@@ -1523,7 +1523,7 @@ ALTER TABLE ONLY commits
 
 
 --
--- Name: coupons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: coupons coupons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY coupons
@@ -1531,7 +1531,7 @@ ALTER TABLE ONLY coupons
 
 
 --
--- Name: crons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: crons crons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY crons
@@ -1539,7 +1539,7 @@ ALTER TABLE ONLY crons
 
 
 --
--- Name: emails_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: emails emails_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY emails
@@ -1547,7 +1547,7 @@ ALTER TABLE ONLY emails
 
 
 --
--- Name: invoices_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: invoices invoices_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY invoices
@@ -1555,7 +1555,7 @@ ALTER TABLE ONLY invoices
 
 
 --
--- Name: jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: jobs jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY jobs
@@ -1563,7 +1563,7 @@ ALTER TABLE ONLY jobs
 
 
 --
--- Name: memberships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: memberships memberships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY memberships
@@ -1571,7 +1571,7 @@ ALTER TABLE ONLY memberships
 
 
 --
--- Name: organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: organizations organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organizations
@@ -1579,7 +1579,7 @@ ALTER TABLE ONLY organizations
 
 
 --
--- Name: owner_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: owner_groups owner_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY owner_groups
@@ -1587,7 +1587,7 @@ ALTER TABLE ONLY owner_groups
 
 
 --
--- Name: permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: permissions permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY permissions
@@ -1595,7 +1595,7 @@ ALTER TABLE ONLY permissions
 
 
 --
--- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: plans plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY plans
@@ -1603,7 +1603,7 @@ ALTER TABLE ONLY plans
 
 
 --
--- Name: pull_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pull_requests pull_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY pull_requests
@@ -1611,7 +1611,7 @@ ALTER TABLE ONLY pull_requests
 
 
 --
--- Name: queueable_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: queueable_jobs queueable_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY queueable_jobs
@@ -1619,7 +1619,7 @@ ALTER TABLE ONLY queueable_jobs
 
 
 --
--- Name: repositories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: repositories repositories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY repositories
@@ -1627,7 +1627,7 @@ ALTER TABLE ONLY repositories
 
 
 --
--- Name: requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: requests requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY requests
@@ -1635,7 +1635,7 @@ ALTER TABLE ONLY requests
 
 
 --
--- Name: ssl_keys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ssl_keys ssl_keys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY ssl_keys
@@ -1643,7 +1643,7 @@ ALTER TABLE ONLY ssl_keys
 
 
 --
--- Name: stages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: stages stages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY stages
@@ -1651,7 +1651,7 @@ ALTER TABLE ONLY stages
 
 
 --
--- Name: stars_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: stars stars_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY stars
@@ -1659,7 +1659,7 @@ ALTER TABLE ONLY stars
 
 
 --
--- Name: stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: stripe_events stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY stripe_events
@@ -1667,7 +1667,7 @@ ALTER TABLE ONLY stripe_events
 
 
 --
--- Name: subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: subscriptions subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY subscriptions
@@ -1675,7 +1675,7 @@ ALTER TABLE ONLY subscriptions
 
 
 --
--- Name: tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tags
@@ -1683,7 +1683,7 @@ ALTER TABLE ONLY tags
 
 
 --
--- Name: tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: tokens tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tokens
@@ -1691,7 +1691,7 @@ ALTER TABLE ONLY tokens
 
 
 --
--- Name: urls_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: urls urls_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY urls
@@ -1699,7 +1699,7 @@ ALTER TABLE ONLY urls
 
 
 --
--- Name: user_beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_beta_features user_beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY user_beta_features
@@ -1707,7 +1707,7 @@ ALTER TABLE ONLY user_beta_features
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -1956,7 +1956,7 @@ CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON permission
 -- Name: index_pull_requests_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_pull_requests_on_repository_id_and_number ON pull_requests USING btree (repository_id, number);
+CREATE INDEX index_pull_requests_on_repository_id_and_number ON pull_requests USING btree (repository_id, number);
 
 
 --
@@ -2110,7 +2110,7 @@ CREATE INDEX index_stripe_events_on_event_type ON stripe_events USING btree (eve
 -- Name: index_tags_on_repository_id_and_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_tags_on_repository_id_and_name ON tags USING btree (repository_id, name);
+CREATE INDEX index_tags_on_repository_id_and_name ON tags USING btree (repository_id, name);
 
 
 --
@@ -2177,7 +2177,7 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
--- Name: fk_repositories_current_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: repositories fk_repositories_current_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY repositories
