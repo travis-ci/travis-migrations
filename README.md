@@ -100,3 +100,4 @@ Running remotely:
 ``` bash
 heroku run RAILS_ENV=production_logs bundle exec rake db:migrate VERSION=<timestamp> -a <app>
 ```
+.
