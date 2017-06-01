@@ -1712,13 +1712,6 @@ CREATE INDEX index_builds_on_event_type ON builds USING btree (event_type);
 
 
 --
--- Name: index_builds_on_number; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_builds_on_number ON builds USING btree (number);
-
-
---
 -- Name: index_builds_on_owner_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1730,6 +1723,13 @@ CREATE INDEX index_builds_on_owner_id ON builds USING btree (owner_id);
 --
 
 CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id);
+
+
+--
+-- Name: index_builds_on_repository_id_and_branch_and_event_type_and_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type_and_id ON builds USING btree (repository_id, branch, event_type, id);
 
 
 --
@@ -1765,13 +1765,6 @@ CREATE INDEX index_builds_on_sender_type_and_sender_id ON builds USING btree (se
 --
 
 CREATE INDEX index_builds_on_state ON builds USING btree (state);
-
-
---
--- Name: index_commits_on_repository_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_commits_on_repository_id ON commits USING btree (repository_id);
 
 
 --
@@ -1957,13 +1950,6 @@ CREATE INDEX index_repositories_on_lower_name ON repositories USING btree (lower
 
 
 --
--- Name: index_repositories_on_lower_owner_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_repositories_on_lower_owner_name ON repositories USING btree (lower((owner_name)::text));
-
-
---
 -- Name: index_repositories_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1982,13 +1968,6 @@ CREATE INDEX index_repositories_on_owner_id ON repositories USING btree (owner_i
 --
 
 CREATE INDEX index_repositories_on_owner_name ON repositories USING btree (owner_name);
-
-
---
--- Name: index_repositories_on_owner_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_repositories_on_owner_type ON repositories USING btree (owner_type);
 
 
 --
@@ -2038,6 +2017,13 @@ CREATE INDEX index_requests_on_repository_id_and_id_desc ON requests USING btree
 --
 
 CREATE INDEX index_ssl_key_on_repository_id ON ssl_keys USING btree (repository_id);
+
+
+--
+-- Name: index_stages_on_build_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_stages_on_build_id ON stages USING btree (build_id);
 
 
 --
@@ -2638,4 +2624,8 @@ INSERT INTO schema_migrations (version) VALUES ('20170411000000');
 INSERT INTO schema_migrations (version) VALUES ('20170419093249');
 
 INSERT INTO schema_migrations (version) VALUES ('20170531125700');
+
+INSERT INTO schema_migrations (version) VALUES ('20170601163700');
+
+INSERT INTO schema_migrations (version) VALUES ('20170601164400');
 
