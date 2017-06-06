@@ -30,6 +30,10 @@ install:
 before_script:
   - cp config/database.yml.travis config/database.yml
 
+stages:
+  - "test"
+  - ":ship: it to Quay.io"
+
 jobs:
   include:
     - stage: ":ship: it to Quay.io"
