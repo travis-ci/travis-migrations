@@ -34,4 +34,5 @@ jobs:
       sudo: required
       dist: trusty
       install: skip
+      before_script: skip
       script: ./script/docker-build-and-push
