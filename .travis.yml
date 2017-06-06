@@ -29,3 +29,11 @@ install:
 
 before_script:
   - cp config/database.yml.travis config/database.yml
+
+jobs:
+  include:
+    - stage: ":ship: it to Quay.io"
+      sudo: required
+      dist: trusty
+      install: skip
+      script: ./script/docker-build-and-push
