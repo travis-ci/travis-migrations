@@ -2,7 +2,7 @@
 
 set -ev
 
-docker-compose build web;
+docker-compose build migrations;
 
 docker login -u=$QUAY_ROBOT_HANDLE -p=$QUAY_ROBOT_TOKEN quay.io;
 
