@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.1
--- Dumped by pg_dump version 9.6.1
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1772,6 +1772,13 @@ CREATE INDEX index_annotations_on_job_id ON annotations USING btree (job_id);
 
 
 --
+-- Name: index_branches_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_branches_on_repository_id ON branches USING btree (repository_id);
+
+
+--
 -- Name: index_branches_on_repository_id_and_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1786,29 +1793,7 @@ CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON broadcasts U
 
 
 --
--- Name: index_builds_on_branch; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_builds_on_branch ON builds USING btree (branch);
-
-
---
--- Name: index_builds_on_event_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_builds_on_event_type ON builds USING btree (event_type);
-
-
---
--- Name: index_builds_on_owner_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_builds_on_owner_id ON builds USING btree (owner_id);
-
-
---
 -- Name: index_builds_on_repository_id; Type: INDEX; Schema: public; Owner: -
->>>>>>> Add trials table
 --
 
 CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id);
@@ -1819,6 +1804,13 @@ CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id)
 --
 
 CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type_and_id ON builds USING btree (repository_id, branch, event_type, id);
+
+
+--
+-- Name: index_builds_on_repository_id_and_branch_and_id_desc; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_repository_id_and_branch_and_id_desc ON builds USING btree (repository_id, branch, id DESC);
 
 
 --
@@ -1885,31 +1877,10 @@ CREATE INDEX index_jobs_on_created_at ON jobs USING btree (created_at);
 
 
 --
--- Name: index_jobs_on_owner_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_jobs_on_owner_id_and_owner_type_and_state; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_owner_id ON jobs USING btree (owner_id);
-
-
---
--- Name: index_jobs_on_queue; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_jobs_on_queue ON jobs USING btree (queue);
-
-
---
--- Name: index_jobs_on_queued_at; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_jobs_on_queued_at ON jobs USING btree (queued_at);
-
-
---
--- Name: index_jobs_on_repository_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_jobs_on_repository_id ON jobs USING btree (repository_id);
+CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON jobs USING btree (owner_id, owner_type, state);
 
 
 --
@@ -2007,7 +1978,7 @@ CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON permission
 -- Name: index_pull_requests_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_pull_requests_on_repository_id_and_number ON pull_requests USING btree (repository_id, number);
+CREATE UNIQUE INDEX index_pull_requests_on_repository_id_and_number ON pull_requests USING btree (repository_id, number);
 
 
 --
@@ -2709,8 +2680,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170405000002');
 
 INSERT INTO schema_migrations (version) VALUES ('20170405000003');
 
-INSERT INTO schema_migrations (version) VALUES ('20170407000000');
-
 INSERT INTO schema_migrations (version) VALUES ('20170408000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20170408000001');
@@ -2728,3 +2697,8 @@ INSERT INTO schema_migrations (version) VALUES ('20170601163700');
 INSERT INTO schema_migrations (version) VALUES ('20170601164400');
 
 INSERT INTO schema_migrations (version) VALUES ('20170609174400');
+
+INSERT INTO schema_migrations (version) VALUES ('20170613000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170620144500');
+
