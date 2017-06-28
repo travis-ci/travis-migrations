@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.5
--- Dumped by pg_dump version 9.5.5
+-- Dumped from database version 9.5.7
+-- Dumped by pg_dump version 9.5.7
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -11,6 +11,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -55,6 +56,18 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 SET search_path = public, pg_catalog;
+
+--
+-- Name: source_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE source_type AS ENUM (
+    'manual',
+    'stripe',
+    'github',
+    'unknown'
+);
+
 
 SET default_tablespace = '';
 
@@ -273,7 +286,11 @@ CREATE TABLE builds (
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
     private boolean,
-    pull_request_id integer
+    pull_request_id integer,
+    branch_id integer,
+    tag_id integer,
+    sender_id integer,
+    sender_type character varying
 );
 
 
@@ -314,7 +331,9 @@ CREATE TABLE commits (
     author_name character varying,
     author_email character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    branch_id integer,
+    tag_id integer
 );
 
 
@@ -599,6 +618,39 @@ ALTER SEQUENCE organizations_id_seq OWNED BY organizations.id;
 
 
 --
+-- Name: owner_groups; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE owner_groups (
+    id integer NOT NULL,
+    uuid character varying,
+    owner_id integer,
+    owner_type character varying,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: owner_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE owner_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: owner_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE owner_groups_id_seq OWNED BY owner_groups.id;
+
+
+--
 -- Name: permissions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -629,42 +681,6 @@ CREATE SEQUENCE permissions_id_seq
 --
 
 ALTER SEQUENCE permissions_id_seq OWNED BY permissions.id;
-
-
---
--- Name: plans; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE plans (
-    id integer NOT NULL,
-    name character varying,
-    coupon character varying,
-    subscription_id integer,
-    valid_from timestamp without time zone,
-    valid_to timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    amount integer
-);
-
-
---
--- Name: plans_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE plans_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: plans_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
@@ -811,7 +827,11 @@ CREATE TABLE requests (
     result character varying,
     message character varying,
     private boolean,
-    pull_request_id integer
+    pull_request_id integer,
+    branch_id integer,
+    tag_id integer,
+    sender_id integer,
+    sender_type character varying
 );
 
 
@@ -947,14 +967,33 @@ ALTER SEQUENCE stars_id_seq OWNED BY stars.id;
 --
 
 CREATE TABLE stripe_events (
+    id integer NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     event_object text,
-    id character varying,
     event_type character varying,
     date timestamp without time zone,
     event_id character varying
 );
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE stripe_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stripe_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE stripe_events_id_seq OWNED BY stripe_events.id;
 
 
 --
@@ -989,7 +1028,8 @@ CREATE TABLE subscriptions (
     contact_id integer,
     canceled_at timestamp without time zone,
     canceled_by_id integer,
-    status character varying
+    status character varying,
+    source source_type DEFAULT 'unknown'::source_type NOT NULL
 );
 
 
@@ -1010,6 +1050,40 @@ CREATE SEQUENCE subscriptions_id_seq
 --
 
 ALTER SEQUENCE subscriptions_id_seq OWNED BY subscriptions.id;
+
+
+--
+-- Name: tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE tags (
+    id integer NOT NULL,
+    repository_id integer,
+    name character varying,
+    last_build_id integer,
+    exists_on_github boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE tags_id_seq OWNED BY tags.id;
 
 
 --
@@ -1042,6 +1116,40 @@ CREATE SEQUENCE tokens_id_seq
 --
 
 ALTER SEQUENCE tokens_id_seq OWNED BY tokens.id;
+
+
+--
+-- Name: trials; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE trials (
+    id integer NOT NULL,
+    owner_id integer,
+    owner_type character varying,
+    chartmogul_customer_uuids text[] DEFAULT '{}'::text[],
+    status character varying DEFAULT 'new'::character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: trials_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE trials_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: trials_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE trials_id_seq OWNED BY trials.id;
 
 
 --
@@ -1241,14 +1349,14 @@ ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organization
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY permissions ALTER COLUMN id SET DEFAULT nextval('permissions_id_seq'::regclass);
+ALTER TABLE ONLY owner_groups ALTER COLUMN id SET DEFAULT nextval('owner_groups_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
+ALTER TABLE ONLY permissions ALTER COLUMN id SET DEFAULT nextval('permissions_id_seq'::regclass);
 
 
 --
@@ -1304,6 +1412,13 @@ ALTER TABLE ONLY stars ALTER COLUMN id SET DEFAULT nextval('stars_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY stripe_events ALTER COLUMN id SET DEFAULT nextval('stripe_events_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 
@@ -1311,7 +1426,21 @@ ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscription
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY tokens ALTER COLUMN id SET DEFAULT nextval('tokens_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY trials ALTER COLUMN id SET DEFAULT nextval('trials_id_seq'::regclass);
 
 
 --
@@ -1448,19 +1577,19 @@ ALTER TABLE ONLY organizations
 
 
 --
+-- Name: owner_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY owner_groups
+    ADD CONSTRAINT owner_groups_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY permissions
     ADD CONSTRAINT permissions_pkey PRIMARY KEY (id);
-
-
---
--- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY plans
-    ADD CONSTRAINT plans_pkey PRIMARY KEY (id);
 
 
 --
@@ -1520,6 +1649,14 @@ ALTER TABLE ONLY stars
 
 
 --
+-- Name: stripe_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stripe_events
+    ADD CONSTRAINT stripe_events_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1528,11 +1665,27 @@ ALTER TABLE ONLY subscriptions
 
 
 --
+-- Name: tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tokens
     ADD CONSTRAINT tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: trials_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY trials
+    ADD CONSTRAINT trials_pkey PRIMARY KEY (id);
 
 
 --
@@ -1567,6 +1720,13 @@ CREATE INDEX index_annotations_on_job_id ON annotations USING btree (job_id);
 
 
 --
+-- Name: index_branches_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_branches_on_repository_id ON branches USING btree (repository_id);
+
+
+--
 -- Name: index_branches_on_repository_id_and_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1581,38 +1741,24 @@ CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON broadcasts U
 
 
 --
--- Name: index_builds_on_branch; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_builds_on_branch ON builds USING btree (branch);
-
-
---
--- Name: index_builds_on_event_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_builds_on_event_type ON builds USING btree (event_type);
-
-
---
--- Name: index_builds_on_number; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_builds_on_number ON builds USING btree (number);
-
-
---
--- Name: index_builds_on_owner_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_builds_on_owner_id ON builds USING btree (owner_id);
-
-
---
 -- Name: index_builds_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id);
+
+
+--
+-- Name: index_builds_on_repository_id_and_branch_and_event_type_and_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type_and_id ON builds USING btree (repository_id, branch, event_type, id);
+
+
+--
+-- Name: index_builds_on_repository_id_and_branch_and_id_desc; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_repository_id_and_branch_and_id_desc ON builds USING btree (repository_id, branch, id DESC);
 
 
 --
@@ -1637,17 +1783,17 @@ CREATE INDEX index_builds_on_request_id ON builds USING btree (request_id);
 
 
 --
+-- Name: index_builds_on_sender_type_and_sender_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_sender_type_and_sender_id ON builds USING btree (sender_type, sender_id);
+
+
+--
 -- Name: index_builds_on_state; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_builds_on_state ON builds USING btree (state);
-
-
---
--- Name: index_commits_on_repository_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_commits_on_repository_id ON commits USING btree (repository_id);
 
 
 --
@@ -1679,31 +1825,10 @@ CREATE INDEX index_jobs_on_created_at ON jobs USING btree (created_at);
 
 
 --
--- Name: index_jobs_on_owner_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_jobs_on_owner_id_and_owner_type_and_state; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_owner_id ON jobs USING btree (owner_id);
-
-
---
--- Name: index_jobs_on_queue; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_jobs_on_queue ON jobs USING btree (queue);
-
-
---
--- Name: index_jobs_on_queued_at; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_jobs_on_queued_at ON jobs USING btree (queued_at);
-
-
---
--- Name: index_jobs_on_repository_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_jobs_on_repository_id ON jobs USING btree (repository_id);
+CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON jobs USING btree (owner_id, owner_type, state);
 
 
 --
@@ -1711,6 +1836,13 @@ CREATE INDEX index_jobs_on_repository_id ON jobs USING btree (repository_id);
 --
 
 CREATE INDEX index_jobs_on_source_id ON jobs USING btree (source_id);
+
+
+--
+-- Name: index_jobs_on_stage_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_stage_id ON jobs USING btree (stage_id);
 
 
 --
@@ -1756,6 +1888,20 @@ CREATE INDEX index_organizations_on_lower_login ON organizations USING btree (lo
 
 
 --
+-- Name: index_owner_groups_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_owner_groups_on_owner_type_and_owner_id ON owner_groups USING btree (owner_type, owner_id);
+
+
+--
+-- Name: index_owner_groups_on_uuid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_owner_groups_on_uuid ON owner_groups USING btree (uuid);
+
+
+--
 -- Name: index_permissions_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1780,7 +1926,7 @@ CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON permission
 -- Name: index_pull_requests_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_pull_requests_on_repository_id_and_number ON pull_requests USING btree (repository_id, number);
+CREATE UNIQUE INDEX index_pull_requests_on_repository_id_and_number ON pull_requests USING btree (repository_id, number);
 
 
 --
@@ -1812,13 +1958,6 @@ CREATE INDEX index_repositories_on_lower_name ON repositories USING btree (lower
 
 
 --
--- Name: index_repositories_on_lower_owner_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_repositories_on_lower_owner_name ON repositories USING btree (lower((owner_name)::text));
-
-
---
 -- Name: index_repositories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1837,13 +1976,6 @@ CREATE INDEX index_repositories_on_owner_id ON repositories USING btree (owner_i
 --
 
 CREATE INDEX index_repositories_on_owner_name ON repositories USING btree (owner_name);
-
-
---
--- Name: index_repositories_on_owner_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_repositories_on_owner_type ON repositories USING btree (owner_type);
 
 
 --
@@ -1896,6 +2028,13 @@ CREATE INDEX index_ssl_key_on_repository_id ON ssl_keys USING btree (repository_
 
 
 --
+-- Name: index_stages_on_build_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_stages_on_build_id ON stages USING btree (build_id);
+
+
+--
 -- Name: index_stars_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1931,6 +2070,13 @@ CREATE INDEX index_stripe_events_on_event_type ON stripe_events USING btree (eve
 
 
 --
+-- Name: index_tags_on_repository_id_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_tags_on_repository_id_and_name ON tags USING btree (repository_id, name);
+
+
+--
 -- Name: index_tokens_on_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1942,6 +2088,13 @@ CREATE INDEX index_tokens_on_token ON tokens USING btree (token);
 --
 
 CREATE INDEX index_tokens_on_user_id ON tokens USING btree (user_id);
+
+
+--
+-- Name: index_trials_on_owner; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_trials_on_owner ON trials USING btree (owner_id, owner_type);
 
 
 --
@@ -2460,4 +2613,42 @@ INSERT INTO schema_migrations (version) VALUES ('20170318000002');
 INSERT INTO schema_migrations (version) VALUES ('20170322000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20170331000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170401000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170401000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170401000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000003');
+
+INSERT INTO schema_migrations (version) VALUES ('20170408000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170408000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170410000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170411000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170419093249');
+
+INSERT INTO schema_migrations (version) VALUES ('20170531125700');
+
+INSERT INTO schema_migrations (version) VALUES ('20170601163700');
+
+INSERT INTO schema_migrations (version) VALUES ('20170601164400');
+
+INSERT INTO schema_migrations (version) VALUES ('20170609174400');
+
+INSERT INTO schema_migrations (version) VALUES ('20170613000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170620144500');
+
+INSERT INTO schema_migrations (version) VALUES ('20170621142300');
 

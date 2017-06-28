@@ -56,7 +56,7 @@ Replace `<env>` with the environment of database you want to run migrations on (
 ```
 
 To run migrations, from your terminal use `heroku run`.
-Replace <app> with the name of the app that contains the database you want to run migrations on (e.g. travis-staging):
+Replace <app> with the name of the migrations app for the database you want to run migrations on (e.g. `travis-migrations-staging`):
 
 ``` bash
 heroku run bundle exec rake db:migrate -a <app>
