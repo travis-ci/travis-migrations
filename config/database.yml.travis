@@ -1,5 +1,5 @@
 # This is only used for testing on travis. In other contexts
-# Travis.config.database and Travis.config.logs_database will be used.
+# Travis.config.database will be used.
 
 defaults: &defaults
   adapter: postgresql
@@ -11,9 +11,4 @@ defaults: &defaults
 test:
   <<: *defaults
   url: postgresql://localhost/travis_test
-  eager_load: false
-
-test_logs:
-  <<: *defaults
-  url: postgresql://localhost/travis_test_logs
   eager_load: false

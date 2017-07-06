@@ -5,13 +5,8 @@ require "micro_migrations"
 
 ActiveRecord::Base.schema_format = :sql
 
-if Rails.env.to_s.include?("logs")
-  Rails.application.config.paths['db'] = 'db/logs'
-  Rails.application.config.paths['db/migrate'] = 'db/logs/migrate'
-else
-  Rails.application.config.paths['db'] = 'db/main'
-  Rails.application.config.paths['db/migrate'] = 'db/main/migrate'
-end
+Rails.application.config.paths['db'] = 'db/main'
+Rails.application.config.paths['db/migrate'] = 'db/main/migrate'
 
 begin
   require 'rspec/core/rake_task'

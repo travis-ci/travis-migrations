@@ -1,5 +1,5 @@
 # This is only used for standalone_migrations. In other contexts
-# Travis.config.database and Travis.config.logs_database will be used.
+# Travis.config.database will be used.
 
 defaults: &defaults
   adapter: postgresql
@@ -12,10 +12,6 @@ defaults: &defaults
 production:
   <<: *defaults
 
-production_logs:
-  <<: *defaults
-  url: <%= ENV.fetch('LOGS_DATABASE_URL', 'postgresql://localhost/travis_logs_production') %>
-
 development:
   <<: *defaults
   url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_development') %>
@@ -26,11 +22,6 @@ pro_development:
   url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_pro_development') %>
   eager_load: false
 
-development_logs:
-  <<: *defaults
-  url: <%= ENV.fetch('LOGS_DATABASE_URL', 'postgresql://localhost/travis_logs_development') %>
-  eager_load: false
-
 test:
   <<: *defaults
   url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_test') %>
@@ -39,14 +30,4 @@ test:
 pro_test:
   <<: *defaults
   url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_pro_test') %>
-  eager_load: false
-
-test_logs:
-  <<: *defaults
-  url: <%= ENV.fetch('LOGS_DATABASE_URL', 'postgresql://localhost/travis_logs_test') %>
-  eager_load: false
-
-pro_test_logs:
-  <<: *defaults
-  url: <%= ENV.fetch('LOGS_DATABASE_URL', 'postgresql://localhost/travis_pro_logs_test') %>
   eager_load: false
