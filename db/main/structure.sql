@@ -470,7 +470,8 @@ CREATE TABLE invoices (
     updated_at timestamp without time zone,
     subscription_id integer,
     invoice_id character varying,
-    stripe_id character varying
+    stripe_id character varying,
+    cc_last_digits character varying
 );
 
 
@@ -2651,4 +2652,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170613000000');
 INSERT INTO schema_migrations (version) VALUES ('20170620144500');
 
 INSERT INTO schema_migrations (version) VALUES ('20170621142300');
+
+INSERT INTO schema_migrations (version) VALUES ('20170713162000');
 
