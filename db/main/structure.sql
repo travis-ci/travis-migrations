@@ -1157,6 +1157,41 @@ ALTER SEQUENCE tokens_id_seq OWNED BY tokens.id;
 
 
 --
+-- Name: trial_allowances; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE trial_allowances (
+    id integer NOT NULL,
+    trial_id integer,
+    creator_id integer,
+    creator_type character varying,
+    builds_allowed integer,
+    builds_remaining integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: trial_allowances_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE trial_allowances_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: trial_allowances_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE trial_allowances_id_seq OWNED BY trial_allowances.id;
+
+
+--
 -- Name: trials; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1482,6 +1517,13 @@ ALTER TABLE ONLY tokens ALTER COLUMN id SET DEFAULT nextval('tokens_id_seq'::reg
 
 
 --
+-- Name: trial_allowances id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY trial_allowances ALTER COLUMN id SET DEFAULT nextval('trial_allowances_id_seq'::regclass);
+
+
+--
 -- Name: trials id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1731,6 +1773,14 @@ ALTER TABLE ONLY tags
 
 ALTER TABLE ONLY tokens
     ADD CONSTRAINT tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: trial_allowances trial_allowances_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY trial_allowances
+    ADD CONSTRAINT trial_allowances_pkey PRIMARY KEY (id);
 
 
 --
@@ -2148,6 +2198,20 @@ CREATE INDEX index_tokens_on_token ON tokens USING btree (token);
 --
 
 CREATE INDEX index_tokens_on_user_id ON tokens USING btree (user_id);
+
+
+--
+-- Name: index_trial_allowances_on_creator_id_and_creator_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_trial_allowances_on_creator_id_and_creator_type ON trial_allowances USING btree (creator_id, creator_type);
+
+
+--
+-- Name: index_trial_allowances_on_trial_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_trial_allowances_on_trial_id ON trial_allowances USING btree (trial_id);
 
 
 --
@@ -2715,4 +2779,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170621142300');
 INSERT INTO schema_migrations (version) VALUES ('20170713162000');
 
 INSERT INTO schema_migrations (version) VALUES ('20170822171600');
+
+INSERT INTO schema_migrations (version) VALUES ('20170831000000');
 
