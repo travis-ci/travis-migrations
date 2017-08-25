@@ -12,11 +12,11 @@ class CreateMessages < ActiveRecord::Migration
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
     end
-    execute "CREATE INDEX CONCURRENTLY index_messages_on_subject_type ON messages(subject_type)"
+    execute "CREATE INDEX CONCURRENTLY index_messages_on_subject_type_and_subject_id ON messages(subject_type, subject_id)"
   end
 
   def down
-    execute "DROP INDEX index_messages_on_subject_type"
+    execute "DROP INDEX index_messages_on_subject_type_and_subject_id"
     drop_table :messages
   end
 end
