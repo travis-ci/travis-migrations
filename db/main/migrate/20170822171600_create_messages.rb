@@ -8,7 +8,7 @@ class CreateMessages < ActiveRecord::Migration
       t.string "level"
       t.string "key"
       t.string "code"
-      t.jsonb "args"
+      t.json "args"
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
     end
