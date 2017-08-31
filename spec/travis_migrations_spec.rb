@@ -10,7 +10,7 @@ describe 'Rake tasks' do
     ssl_keys memberships urls permissions jobs broadcasts emails beta_features
     user_beta_features organizations annotation_providers annotations branches
     stars crons subscriptions coupons stripe_events invoices queueable_jobs
-    pull_requests stages owner_groups tags trials messages
+    pull_requests stages owner_groups tags trials messages trial_allowances
     )
   }
 
