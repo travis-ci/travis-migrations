@@ -17,9 +17,6 @@ rvm: "2.3.4"
 env:
   - RAILS_ENV=test
 
-matrix:
-  fast_finish: true
-
 before_install:
   - gem install bundler -v 1.12.4
 
@@ -28,3 +25,13 @@ install:
 
 before_script:
   - cp config/database.yml.travis config/database.yml
+
+jobs:
+  fast_finish: true
+  include:
+    - stage: ":ship: it to Quay.io"
+      sudo: required
+      dist: trusty
+      install: skip
+      before_script: skip
+      script: ./script/docker-build-and-push
