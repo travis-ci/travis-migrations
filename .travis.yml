@@ -15,10 +15,15 @@ env:
   - RAILS_ENV=test
 
 matrix:
+  matrix:
+  include:
+    - rvm: 2.3.3
+      addons:
+        postgresql: "9.3"
+    - rvm: 2.3.3
+      addons:
+        postgresql: "9.6"
   fast_finish: true
-  postgresql:
-    - 9.3
-    - 9.6
 
 before_install:
   - gem install bundler -v 1.12.4
