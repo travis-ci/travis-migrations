@@ -8,7 +8,7 @@ Any changes to this document should also be reflected in the [Travis Builders Ma
 
 In short, migrations should be run locally while standing in this repository during development. For tests (e.g. via `.travis.yml`) applications should contain their own tooling that loads the schema (e.g. see [travis-hub](https://github.com/travis-ci/travis-hub/blob/master/Rakefile#L12)).
 
-Please use Postgresql 9.4 for local development and testing.
+Please use Postgresql 9.4 for local development and testing, but note that production and enterprise environments require compatibility with both 9.3 and 9.6.
 
 Installing
 ----------
