@@ -102,7 +102,7 @@ DEPENDENCIES
   rspec (~> 3.4)
 
 RUBY VERSION
-   ruby 2.3.1p112
+   ruby 2.3.5p376
 
 BUNDLED WITH
-   1.13.6
+   1.15.4
