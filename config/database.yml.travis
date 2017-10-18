@@ -1,0 +1,14 @@
+# This is only used for testing on travis. In other contexts
+# Travis.config.database will be used.
+
+defaults: &defaults
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  min_messages: warning
+  eager_load: true
+
+test:
+  <<: *defaults
+  url: postgresql://localhost/travis_test
+  eager_load: false

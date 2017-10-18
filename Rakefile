@@ -5,6 +5,17 @@ require "micro_migrations"
 
 ActiveRecord::Base.schema_format = :sql
 
+Rails.application.config.paths['db'] = 'db/main'
+Rails.application.config.paths['db/migrate'] = 'db/main/migrate'
+
+begin
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:spec)
+rescue LoadError
+end
+
+task :default => [:spec]
+
 Rake::Task["db:structure:dump"].clear unless Rails.env.development?
 
 module ActiveRecord
@@ -37,6 +48,7 @@ module ActiveRecord
     end
 
     def migrate(&block)
+      puts "Custom migrate in Rakefile is being called."
       current = migrations.detect { |m| m.version == current_version }
       target = migrations.detect { |m| m.version == @target_version }
 

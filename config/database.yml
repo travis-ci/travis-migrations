@@ -1,15 +1,33 @@
+# This is only used for standalone_migrations. In other contexts
+# Travis.config.database will be used.
+
 defaults: &defaults
   adapter: postgresql
   encoding: unicode
   pool: 5
   min_messages: warning
-  username: <%= ENV['USER'] %>
-  host: localhost
+  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_production') %>
+  eager_load: true
+
+production:
+  <<: *defaults
 
 development:
   <<: *defaults
-  database: travis_development
+  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_development') %>
+  eager_load: false
+
+pro_development:
+  <<: *defaults
+  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_pro_development') %>
+  eager_load: false
 
 test:
   <<: *defaults
-  database: travis_test
+  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_test') %>
+  eager_load: false
+
+pro_test:
+  <<: *defaults
+  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_pro_test') %>
+  eager_load: false
