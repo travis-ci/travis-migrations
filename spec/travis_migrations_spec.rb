@@ -14,6 +14,14 @@ describe 'Rake tasks' do
     )
   }
 
+  before do
+    ActiveRecord::Base.establish_connection(config['test'])
+  end
+
+  after do
+    ActiveRecord::Base.remove_connection
+  end
+
   def run(cmd)
     system "RAILS_ENV=test bundle exec #{cmd}"
     expect($?.exitstatus).to eq 0
@@ -22,15 +30,13 @@ describe 'Rake tasks' do
   describe 'rake db:create' do
     it 'migrates the main db' do
       run 'rake db:drop db:create db:migrate'
-      ActiveRecord::Base.establish_connection(config['test'])
       expect(tables.sort).to eq expected_main_tables.sort
     end
   end
 
   describe 'rake db:schema:load' do
     it 'loads the main schema'do
-    run 'rake db:drop db:create db:structure:load'
-    ActiveRecord::Base.establish_connection(config['test'])
+      run 'rake db:drop db:create db:structure:load'
       expect(tables.sort).to eq expected_main_tables.sort
     end
   end
