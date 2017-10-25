@@ -53,18 +53,6 @@ describe 'set_updated_at trigger' do
       expect(after_2nd_update['updated_at']).to eql(after_update['updated_at'])
     end
 
-    it 'does not set updated_at if it is already passed' do
-      e "INSERT INTO jobs (number, created_at, updated_at) VALUES ('10.1', now(), TIMESTAMP '2000-01-01 12:00:00');"
-      after_insert = s "SELECT id, to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at FROM jobs"
-
-      expect(after_insert['updated_at']).to eql("2000-01-01 12:00:00")
-
-      e "UPDATE jobs SET number = '11.1', updated_at = TIMESTAMP '2001-01-01 12:00:00';"
-      after_update = s "SELECT id, to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at FROM jobs"
-
-      expect(after_update['updated_at']).to eql("2001-01-01 12:00:00")
-    end
-
     it 'works also for new columns' do
       e "INSERT INTO jobs (number, created_at) VALUES ('10.1', now());"
       after_insert = s "SELECT id, updated_at FROM jobs"
@@ -101,18 +89,6 @@ describe 'set_updated_at trigger' do
 
       expect(after_2nd_update['id']).to eql(after_update['id'])
       expect(after_2nd_update['updated_at']).to eql(after_update['updated_at'])
-    end
-
-    it 'does not set updated_at if it is already passed' do
-      e "INSERT INTO builds (number, created_at, updated_at) VALUES ('10', now(), TIMESTAMP '2000-01-01 12:00:00');"
-      after_insert = s "SELECT id, to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at FROM builds"
-
-      expect(after_insert['updated_at']).to eql("2000-01-01 12:00:00")
-
-      e "UPDATE builds SET number = '11', updated_at = TIMESTAMP '2001-01-01 12:00:00';"
-      after_update = s "SELECT id, to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at FROM builds"
-
-      expect(after_update['updated_at']).to eql("2001-01-01 12:00:00")
     end
 
     it 'works also for new columns' do

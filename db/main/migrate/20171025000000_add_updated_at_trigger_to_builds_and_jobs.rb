@@ -11,28 +11,14 @@ class AddUpdatedAtTriggerToBuildsAndJobs < ActiveRecord::Migration
       END;
       $$ LANGUAGE plpgsql;
 
-      CREATE TRIGGER set_updated_at_on_builds_update
-      BEFORE UPDATE ON builds
+      CREATE TRIGGER set_updated_at_on_builds
+      BEFORE INSERT OR UPDATE ON builds
       FOR EACH ROW
-      WHEN (OLD.updated_at = NEW.updated_at)
       EXECUTE PROCEDURE set_updated_at();
 
-      CREATE TRIGGER set_updated_at_on_builds_insert
-      BEFORE INSERT on builds
+      CREATE TRIGGER set_updated_at_on_jobs
+      BEFORE INSERT OR UPDATE ON jobs
       FOR EACH ROW
-      WHEN (NEW.updated_at IS NULL)
-      EXECUTE PROCEDURE set_updated_at();
-
-      CREATE TRIGGER set_updated_at_on_jobs_update
-      BEFORE UPDATE ON jobs
-      FOR EACH ROW
-      WHEN (OLD.updated_at = NEW.updated_at)
-      EXECUTE PROCEDURE set_updated_at();
-
-      CREATE TRIGGER set_updated_at_on_jobs_insert
-      BEFORE INSERT on jobs
-      FOR EACH ROW
-      WHEN (NEW.updated_at IS NULL)
       EXECUTE PROCEDURE set_updated_at();
     SQL
   end
