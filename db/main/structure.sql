@@ -1867,10 +1867,10 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: index_abuses_on_owner; Type: INDEX; Schema: public; Owner: -
+-- Name: index_abuses_on_owner_id_and_owner_type_and_level; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_abuses_on_owner ON abuses USING btree (owner_id);
+CREATE UNIQUE INDEX index_abuses_on_owner_id_and_owner_type_and_level ON abuses USING btree (owner_id, owner_type, level);
 
 
 --
@@ -2852,4 +2852,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170911172800');
 INSERT INTO schema_migrations (version) VALUES ('20171017104500');
 
 INSERT INTO schema_migrations (version) VALUES ('20171024000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20171103000000');
 
