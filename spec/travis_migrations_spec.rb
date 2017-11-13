@@ -34,7 +34,7 @@ describe 'Rake tasks' do
     end
   end
 
-  describe 'rake db:schema:load' do
+  describe 'rake db:structure:load' do
     it 'loads the main schema'do
       run 'rake db:drop db:create db:structure:load'
       expect(tables.sort).to eq expected_main_tables.sort
