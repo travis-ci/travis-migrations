@@ -5,7 +5,7 @@ class AddUpdatedAtTriggerToBuildsAndJobs < ActiveRecord::Migration
       BEGIN
         IF TG_OP = 'INSERT' OR
              (TG_OP = 'UPDATE' AND NEW.* IS DISTINCT FROM OLD.*) THEN
-          NEW.updated_at := now();
+          NEW.updated_at := statement_timestamp();
         END IF;
         RETURN NEW;
       END;
