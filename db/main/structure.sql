@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.8
--- Dumped by pg_dump version 10.0
+-- Dumped from database version 9.6.5
+-- Dumped by pg_dump version 9.6.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -68,6 +68,23 @@ CREATE TYPE source_type AS ENUM (
     'github',
     'unknown'
 );
+
+
+--
+-- Name: set_updated_at(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION set_updated_at() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+      BEGIN
+        IF TG_OP = 'INSERT' OR
+             (TG_OP = 'UPDATE' AND NEW.* IS DISTINCT FROM OLD.*) THEN
+          NEW.updated_at := now();
+        END IF;
+        RETURN NEW;
+      END;
+      $$;
 
 
 SET default_tablespace = '';
@@ -1867,6 +1884,13 @@ ALTER TABLE ONLY users
 
 
 --
+-- Name: index_abuses_on_owner; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_abuses_on_owner ON abuses USING btree (owner_id);
+
+
+--
 -- Name: index_abuses_on_owner_id_and_owner_type_and_level; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2333,6 +2357,20 @@ CREATE UNIQUE INDEX subscriptions_owner ON subscriptions USING btree (owner_id, 
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+
+
+--
+-- Name: builds set_updated_at_on_builds; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER set_updated_at_on_builds BEFORE INSERT OR UPDATE ON builds FOR EACH ROW EXECUTE PROCEDURE set_updated_at();
+
+
+--
+-- Name: jobs set_updated_at_on_jobs; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER set_updated_at_on_jobs BEFORE INSERT OR UPDATE ON jobs FOR EACH ROW EXECUTE PROCEDURE set_updated_at();
 
 
 --
@@ -2852,6 +2890,8 @@ INSERT INTO schema_migrations (version) VALUES ('20170911172800');
 INSERT INTO schema_migrations (version) VALUES ('20171017104500');
 
 INSERT INTO schema_migrations (version) VALUES ('20171024000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20171025000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20171103000000');
 
