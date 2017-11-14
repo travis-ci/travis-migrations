@@ -25,11 +25,11 @@ class AddUpdatedAtTriggerToBuildsAndJobs < ActiveRecord::Migration
 
   def down
     execute <<-SQL
-      DROP TRIGGER IF EXISTS set_updated_at_on_builds_update on builds;
-      DROP TRIGGER IF EXISTS set_updated_at_on_builds_insert on builds;
+      DROP TRIGGER IF EXISTS set_updated_at_on_builds on builds;
+      DROP TRIGGER IF EXISTS set_updated_at_on_builds on builds;
 
-      DROP TRIGGER IF EXISTS set_updated_at_on_jobs_update on jobs;
-      DROP TRIGGER IF EXISTS set_updated_at_on_jobs_insert on jobs;
+      DROP TRIGGER IF EXISTS set_updated_at_on_jobs on jobs;
+      DROP TRIGGER IF EXISTS set_updated_at_on_jobs on jobs;
 
       DROP FUNCTION IF EXISTS set_updated_at();
     SQL
