@@ -1,4 +1,4 @@
-class AddIndexOnJobsUpdatedAt < ActiveRecord::Migration
+class DropAnnotations < ActiveRecord::Migration
   self.disable_ddl_transaction!
 
   def up
