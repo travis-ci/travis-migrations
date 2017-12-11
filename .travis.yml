@@ -2,9 +2,6 @@ language: ruby
 
 sudo: false
 
-services:
-  - postgresql
-
 cache:
   directories:
     - vendor/bundle
@@ -15,11 +12,13 @@ env:
   - RAILS_ENV=test
 
 matrix:
-include:
-  - addons:
-      postgresql: "9.3"
-  - addons:
-      postgresql: "9.6"
+  include:
+    - addons:
+        postgresql: "9.2"
+    - addons:
+        postgresql: "9.3"
+    - addons:
+        postgresql: "9.6"
 fast_finish: true
 
 before_install:
