@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.4'
 
-gem 'activerecord', '~> 4.2'
+gem 'activerecord', '~> 4.2.7.1'
 gem 'pg', '~> 0.18'
 gem 'rake', '~> 10.4'
 gem 'micro_migrations', '~> 0.0'
