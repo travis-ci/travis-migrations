@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.5
--- Dumped by pg_dump version 9.6.5
+-- Dumped from database version 9.6.7
+-- Dumped by pg_dump version 9.6.7
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -80,7 +80,7 @@ CREATE FUNCTION set_updated_at() RETURNS trigger
       BEGIN
         IF TG_OP = 'INSERT' OR
              (TG_OP = 'UPDATE' AND NEW.* IS DISTINCT FROM OLD.*) THEN
-          NEW.updated_at := now();
+          NEW.updated_at := statement_timestamp();
         END IF;
         RETURN NEW;
       END;
@@ -1364,7 +1364,8 @@ CREATE TABLE users (
     github_scopes text,
     education boolean,
     first_logged_in_at timestamp without time zone,
-    avatar_url character varying
+    avatar_url character varying,
+    suspended boolean DEFAULT false
 );
 
 
@@ -1930,6 +1931,13 @@ CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON broadcasts U
 --
 
 CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id);
+
+
+--
+-- Name: index_builds_on_repository_id_and_branch_and_event_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying])::text[]));
 
 
 --
@@ -2894,4 +2902,8 @@ INSERT INTO schema_migrations (version) VALUES ('20171024000000');
 INSERT INTO schema_migrations (version) VALUES ('20171025000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20171103000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20171211000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
