@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 9.6.7
--- Dumped by pg_dump version 9.6.7
+-- Dumped by pg_dump version 10.2 (Ubuntu 10.2-1.pgdg16.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1365,7 +1365,8 @@ CREATE TABLE users (
     education boolean,
     first_logged_in_at timestamp without time zone,
     avatar_url character varying,
-    suspended boolean DEFAULT false
+    suspended boolean DEFAULT false,
+    suspended_at timestamp without time zone
 );
 
 
@@ -1937,7 +1938,7 @@ CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id)
 -- Name: index_builds_on_repository_id_and_branch_and_event_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying])::text[]));
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text]));
 
 
 --
@@ -2906,4 +2907,6 @@ INSERT INTO schema_migrations (version) VALUES ('20171103000000');
 INSERT INTO schema_migrations (version) VALUES ('20171211000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180212000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180213000000');
 
