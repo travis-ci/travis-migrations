@@ -1365,7 +1365,8 @@ CREATE TABLE users (
     education boolean,
     first_logged_in_at timestamp without time zone,
     avatar_url character varying,
-    suspended boolean DEFAULT false
+    suspended boolean DEFAULT false,
+    suspended_at timestamp without time zone
 );
 
 
@@ -2906,4 +2907,6 @@ INSERT INTO schema_migrations (version) VALUES ('20171103000000');
 INSERT INTO schema_migrations (version) VALUES ('20171211000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180212000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180213000000');
 
