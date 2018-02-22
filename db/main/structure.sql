@@ -127,74 +127,6 @@ ALTER SEQUENCE abuses_id_seq OWNED BY abuses.id;
 
 
 --
--- Name: annotation_providers; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE annotation_providers (
-    id integer NOT NULL,
-    name character varying,
-    api_username character varying,
-    api_key character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: annotation_providers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE annotation_providers_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: annotation_providers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE annotation_providers_id_seq OWNED BY annotation_providers.id;
-
-
---
--- Name: annotations; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE annotations (
-    id integer NOT NULL,
-    job_id integer NOT NULL,
-    url character varying,
-    description text NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    annotation_provider_id integer NOT NULL,
-    status character varying
-);
-
-
---
--- Name: annotations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE annotations_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: annotations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE annotations_id_seq OWNED BY annotations.id;
-
-
---
 -- Name: beta_features; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1397,20 +1329,6 @@ ALTER TABLE ONLY abuses ALTER COLUMN id SET DEFAULT nextval('abuses_id_seq'::reg
 
 
 --
--- Name: annotation_providers id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY annotation_providers ALTER COLUMN id SET DEFAULT nextval('annotation_providers_id_seq'::regclass);
-
-
---
--- Name: annotations id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY annotations ALTER COLUMN id SET DEFAULT nextval('annotations_id_seq'::regclass);
-
-
---
 -- Name: beta_features id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1619,22 +1537,6 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 ALTER TABLE ONLY abuses
     ADD CONSTRAINT abuses_pkey PRIMARY KEY (id);
-
-
---
--- Name: annotation_providers annotation_providers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY annotation_providers
-    ADD CONSTRAINT annotation_providers_pkey PRIMARY KEY (id);
-
-
---
--- Name: annotations annotations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY annotations
-    ADD CONSTRAINT annotations_pkey PRIMARY KEY (id);
 
 
 --
@@ -1897,13 +1799,6 @@ CREATE INDEX index_abuses_on_owner ON abuses USING btree (owner_id);
 --
 
 CREATE UNIQUE INDEX index_abuses_on_owner_id_and_owner_type_and_level ON abuses USING btree (owner_id, owner_type, level);
-
-
---
--- Name: index_annotations_on_job_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_annotations_on_job_id ON annotations USING btree (job_id);
 
 
 --
@@ -2903,6 +2798,8 @@ INSERT INTO schema_migrations (version) VALUES ('20171024000000');
 INSERT INTO schema_migrations (version) VALUES ('20171025000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20171103000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20171206123900');
 
 INSERT INTO schema_migrations (version) VALUES ('20171211000000');
 
