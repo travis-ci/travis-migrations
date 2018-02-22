@@ -2799,11 +2799,11 @@ INSERT INTO schema_migrations (version) VALUES ('20171025000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20171103000000');
 
-INSERT INTO schema_migrations (version) VALUES ('20171206123900');
-
 INSERT INTO schema_migrations (version) VALUES ('20171211000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222164100');
 
