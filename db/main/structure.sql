@@ -172,7 +172,9 @@ CREATE TABLE branches (
     name character varying NOT NULL,
     exists_on_github boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -275,7 +277,9 @@ CREATE TABLE builds (
     branch_id integer,
     tag_id integer,
     sender_id integer,
-    sender_type character varying
+    sender_type character varying,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -318,7 +322,9 @@ CREATE TABLE commits (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     branch_id integer,
-    tag_id integer
+    tag_id integer,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -389,7 +395,9 @@ CREATE TABLE crons (
     updated_at timestamp without time zone NOT NULL,
     next_run timestamp without time zone,
     last_run timestamp without time zone,
-    dont_run_if_recent_build_exists boolean DEFAULT false
+    dont_run_if_recent_build_exists boolean DEFAULT false,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -510,7 +518,9 @@ CREATE TABLE jobs (
     debug_options text,
     private boolean,
     stage_number character varying,
-    stage_id integer
+    stage_id integer,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -616,7 +626,11 @@ CREATE TABLE organizations (
     email character varying,
     company character varying,
     homepage character varying,
-    billing_admin_only boolean
+    billing_admin_only boolean,
+    org_id integer,
+    com_id integer,
+    migrating boolean,
+    migrated_at timestamp without time zone
 );
 
 
@@ -682,7 +696,9 @@ CREATE TABLE permissions (
     repository_id integer,
     admin boolean DEFAULT false,
     push boolean DEFAULT false,
-    pull boolean DEFAULT false
+    pull boolean DEFAULT false,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -719,7 +735,9 @@ CREATE TABLE pull_requests (
     head_repo_slug character varying,
     head_ref character varying,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -800,7 +818,11 @@ CREATE TABLE repositories (
     settings json,
     next_build_number integer,
     invalidated_at timestamp without time zone,
-    current_build_id bigint
+    current_build_id bigint,
+    org_id integer,
+    com_id integer,
+    migrating boolean,
+    migrated_at timestamp without time zone
 );
 
 
@@ -853,7 +875,9 @@ CREATE TABLE requests (
     branch_id integer,
     tag_id integer,
     sender_id integer,
-    sender_type character varying
+    sender_type character varying,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -895,7 +919,9 @@ CREATE TABLE ssl_keys (
     public_key text,
     private_key text,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -929,7 +955,9 @@ CREATE TABLE stages (
     name character varying,
     state character varying,
     started_at timestamp without time zone,
-    finished_at timestamp without time zone
+    finished_at timestamp without time zone,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -1086,7 +1114,9 @@ CREATE TABLE tags (
     last_build_id integer,
     exists_on_github boolean,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    org_id integer,
+    com_id integer
 );
 
 
@@ -1298,7 +1328,11 @@ CREATE TABLE users (
     first_logged_in_at timestamp without time zone,
     avatar_url character varying,
     suspended boolean DEFAULT false,
-    suspended_at timestamp without time zone
+    suspended_at timestamp without time zone,
+    org_id integer,
+    com_id integer,
+    migrating boolean,
+    migrated_at timestamp without time zone
 );
 
 
@@ -1802,6 +1836,20 @@ CREATE UNIQUE INDEX index_abuses_on_owner_id_and_owner_type_and_level ON abuses 
 
 
 --
+-- Name: index_branches_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_branches_on_com_id ON branches USING btree (com_id);
+
+
+--
+-- Name: index_branches_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_branches_on_org_id ON branches USING btree (org_id);
+
+
+--
 -- Name: index_branches_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1820,6 +1868,20 @@ CREATE UNIQUE INDEX index_branches_on_repository_id_and_name ON branches USING b
 --
 
 CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON broadcasts USING btree (recipient_id, recipient_type);
+
+
+--
+-- Name: index_builds_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_builds_on_com_id ON builds USING btree (com_id);
+
+
+--
+-- Name: index_builds_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_builds_on_org_id ON builds USING btree (org_id);
 
 
 --
@@ -1893,6 +1955,34 @@ CREATE INDEX index_builds_on_state ON builds USING btree (state);
 
 
 --
+-- Name: index_commits_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_commits_on_com_id ON commits USING btree (com_id);
+
+
+--
+-- Name: index_commits_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_commits_on_org_id ON commits USING btree (org_id);
+
+
+--
+-- Name: index_crons_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_crons_on_com_id ON crons USING btree (com_id);
+
+
+--
+-- Name: index_crons_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_crons_on_org_id ON crons USING btree (org_id);
+
+
+--
 -- Name: index_emails_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1914,10 +2004,24 @@ CREATE INDEX index_invoices_on_stripe_id ON invoices USING btree (stripe_id);
 
 
 --
+-- Name: index_jobs_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_jobs_on_com_id ON jobs USING btree (com_id);
+
+
+--
 -- Name: index_jobs_on_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_jobs_on_created_at ON jobs USING btree (created_at);
+
+
+--
+-- Name: index_jobs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_jobs_on_org_id ON jobs USING btree (org_id);
 
 
 --
@@ -1984,6 +2088,13 @@ CREATE INDEX index_messages_on_subject_type_and_subject_id ON messages USING btr
 
 
 --
+-- Name: index_organizations_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_organizations_on_com_id ON organizations USING btree (com_id);
+
+
+--
 -- Name: index_organizations_on_github_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2005,6 +2116,13 @@ CREATE INDEX index_organizations_on_lower_login ON organizations USING btree (lo
 
 
 --
+-- Name: index_organizations_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_organizations_on_org_id ON organizations USING btree (org_id);
+
+
+--
 -- Name: index_owner_groups_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2016,6 +2134,20 @@ CREATE INDEX index_owner_groups_on_owner_type_and_owner_id ON owner_groups USING
 --
 
 CREATE INDEX index_owner_groups_on_uuid ON owner_groups USING btree (uuid);
+
+
+--
+-- Name: index_permissions_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_permissions_on_com_id ON permissions USING btree (com_id);
+
+
+--
+-- Name: index_permissions_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_permissions_on_org_id ON permissions USING btree (org_id);
 
 
 --
@@ -2040,6 +2172,20 @@ CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON permission
 
 
 --
+-- Name: index_pull_requests_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_pull_requests_on_com_id ON pull_requests USING btree (com_id);
+
+
+--
+-- Name: index_pull_requests_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_pull_requests_on_org_id ON pull_requests USING btree (org_id);
+
+
+--
 -- Name: index_pull_requests_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2058,6 +2204,13 @@ CREATE INDEX index_queueable_jobs_on_job_id ON queueable_jobs USING btree (job_i
 --
 
 CREATE INDEX index_repositories_on_active ON repositories USING btree (active);
+
+
+--
+-- Name: index_repositories_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_repositories_on_com_id ON repositories USING btree (com_id);
 
 
 --
@@ -2082,6 +2235,13 @@ CREATE INDEX index_repositories_on_name ON repositories USING btree (name);
 
 
 --
+-- Name: index_repositories_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_repositories_on_org_id ON repositories USING btree (org_id);
+
+
+--
 -- Name: index_repositories_on_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2100,6 +2260,13 @@ CREATE INDEX index_repositories_on_owner_name ON repositories USING btree (owner
 --
 
 CREATE INDEX index_repositories_on_slug ON repositories USING gin (((((owner_name)::text || '/'::text) || (name)::text)) gin_trgm_ops);
+
+
+--
+-- Name: index_requests_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_requests_on_com_id ON requests USING btree (com_id);
 
 
 --
@@ -2124,6 +2291,13 @@ CREATE INDEX index_requests_on_head_commit ON requests USING btree (head_commit)
 
 
 --
+-- Name: index_requests_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_requests_on_org_id ON requests USING btree (org_id);
+
+
+--
 -- Name: index_requests_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2145,10 +2319,38 @@ CREATE INDEX index_ssl_key_on_repository_id ON ssl_keys USING btree (repository_
 
 
 --
+-- Name: index_ssl_keys_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_ssl_keys_on_com_id ON ssl_keys USING btree (com_id);
+
+
+--
+-- Name: index_ssl_keys_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_ssl_keys_on_org_id ON ssl_keys USING btree (org_id);
+
+
+--
 -- Name: index_stages_on_build_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_stages_on_build_id ON stages USING btree (build_id);
+
+
+--
+-- Name: index_stages_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_stages_on_com_id ON stages USING btree (com_id);
+
+
+--
+-- Name: index_stages_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_stages_on_org_id ON stages USING btree (org_id);
 
 
 --
@@ -2184,6 +2386,20 @@ CREATE INDEX index_stripe_events_on_event_id ON stripe_events USING btree (event
 --
 
 CREATE INDEX index_stripe_events_on_event_type ON stripe_events USING btree (event_type);
+
+
+--
+-- Name: index_tags_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_tags_on_com_id ON tags USING btree (com_id);
+
+
+--
+-- Name: index_tags_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_tags_on_org_id ON tags USING btree (org_id);
 
 
 --
@@ -2236,6 +2452,13 @@ CREATE INDEX index_user_beta_features_on_user_id_and_beta_feature_id ON user_bet
 
 
 --
+-- Name: index_users_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_com_id ON users USING btree (com_id);
+
+
+--
 -- Name: index_users_on_github_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2261,6 +2484,13 @@ CREATE INDEX index_users_on_login ON users USING btree (login);
 --
 
 CREATE INDEX index_users_on_lower_login ON users USING btree (lower((login)::text));
+
+
+--
+-- Name: index_users_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_org_id ON users USING btree (org_id);
 
 
 --
@@ -2810,6 +3040,12 @@ INSERT INTO schema_migrations (version) VALUES ('20171211000000');
 INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222000002');
 
 INSERT INTO schema_migrations (version) VALUES ('20180222000003');
 
