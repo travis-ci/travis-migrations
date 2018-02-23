@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.7
--- Dumped by pg_dump version 9.6.7
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2292,14 +2292,6 @@ CREATE TRIGGER set_updated_at_on_jobs BEFORE INSERT OR UPDATE ON jobs FOR EACH R
 
 
 --
--- Name: repositories fk_repositories_current_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY repositories
-    ADD CONSTRAINT fk_repositories_current_build_id FOREIGN KEY (current_build_id) REFERENCES builds(id);
-
-
---
 -- PostgreSQL database dump complete
 --
 
@@ -2819,8 +2811,11 @@ INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
 
+INSERT INTO schema_migrations (version) VALUES ('20180222000003');
+
 INSERT INTO schema_migrations (version) VALUES ('20180222164100');
 
 INSERT INTO schema_migrations (version) VALUES ('20180305143800');
 
 INSERT INTO schema_migrations (version) VALUES ('20180321102400');
+
