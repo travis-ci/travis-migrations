@@ -16,7 +16,10 @@ end
 
 task :default => [:spec]
 
-Rake::Task["db:structure:dump"].clear unless Rails.env.development?
+if Rails.env.production?
+  puts "Running in production environment, disabling db:structure:dump task"
+  Rake::Task["db:structure:dump"].clear
+end
 
 module ActiveRecord
   class Migration
