@@ -1865,6 +1865,13 @@ CREATE INDEX index_builds_on_repository_id_and_number_and_event_type ON builds U
 
 
 --
+-- Name: index_builds_on_repository_id_where_state_not_finished; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON builds USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+
+
+--
 -- Name: index_builds_on_request_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2806,4 +2813,6 @@ INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180222164100');
+
+INSERT INTO schema_migrations (version) VALUES ('20180305143800');
 
