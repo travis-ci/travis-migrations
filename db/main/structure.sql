@@ -71,6 +71,353 @@ CREATE TYPE source_type AS ENUM (
 
 
 --
+-- Name: agg_all_repo_counts(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION agg_all_repo_counts() RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+begin
+  with src as (
+    select
+      cnt.repository_id
+    from
+      repo_counts cnt
+    group by
+      cnt.repository_id,
+      cnt.owner_id,
+      cnt.owner_type
+    having
+      count(1) > 1
+  ),
+  del as (
+    delete from repo_counts cnt
+    using
+      src
+    where
+      cnt.repository_id = src.repository_id
+    returning cnt.*
+  ),
+  agg as (
+    select
+      del.repository_id,
+      del.owner_id,
+      del.owner_type,
+      sum(del.requests)::integer as requests,
+      sum(del.commits)::integer as commits,
+      sum(del.branches)::integer as branches,
+      sum(del.pull_requests)::integer as pull_requests,
+      sum(del.tags)::integer as tags,
+      sum(del.builds)::integer as builds,
+      sum(del.stages)::integer as stages,
+      sum(del.jobs)::integer as jobs
+    from
+      del
+    group by
+      del.repository_id,
+      del.owner_id,
+      del.owner_type
+  )
+  insert into repo_counts(
+    repository_id,
+    owner_id,
+    owner_type,
+    requests,
+    commits,
+    branches,
+    pull_requests,
+    tags,
+    builds,
+    stages,
+    jobs
+  )
+  select
+    agg.repository_id,
+    agg.owner_id,
+    agg.owner_type,
+    agg.requests,
+    agg.commits,
+    agg.branches,
+    agg.pull_requests,
+    agg.tags,
+    agg.builds,
+    agg.stages,
+    agg.jobs
+  from agg;
+
+  return true;
+end;
+$$;
+
+
+--
+-- Name: agg_repo_counts(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION agg_repo_counts(_owner_id integer, _owner_type character varying) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+begin
+  with src as (
+    select
+      cnt.repository_id
+    from
+      repo_counts cnt
+    where
+      cnt.owner_type = _owner_type and
+      cnt.owner_id = _owner_id
+    group by
+      cnt.repository_id,
+      cnt.owner_id,
+      cnt.owner_type
+    having
+      count(1) > 1
+  ),
+  del as (
+    delete from repo_counts cnt
+    using
+      src
+    where
+      cnt.repository_id = src.repository_id
+    returning cnt.*
+  ),
+  agg as (
+    select
+      del.repository_id,
+      del.owner_id,
+      del.owner_type,
+      sum(del.requests)::integer as requests,
+      sum(del.commits)::integer as commits,
+      sum(del.branches)::integer as branches,
+      sum(del.pull_requests)::integer as pull_requests,
+      sum(del.tags)::integer as tags,
+      sum(del.builds)::integer as builds,
+      sum(del.stages)::integer as stages,
+      sum(del.jobs)::integer as jobs
+    from
+      del
+    group by
+      del.repository_id,
+      del.owner_id,
+      del.owner_type
+  )
+  insert into repo_counts(
+    repository_id,
+    owner_id,
+    owner_type,
+    requests,
+    commits,
+    branches,
+    pull_requests,
+    tags,
+    builds,
+    stages,
+    jobs
+  )
+  select
+    agg.repository_id,
+    agg.owner_id,
+    agg.owner_type,
+    agg.requests,
+    agg.commits,
+    agg.branches,
+    agg.pull_requests,
+    agg.tags,
+    agg.builds,
+    agg.stages,
+    agg.jobs
+  from agg
+  where agg.requests > 0 or agg.builds > 0 or agg.jobs > 0;
+
+  return true;
+end;
+$$;
+
+
+--
+-- Name: count_branches(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION count_branches() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+  repo record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  select owner_id, owner_type from repositories where repositories.id = r.repository_id into repo;
+  if r.repository_id is not null and repo.owner_id is not null and repo.owner_type is not null then
+    insert into repo_counts(repository_id, owner_id, owner_type, branches)
+    values(r.repository_id, repo.owner_id, repo.owner_type, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_builds(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION count_builds() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null and r.owner_id is not null and r.owner_type is not null then
+    insert into repo_counts(repository_id, owner_id, owner_type, builds)
+    values(r.repository_id, r.owner_id, r.owner_type, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_commits(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION count_commits() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+  repo record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  select owner_id, owner_type from repositories where repositories.id = r.repository_id into repo;
+  if r.repository_id is not null and repo.owner_id is not null and repo.owner_type is not null then
+    insert into repo_counts(repository_id, owner_id, owner_type, commits)
+    values(r.repository_id, repo.owner_id, repo.owner_type, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_jobs(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION count_jobs() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null and r.owner_id is not null and r.owner_type is not null then
+    insert into repo_counts(repository_id, owner_id, owner_type, jobs)
+    values(r.repository_id, r.owner_id, r.owner_type, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_pull_requests(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION count_pull_requests() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+  repo record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  select owner_id, owner_type from repositories where repositories.id = r.repository_id into repo;
+  if r.repository_id is not null and repo.owner_id is not null and repo.owner_type is not null then
+    insert into repo_counts(repository_id, owner_id, owner_type, pull_requests)
+    values(r.repository_id, repo.owner_id, repo.owner_type, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_requests(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION count_requests() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null and r.owner_id is not null and r.owner_type is not null then
+    insert into repo_counts(repository_id, owner_id, owner_type, requests)
+    values(r.repository_id, r.owner_id, r.owner_type, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_tags(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION count_tags() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+  repo record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  select owner_id, owner_type from repositories where repositories.id = r.repository_id into repo;
+  if r.repository_id is not null and repo.owner_id is not null and repo.owner_type is not null then
+    insert into repo_counts(repository_id, owner_id, owner_type, tags)
+    values(r.repository_id, repo.owner_id, repo.owner_type, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
 -- Name: set_updated_at(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -787,6 +1134,26 @@ CREATE SEQUENCE queueable_jobs_id_seq
 --
 
 ALTER SEQUENCE queueable_jobs_id_seq OWNED BY queueable_jobs.id;
+
+
+--
+-- Name: repo_counts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE repo_counts (
+    repository_id integer NOT NULL,
+    owner_id integer NOT NULL,
+    owner_type character varying NOT NULL,
+    requests integer,
+    commits integer,
+    branches integer,
+    pull_requests integer,
+    tags integer,
+    builds integer,
+    stages integer,
+    jobs integer,
+    range character varying
+);
 
 
 --
@@ -2200,6 +2567,20 @@ CREATE INDEX index_queueable_jobs_on_job_id ON queueable_jobs USING btree (job_i
 
 
 --
+-- Name: index_repo_counts_on_owner_id_and_owner_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repo_counts_on_owner_id_and_owner_type ON repo_counts USING btree (owner_id, owner_type);
+
+
+--
+-- Name: index_repo_counts_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repo_counts_on_repository_id ON repo_counts USING btree (repository_id);
+
+
+--
 -- Name: index_repositories_on_active; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2494,6 +2875,13 @@ CREATE UNIQUE INDEX index_users_on_org_id ON users USING btree (org_id);
 
 
 --
+-- Name: ix_repo_counts_on_repo_and_owner_and_range; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX ix_repo_counts_on_repo_and_owner_and_range ON repo_counts USING btree (repository_id, owner_id, owner_type, range);
+
+
+--
 -- Name: subscriptions_owner; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2519,6 +2907,104 @@ CREATE TRIGGER set_updated_at_on_builds BEFORE INSERT OR UPDATE ON builds FOR EA
 --
 
 CREATE TRIGGER set_updated_at_on_jobs BEFORE INSERT OR UPDATE ON jobs FOR EACH ROW EXECUTE PROCEDURE set_updated_at();
+
+
+--
+-- Name: branches trg_count_branch_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_branch_deleted AFTER DELETE ON branches FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_branches('-1');
+
+
+--
+-- Name: branches trg_count_branch_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_branch_inserted AFTER INSERT ON branches FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_branches('1');
+
+
+--
+-- Name: builds trg_count_build_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_build_deleted AFTER DELETE ON builds FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_builds('-1');
+
+
+--
+-- Name: builds trg_count_build_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_build_inserted AFTER INSERT ON builds FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_builds('1');
+
+
+--
+-- Name: commits trg_count_commit_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_commit_deleted AFTER DELETE ON commits FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_commits('-1');
+
+
+--
+-- Name: commits trg_count_commit_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_commit_inserted AFTER INSERT ON commits FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_commits('1');
+
+
+--
+-- Name: jobs trg_count_job_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_job_deleted AFTER DELETE ON jobs FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_jobs('-1');
+
+
+--
+-- Name: jobs trg_count_job_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_job_inserted AFTER INSERT ON jobs FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_jobs('1');
+
+
+--
+-- Name: pull_requests trg_count_pull_request_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_pull_request_deleted AFTER DELETE ON pull_requests FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_pull_requests('-1');
+
+
+--
+-- Name: pull_requests trg_count_pull_request_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_pull_request_inserted AFTER INSERT ON pull_requests FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_pull_requests('1');
+
+
+--
+-- Name: requests trg_count_request_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_request_deleted AFTER DELETE ON requests FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_requests('-1');
+
+
+--
+-- Name: requests trg_count_request_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_request_inserted AFTER INSERT ON requests FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_requests('1');
+
+
+--
+-- Name: tags trg_count_tag_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_tag_deleted AFTER DELETE ON tags FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_tags('-1');
+
+
+--
+-- Name: tags trg_count_tag_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON tags FOR EACH ROW WHEN ((now() > '2018-03-11 13:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_tags('1');
 
 
 --
@@ -3048,6 +3534,12 @@ INSERT INTO schema_migrations (version) VALUES ('20180222000001');
 INSERT INTO schema_migrations (version) VALUES ('20180222000002');
 
 INSERT INTO schema_migrations (version) VALUES ('20180222000003');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222000009');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222000012');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222000013');
 
 INSERT INTO schema_migrations (version) VALUES ('20180222164100');
 
