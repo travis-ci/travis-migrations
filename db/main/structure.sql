@@ -1035,7 +1035,8 @@ CREATE TABLE public.crons (
     last_run timestamp without time zone,
     dont_run_if_recent_build_exists boolean DEFAULT false,
     org_id integer,
-    com_id integer
+    com_id integer,
+    active boolean DEFAULT true
 );
 
 
@@ -2900,6 +2901,13 @@ CREATE UNIQUE INDEX index_crons_on_com_id ON public.crons USING btree (com_id);
 
 
 --
+-- Name: index_crons_on_next_run; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_crons_on_next_run ON public.crons USING btree (next_run) WHERE (active IS TRUE);
+
+
+--
 -- Name: index_crons_on_org_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3943,6 +3951,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180517000000'),
 ('20180517000001'),
 ('20180517000002'),
-('20180518000000');
+('20180518000000'),
+('20180522000000');
 
 
