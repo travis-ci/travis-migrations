@@ -12,101 +12,101 @@
 
 drop function if exists count_requests(_start int, _end int);
 create or replace function count_requests(_start int, _end int)
-returns table (repository_id int, owner_id int, owner_type varchar, requests bigint, range varchar) as $$
+returns table (repository_id int, requests bigint, range varchar) as $$
 begin
-  return query select t.repository_id, t.owner_id, t.owner_type, count(id) as requests, ('requests' || ':' || _start || ':' || _end)::varchar as range
+  return query select t.repository_id, count(id) as requests, ('requests' || ':' || _start || ':' || _end)::varchar as range
   from requests as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
-  group by t.repository_id, t.owner_id, t.owner_type;
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  group by t.repository_id;
 end;
 $$
 language plpgsql;
 
 drop function if exists count_commits(_start int, _end int);
 create or replace function count_commits(_start int, _end int)
-returns table (repository_id int, owner_id int, owner_type varchar, commits bigint, range varchar) as $$
+returns table (repository_id int, commits bigint, range varchar) as $$
 begin
-  return query select r.id, r.owner_id, r.owner_type, count(t.id) as commits, ('commits' || ':' || _start || ':' || _end)::varchar as range
+  return query select r.id, count(t.id) as commits, ('commits' || ':' || _start || ':' || _end)::varchar as range
   from commits as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
-  group by r.id, r.owner_id, r.owner_type;
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  group by r.id;
 end;
 $$
 language plpgsql;
 
 drop function if exists count_branches(_start int, _end int);
 create or replace function count_branches(_start int, _end int)
-returns table (repository_id int, owner_id int, owner_type varchar, branches bigint, range varchar) as $$
+returns table (repository_id int, branches bigint, range varchar) as $$
 begin
-  return query select r.id, r.owner_id, r.owner_type, count(t.id) as branches, ('branches' || ':' || _start || ':' || _end)::varchar as range
+  return query select r.id, count(t.id) as branches, ('branches' || ':' || _start || ':' || _end)::varchar as range
   from branches as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
-  group by r.id, r.owner_id, r.owner_type;
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  group by r.id;
 end;
 $$
 language plpgsql;
 
 drop function if exists count_pull_requests(_start int, _end int);
 create or replace function count_pull_requests(_start int, _end int)
-returns table (repository_id int, owner_id int, owner_type varchar, pull_requests bigint, range varchar) as $$
+returns table (repository_id int, pull_requests bigint, range varchar) as $$
 begin
-  return query select r.id, r.owner_id, r.owner_type, count(t.id) as pull_requests, ('pull_requests' || ':' || _start || ':' || _end)::varchar as range
+  return query select r.id, count(t.id) as pull_requests, ('pull_requests' || ':' || _start || ':' || _end)::varchar as range
   from pull_requests as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
-  group by r.id, r.owner_id, r.owner_type;
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  group by r.id;
 end;
 $$
 language plpgsql;
 
 drop function if exists count_tags(_start int, _end int);
 create or replace function count_tags(_start int, _end int)
-returns table (repository_id int, owner_id int, owner_type varchar, tags bigint, range varchar) as $$
+returns table (repository_id int, tags bigint, range varchar) as $$
 begin
-  return query select r.id, r.owner_id, r.owner_type, count(t.id) as tags, ('tags' || ':' || _start || ':' || _end)::varchar as range
+  return query select r.id, count(t.id) as tags, ('tags' || ':' || _start || ':' || _end)::varchar as range
   from tags as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
-  group by r.id, r.owner_id, r.owner_type;
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  group by r.id;
 end;
 $$
 language plpgsql;
 
 drop function if exists count_builds(_start int, _end int);
 create or replace function count_builds(_start int, _end int)
-returns table (repository_id int, owner_id int, owner_type varchar, builds bigint, range varchar) as $$
+returns table (repository_id int, builds bigint, range varchar) as $$
 begin
-  return query select t.repository_id, t.owner_id, t.owner_type, count(id) as builds, ('builds' || ':' || _start || ':' || _end)::varchar as range
+  return query select t.repository_id, count(id) as builds, ('builds' || ':' || _start || ':' || _end)::varchar as range
   from builds as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
-  group by t.repository_id, t.owner_id, t.owner_type;
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  group by t.repository_id;
 end;
 $$
 language plpgsql;
 
-drop function if exists count_stages(_start int, _end int);
-create or replace function count_stages(_start int, _end int)
-returns table (repository_id int, owner_id int, owner_type varchar, stages bigint, range varchar) as $$
-begin
-  return query select b.repository_id, b.owner_id, b.owner_type, count(t.id) as stages, ('stages' || ':' || _start || ':' || _end)::varchar as range
-  from stages as t
-  join builds as b on t.build_id = b.id
-  where t.id between _start and _end and b.created_at < '2018-03-27 13:30:00' and b.repository_id is not null and b.owner_id is not null and b.owner_type is not null
-  group by b.repository_id, b.owner_id, b.owner_type;
-end;
-$$
-language plpgsql;
+-- drop function if exists count_stages(_start int, _end int);
+-- create or replace function count_stages(_start int, _end int)
+-- returns table (repository_id int, stages bigint, range varchar) as $$
+-- begin
+--   return query select b.repository_id, count(t.id) as stages, ('stages' || ':' || _start || ':' || _end)::varchar as range
+--   from stages as t
+--   join builds as b on t.build_id = b.id
+--   where t.id between _start and _end and b.created_at < '2018-03-27 13:30:00' and b.repository_id is not null
+--   group by b.repository_id;
+-- end;
+-- $$
+-- language plpgsql;
 
 drop function if exists count_jobs(_start int, _end int);
 create or replace function count_jobs(_start int, _end int)
-returns table (repository_id int, owner_id int, owner_type varchar, jobs bigint, range varchar) as $$
+returns table (repository_id int, jobs bigint, range varchar) as $$
 begin
-  return query select t.repository_id, t.owner_id, t.owner_type, count(id) as jobs, ('jobs' || ':' || _start || ':' || _end)::varchar as range
+  return query select t.repository_id, count(id) as jobs, ('jobs' || ':' || _start || ':' || _end)::varchar as range
   from jobs as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
-  group by t.repository_id, t.owner_id, t.owner_type;
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  group by t.repository_id;
 end;
 $$
 language plpgsql;
@@ -119,7 +119,7 @@ begin
 
   for i in 0..coalesce(max, 1) by _count loop
     begin
-      insert into repo_counts(repository_id, owner_id, owner_type, requests, range)
+      insert into repo_counts(repository_id, requests, range)
       select * from count_requests(i, i + _count);
     exception when unique_violation then end;
   end loop;
@@ -137,7 +137,7 @@ begin
 
   for i in 0..coalesce(max, 1) by _count loop
     begin
-      insert into repo_counts(repository_id, owner_id, owner_type, commits, range)
+      insert into repo_counts(repository_id, commits, range)
       select * from count_commits(i, i + _count);
     exception when unique_violation then end;
   end loop;
@@ -155,7 +155,7 @@ begin
 
   for i in 0..coalesce(max, 1) by _count loop
     begin
-      insert into repo_counts(repository_id, owner_id, owner_type, branches, range)
+      insert into repo_counts(repository_id, branches, range)
       select * from count_branches(i, i + _count);
     exception when unique_violation then end;
   end loop;
@@ -173,7 +173,7 @@ begin
 
   for i in 0..coalesce(max, 1) by _count loop
     begin
-      insert into repo_counts(repository_id, owner_id, owner_type, pull_requests, range)
+      insert into repo_counts(repository_id, pull_requests, range)
       select * from count_pull_requests(i, i + _count);
     exception when unique_violation then end;
   end loop;
@@ -191,7 +191,7 @@ begin
 
   for i in 0..coalesce(max, 1) by _count loop
     begin
-      insert into repo_counts(repository_id, owner_id, owner_type, tags, range)
+      insert into repo_counts(repository_id, tags, range)
       select * from count_tags(i, i + _count);
     exception when unique_violation then end;
   end loop;
@@ -209,7 +209,7 @@ begin
 
   for i in 0..coalesce(max, 1) by _count loop
     begin
-      insert into repo_counts(repository_id, owner_id, owner_type, builds, range)
+      insert into repo_counts(repository_id, builds, range)
       select * from count_builds(i, i + _count);
     exception when unique_violation then end;
   end loop;
@@ -227,7 +227,7 @@ begin
 
   for i in 0..coalesce(max, 1) by _count loop
     begin
-      insert into repo_counts(repository_id, owner_id, owner_type, stages, range)
+      insert into repo_counts(repository_id, stages, range)
       select * from count_stages(i, i + _count);
     exception when unique_violation then end;
   end loop;
@@ -245,7 +245,7 @@ begin
 
   for i in 0..coalesce(max, 1) by _count loop
     begin
-      insert into repo_counts(repository_id, owner_id, owner_type, jobs, range)
+      insert into repo_counts(repository_id, jobs, range)
       select * from count_jobs(i, i + _count);
     exception when unique_violation then end;
   end loop;
