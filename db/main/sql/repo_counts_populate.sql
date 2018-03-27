@@ -16,7 +16,7 @@ returns table (repository_id int, owner_id int, owner_type varchar, requests big
 begin
   return query select t.repository_id, t.owner_id, t.owner_type, count(id) as requests, ('requests' || ':' || _start || ':' || _end)::varchar as range
   from requests as t
-  where t.id between _start and _end and t.created_at < '2018-03-11 12:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
   group by t.repository_id, t.owner_id, t.owner_type;
 end;
 $$
@@ -29,7 +29,7 @@ begin
   return query select r.id, r.owner_id, r.owner_type, count(t.id) as commits, ('commits' || ':' || _start || ':' || _end)::varchar as range
   from commits as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-11 12:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
   group by r.id, r.owner_id, r.owner_type;
 end;
 $$
@@ -42,7 +42,7 @@ begin
   return query select r.id, r.owner_id, r.owner_type, count(t.id) as branches, ('branches' || ':' || _start || ':' || _end)::varchar as range
   from branches as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-11 12:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
   group by r.id, r.owner_id, r.owner_type;
 end;
 $$
@@ -55,7 +55,7 @@ begin
   return query select r.id, r.owner_id, r.owner_type, count(t.id) as pull_requests, ('pull_requests' || ':' || _start || ':' || _end)::varchar as range
   from pull_requests as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-11 12:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
   group by r.id, r.owner_id, r.owner_type;
 end;
 $$
@@ -68,7 +68,7 @@ begin
   return query select r.id, r.owner_id, r.owner_type, count(t.id) as tags, ('tags' || ':' || _start || ':' || _end)::varchar as range
   from tags as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-11 12:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and r.owner_id is not null and r.owner_type is not null
   group by r.id, r.owner_id, r.owner_type;
 end;
 $$
@@ -80,7 +80,7 @@ returns table (repository_id int, owner_id int, owner_type varchar, builds bigin
 begin
   return query select t.repository_id, t.owner_id, t.owner_type, count(id) as builds, ('builds' || ':' || _start || ':' || _end)::varchar as range
   from builds as t
-  where t.id between _start and _end and t.created_at < '2018-03-11 12:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
   group by t.repository_id, t.owner_id, t.owner_type;
 end;
 $$
@@ -93,7 +93,7 @@ begin
   return query select b.repository_id, b.owner_id, b.owner_type, count(t.id) as stages, ('stages' || ':' || _start || ':' || _end)::varchar as range
   from stages as t
   join builds as b on t.build_id = b.id
-  where t.id between _start and _end and b.created_at < '2018-03-11 12:00' and b.repository_id is not null and b.owner_id is not null and b.owner_type is not null
+  where t.id between _start and _end and b.created_at < '2018-03-27 13:30:00' and b.repository_id is not null and b.owner_id is not null and b.owner_type is not null
   group by b.repository_id, b.owner_id, b.owner_type;
 end;
 $$
@@ -105,7 +105,7 @@ returns table (repository_id int, owner_id int, owner_type varchar, jobs bigint,
 begin
   return query select t.repository_id, t.owner_id, t.owner_type, count(id) as jobs, ('jobs' || ':' || _start || ':' || _end)::varchar as range
   from jobs as t
-  where t.id between _start and _end and t.created_at < '2018-03-11 12:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
+  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null and t.owner_id is not null and t.owner_type is not null
   group by t.repository_id, t.owner_id, t.owner_type;
 end;
 $$
