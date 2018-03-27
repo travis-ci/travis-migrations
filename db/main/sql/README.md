@@ -10,8 +10,6 @@ Functions and triggers for populating, aggregating, and keeping repo counts up t
     Column     |       Type        | Modifiers
 ---------------+-------------------+-----------
  repository_id | integer           | not null
- owner_id      | integer           | not null
- owner_type    | character varying | not null
  requests      | integer           |
  commits       | integer           |
  branches      | integer           |
@@ -30,24 +28,24 @@ Indexes:
 Population and triggers insert records to `repo_counts`. E.g.:
 
 ```
- repository_id | owner_id | owner_type | requests | ... | range
----------------+----------+------------+----------+-----+------
-             1 |        1 | User       |        1 |     |
-             1 |        1 | User       |        1 |     |
-             1 |        1 | User       |        1 |     |
+ repository_id | requests | ... | range
+---------------+----------+-----+------
+             1 |        1 |     |
+             1 |        1 |     |
+             1 |        1 |     |
 ```
 
 Aggregation compacts these records by `repository_id`. E.g.:
 
 ```
- repository_id | owner_id | owner_type | requests | ... | range
----------------+----------+------------+----------+-----+------
-             1 |        1 | User       |        3 |     |
+ repository_id | requests | ... | range
+---------------+----------+-----+------
+             1 |        3 |     |
 ```
 
 There are two functions for aggregating `repo_counts`:
 
 ```
-agg_all_repo_counts()                  # aggregate all records where there is more than 1 record per repo
-agg_repo_counts(_owner_id, owner_type) # aggregate records for the given owner
+agg_all_repo_counts()     # aggregate all records where there is more than 1 record per repo
+agg_repo_counts(_repo_id) # aggregate records for the given owner
 ```

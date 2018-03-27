@@ -4,9 +4,9 @@ declare
   r record;
 begin
   if tg_argv[0]::int > 0 then r := new; else r := old; end if;
-  if r.repository_id is not null and r.owner_id is not null and r.owner_type is not null then
-    insert into repo_counts(repository_id, owner_id, owner_type, requests)
-    values(r.repository_id, r.owner_id, r.owner_type, tg_argv[0]::int);
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, requests)
+    values(r.repository_id, tg_argv[0]::int);
   end if;
   return r;
 exception when others then
@@ -27,13 +27,11 @@ create or replace function count_commits() returns trigger as $$
 declare
   c text;
   r record;
-  repo record;
 begin
   if tg_argv[0]::int > 0 then r := new; else r := old; end if;
-  select owner_id, owner_type from repositories where repositories.id = r.repository_id into repo;
-  if r.repository_id is not null and repo.owner_id is not null and repo.owner_type is not null then
-    insert into repo_counts(repository_id, owner_id, owner_type, commits)
-    values(r.repository_id, repo.owner_id, repo.owner_type, tg_argv[0]::int);
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, commits)
+    values(r.repository_id, tg_argv[0]::int);
   end if;
   return r;
 exception when others then
@@ -54,13 +52,11 @@ create or replace function count_branches() returns trigger as $$
 declare
   c text;
   r record;
-  repo record;
 begin
   if tg_argv[0]::int > 0 then r := new; else r := old; end if;
-  select owner_id, owner_type from repositories where repositories.id = r.repository_id into repo;
-  if r.repository_id is not null and repo.owner_id is not null and repo.owner_type is not null then
-    insert into repo_counts(repository_id, owner_id, owner_type, branches)
-    values(r.repository_id, repo.owner_id, repo.owner_type, tg_argv[0]::int);
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, branches)
+    values(r.repository_id, tg_argv[0]::int);
   end if;
   return r;
 exception when others then
@@ -81,13 +77,11 @@ create or replace function count_pull_requests() returns trigger as $$
 declare
   c text;
   r record;
-  repo record;
 begin
   if tg_argv[0]::int > 0 then r := new; else r := old; end if;
-  select owner_id, owner_type from repositories where repositories.id = r.repository_id into repo;
-  if r.repository_id is not null and repo.owner_id is not null and repo.owner_type is not null then
-    insert into repo_counts(repository_id, owner_id, owner_type, pull_requests)
-    values(r.repository_id, repo.owner_id, repo.owner_type, tg_argv[0]::int);
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, pull_requests)
+    values(r.repository_id, tg_argv[0]::int);
   end if;
   return r;
 exception when others then
@@ -108,13 +102,11 @@ create or replace function count_tags() returns trigger as $$
 declare
   c text;
   r record;
-  repo record;
 begin
   if tg_argv[0]::int > 0 then r := new; else r := old; end if;
-  select owner_id, owner_type from repositories where repositories.id = r.repository_id into repo;
-  if r.repository_id is not null and repo.owner_id is not null and repo.owner_type is not null then
-    insert into repo_counts(repository_id, owner_id, owner_type, tags)
-    values(r.repository_id, repo.owner_id, repo.owner_type, tg_argv[0]::int);
+  if r.repository_id is not null is not null then
+    insert into repo_counts(repository_id, tags)
+    values(r.repository_id, tg_argv[0]::int);
   end if;
   return r;
 exception when others then
@@ -137,9 +129,9 @@ declare
   r record;
 begin
   if tg_argv[0]::int > 0 then r := new; else r := old; end if;
-  if r.repository_id is not null and r.owner_id is not null and r.owner_type is not null then
-    insert into repo_counts(repository_id, owner_id, owner_type, builds)
-    values(r.repository_id, r.owner_id, r.owner_type, tg_argv[0]::int);
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, builds)
+    values(r.repository_id, tg_argv[0]::int);
   end if;
   return r;
 exception when others then
@@ -164,10 +156,10 @@ for each row when (now() > '2018-03-27 13:30:00') execute procedure count_builds
 --   build record;
 -- begin
 --   if tg_argv[0]::int > 0 then r := new; else r := old; end if;
---   select repository_id, owner_id, owner_type from builds as b where b.id = r.build_id into build;
---   if build.repository_id is not null and build.owner_id is not null and build.owner_type is not null then
---     insert into repo_counts(repository_id, owner_id, owner_type, stages)
---     values(build.repository_id, build.owner_id, build.owner_type, tg_argv[0]::int);
+--   select repository_id from builds as b where b.id = r.build_id into build;
+--   if build.repository_id is not null then
+--     insert into repo_counts(repository_id, stages)
+--     values(build.repository_id, tg_argv[0]::int);
 --   end if;
 --   return r;
 -- exception when others then
@@ -190,9 +182,9 @@ declare
   r record;
 begin
   if tg_argv[0]::int > 0 then r := new; else r := old; end if;
-  if r.repository_id is not null and r.owner_id is not null and r.owner_type is not null then
-    insert into repo_counts(repository_id, owner_id, owner_type, jobs)
-    values(r.repository_id, r.owner_id, r.owner_type, tg_argv[0]::int);
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, jobs)
+    values(r.repository_id, tg_argv[0]::int);
   end if;
   return r;
 exception when others then

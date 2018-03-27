@@ -61,21 +61,21 @@ describe 'Repo counts' do
       alter sequence jobs_id_seq restart with 1;
       alter sequence shared_builds_tasks_seq restart with 1; -- wat, we're still using this?
 
-      insert into repositories(owner_id, owner_type, created_at, updated_at) values
-      (1, 'User', now(), now()),
-      (1, 'User', now(), now()),
-      (2, 'User', now(), now()),
-      (2, 'User', now(), now());
+      insert into repositories(id, created_at, updated_at) values
+      (1, now(), now()),
+      (2, now(), now()),
+      (3, now(), now()),
+      (4, now(), now());
 
-      insert into requests(repository_id, owner_id, owner_type, created_at, updated_at) values
-      (1, 1, 'User', now(), now()),
-      (1, 1, 'User', now(), now()),
-      (2, 1, 'User', now(), now()),
-      (2, 1, 'User', now(), now()),
-      (3, 2, 'User', now(), now()),
-      (3, 2, 'User', now(), now()),
-      (4, 2, 'User', now(), now()),
-      (4, 2, 'User', now(), now());
+      insert into requests(repository_id, created_at, updated_at) values
+      (1, now(), now()),
+      (1, now(), now()),
+      (2, now(), now()),
+      (2, now(), now()),
+      (3, now(), now()),
+      (3, now(), now()),
+      (4, now(), now()),
+      (4, now(), now());
 
       insert into commits(repository_id, created_at, updated_at) values
       (1, now(), now()),
@@ -100,30 +100,30 @@ describe 'Repo counts' do
       (3, now(), now()),
       (3, now(), now());
 
-      insert into builds(repository_id, owner_id, owner_type, created_at, updated_at) values
-      (1, 1, 'User', now(), now()),
-      (1, 1, 'User', now(), now()),
-      (2, 1, 'User', now(), now()),
-      (2, 1, 'User', now(), now()),
-      (3, 2, 'User', now(), now()),
-      (3, 2, 'User', now(), now())
+      insert into builds(repository_id, created_at, updated_at) values
+      (1, now(), now()),
+      (1, now(), now()),
+      (2, now(), now()),
+      (2, now(), now()),
+      (3, now(), now()),
+      (3, now(), now())
       ;
 
       insert into stages(build_id) values
       (1),
       (1);
 
-      insert into jobs(repository_id, owner_id, owner_type, created_at, updated_at) values
-      (1, 1, 'User', now(), now()),
-      (1, 1, 'User', now(), now()),
-      (1, 1, 'User', now(), now()),
-      (1, 1, 'User', now(), now()),
-      (1, 1, 'User', now(), now()),
-      (1, 1, 'User', now(), now()),
-      (2, 1, 'User', now(), now()),
-      (2, 1, 'User', now(), now()),
-      (3, 2, 'User', now(), now()),
-      (3, 2, 'User', now(), now());
+      insert into jobs(repository_id, created_at, updated_at) values
+      (1, now(), now()),
+      (1, now(), now()),
+      (1, now(), now()),
+      (1, now(), now()),
+      (1, now(), now()),
+      (1, now(), now()),
+      (2, now(), now()),
+      (2, now(), now()),
+      (3, now(), now()),
+      (3, now(), now());
     )
   end
 
@@ -131,8 +131,6 @@ describe 'Repo counts' do
     select_rows(%(
       select
         repository_id,
-        owner_type,
-        owner_id,
         requests,
         commits,
         branches,
@@ -150,8 +148,6 @@ describe 'Repo counts' do
     select_rows(%(
       select
         repository_id,
-        owner_type,
-        owner_id,
         sum(requests) as requests,
         sum(commits) as commits,
         sum(branches) as branches,
@@ -162,7 +158,7 @@ describe 'Repo counts' do
         sum(jobs) as jobs
       from repo_counts
       where repository_id = #{repo_id}
-      group by repository_id, owner_type, owner_id
+      group by repository_id
     )).first
   end
 
@@ -216,9 +212,9 @@ describe 'Repo counts' do
     end
   end
 
-  it 'after aggregating per owner' do
+  it 'after aggregating per repo' do
     1.upto(3) do |id|
-      2.times { execute %(select agg_repo_counts(#{id}, 'User')) }
+      2.times { execute %(select agg_repo_counts(#{id})) }
     end
 
     expect(select_counts(1)).to have_counts(
@@ -325,8 +321,8 @@ describe 'Repo counts' do
   it 'does not raise if repos are missing' do
     execute %(
       truncate repositories;
-      insert into requests(repository_id, owner_id, owner_type, created_at, updated_at)
-      values (1, 1, 'User', now(), now());
+      insert into requests(repository_id, created_at, updated_at)
+      values (1, now(), now());
     )
   end
 
