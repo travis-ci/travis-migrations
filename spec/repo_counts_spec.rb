@@ -18,7 +18,6 @@ describe 'Repo counts' do
     expect($?.exitstatus).to eq 0
   end
 
-
   def execute(sql)
     ActiveRecord::Base.connection.execute(sql)
   end
@@ -61,11 +60,11 @@ describe 'Repo counts' do
       alter sequence jobs_id_seq restart with 1;
       alter sequence shared_builds_tasks_seq restart with 1; -- wat, we're still using this?
 
-      insert into repositories(id, created_at, updated_at) values
-      (1, now(), now()),
-      (2, now(), now()),
-      (3, now(), now()),
-      (4, now(), now());
+      insert into repositories(created_at, updated_at) values
+      (now(), now()),
+      (now(), now()),
+      (now(), now()),
+      (now(), now());
 
       insert into requests(repository_id, created_at, updated_at) values
       (1, now(), now()),
@@ -106,8 +105,7 @@ describe 'Repo counts' do
       (2, now(), now()),
       (2, now(), now()),
       (3, now(), now()),
-      (3, now(), now())
-      ;
+      (3, now(), now());
 
       insert into stages(build_id) values
       (1),

@@ -1,6 +1,12 @@
 class CreateRepoCountsTriggers < ActiveRecord::Migration
+  FILES = %w(
+    repo_counts_triggers.sql
+    repo_counts_populate.sql
+    repo_counts_aggregate.sql
+  )
+
   def up
-    execute sql
+    execute with_cutoff(sql)
   end
 
   def down
@@ -22,6 +28,19 @@ class CreateRepoCountsTriggers < ActiveRecord::Migration
   end
 
   def sql
-    File.read(File.expand_path('../../sql/repo_counts_triggers.sql', __FILE__))
+    FILES.map { |file| read(file) }.join("\n")
+  end
+
+  def read(file)
+    File.read(File.expand_path("../../sql/#{file}", __FILE__))
+  end
+
+  def with_cutoff(sql)
+    return sql unless production?
+    sql.gsub('2018-01-01 00:00:00', Time.now.utc.to_s.gsub(' UTC', ''))
+  end
+
+  def production?
+    ENV['RAILS_ENV'] == 'production'
   end
 end
