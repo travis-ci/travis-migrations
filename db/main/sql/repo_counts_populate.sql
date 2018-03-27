@@ -16,7 +16,7 @@ returns table (repository_id int, requests bigint, range varchar) as $$
 begin
   return query select t.repository_id, count(id) as requests, ('requests' || ':' || _start || ':' || _end)::varchar as range
   from requests as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 20:10:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by t.repository_id;
 end;
 $$
@@ -29,7 +29,7 @@ begin
   return query select r.id, count(t.id) as commits, ('commits' || ':' || _start || ':' || _end)::varchar as range
   from commits as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 20:10:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by r.id;
 end;
 $$
@@ -42,7 +42,7 @@ begin
   return query select r.id, count(t.id) as branches, ('branches' || ':' || _start || ':' || _end)::varchar as range
   from branches as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 20:10:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by r.id;
 end;
 $$
@@ -55,7 +55,7 @@ begin
   return query select r.id, count(t.id) as pull_requests, ('pull_requests' || ':' || _start || ':' || _end)::varchar as range
   from pull_requests as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 20:10:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by r.id;
 end;
 $$
@@ -68,7 +68,7 @@ begin
   return query select r.id, count(t.id) as tags, ('tags' || ':' || _start || ':' || _end)::varchar as range
   from tags as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 20:10:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by r.id;
 end;
 $$
@@ -80,7 +80,7 @@ returns table (repository_id int, builds bigint, range varchar) as $$
 begin
   return query select t.repository_id, count(id) as builds, ('builds' || ':' || _start || ':' || _end)::varchar as range
   from builds as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 20:10:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by t.repository_id;
 end;
 $$
@@ -93,7 +93,7 @@ language plpgsql;
 --   return query select b.repository_id, count(t.id) as stages, ('stages' || ':' || _start || ':' || _end)::varchar as range
 --   from stages as t
 --   join builds as b on t.build_id = b.id
---   where t.id between _start and _end and b.created_at < '2018-03-27 20:10:00' and b.repository_id is not null
+--   where t.id between _start and _end and b.created_at <= '2018-01-01 00:00:00' and b.repository_id is not null
 --   group by b.repository_id;
 -- end;
 -- $$
@@ -105,7 +105,7 @@ returns table (repository_id int, jobs bigint, range varchar) as $$
 begin
   return query select t.repository_id, count(id) as jobs, ('jobs' || ':' || _start || ':' || _end)::varchar as range
   from jobs as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 20:10:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by t.repository_id;
 end;
 $$

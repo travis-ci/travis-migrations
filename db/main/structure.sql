@@ -416,7 +416,7 @@ begin
   return query select r.id, count(t.id) as branches, ('branches' || ':' || _start || ':' || _end)::varchar as range
   from branches as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by r.id;
 end;
 $$;
@@ -457,7 +457,7 @@ CREATE FUNCTION count_builds(_start integer, _end integer) RETURNS TABLE(reposit
 begin
   return query select t.repository_id, count(id) as builds, ('builds' || ':' || _start || ':' || _end)::varchar as range
   from builds as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by t.repository_id;
 end;
 $$;
@@ -499,7 +499,7 @@ begin
   return query select r.id, count(t.id) as commits, ('commits' || ':' || _start || ':' || _end)::varchar as range
   from commits as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by r.id;
 end;
 $$;
@@ -540,7 +540,7 @@ CREATE FUNCTION count_jobs(_start integer, _end integer) RETURNS TABLE(repositor
 begin
   return query select t.repository_id, count(id) as jobs, ('jobs' || ':' || _start || ':' || _end)::varchar as range
   from jobs as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by t.repository_id;
 end;
 $$;
@@ -582,7 +582,7 @@ begin
   return query select r.id, count(t.id) as pull_requests, ('pull_requests' || ':' || _start || ':' || _end)::varchar as range
   from pull_requests as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by r.id;
 end;
 $$;
@@ -623,7 +623,7 @@ CREATE FUNCTION count_requests(_start integer, _end integer) RETURNS TABLE(repos
 begin
   return query select t.repository_id, count(id) as requests, ('requests' || ':' || _start || ':' || _end)::varchar as range
   from requests as t
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by t.repository_id;
 end;
 $$;
@@ -665,7 +665,7 @@ begin
   return query select r.id, count(t.id) as tags, ('tags' || ':' || _start || ':' || _end)::varchar as range
   from tags as t
   join repositories as r on t.repository_id = r.id
-  where t.id between _start and _end and t.created_at < '2018-03-27 13:30:00' and t.repository_id is not null
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
   group by r.id;
 end;
 $$;
@@ -3151,98 +3151,98 @@ CREATE TRIGGER set_updated_at_on_jobs BEFORE INSERT OR UPDATE ON jobs FOR EACH R
 -- Name: branches trg_count_branch_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_branch_deleted AFTER DELETE ON branches FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_branches('-1');
+CREATE TRIGGER trg_count_branch_deleted AFTER DELETE ON branches FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_branches('-1');
 
 
 --
 -- Name: branches trg_count_branch_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_branch_inserted AFTER INSERT ON branches FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_branches('1');
+CREATE TRIGGER trg_count_branch_inserted AFTER INSERT ON branches FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_branches('1');
 
 
 --
 -- Name: builds trg_count_build_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_build_deleted AFTER DELETE ON builds FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_builds('-1');
+CREATE TRIGGER trg_count_build_deleted AFTER DELETE ON builds FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_builds('-1');
 
 
 --
 -- Name: builds trg_count_build_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_build_inserted AFTER INSERT ON builds FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_builds('1');
+CREATE TRIGGER trg_count_build_inserted AFTER INSERT ON builds FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_builds('1');
 
 
 --
 -- Name: commits trg_count_commit_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_commit_deleted AFTER DELETE ON commits FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_commits('-1');
+CREATE TRIGGER trg_count_commit_deleted AFTER DELETE ON commits FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_commits('-1');
 
 
 --
 -- Name: commits trg_count_commit_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_commit_inserted AFTER INSERT ON commits FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_commits('1');
+CREATE TRIGGER trg_count_commit_inserted AFTER INSERT ON commits FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_commits('1');
 
 
 --
 -- Name: jobs trg_count_job_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_job_deleted AFTER DELETE ON jobs FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_jobs('-1');
+CREATE TRIGGER trg_count_job_deleted AFTER DELETE ON jobs FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_jobs('-1');
 
 
 --
 -- Name: jobs trg_count_job_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_job_inserted AFTER INSERT ON jobs FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_jobs('1');
+CREATE TRIGGER trg_count_job_inserted AFTER INSERT ON jobs FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_jobs('1');
 
 
 --
 -- Name: pull_requests trg_count_pull_request_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_pull_request_deleted AFTER DELETE ON pull_requests FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_pull_requests('-1');
+CREATE TRIGGER trg_count_pull_request_deleted AFTER DELETE ON pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_pull_requests('-1');
 
 
 --
 -- Name: pull_requests trg_count_pull_request_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_pull_request_inserted AFTER INSERT ON pull_requests FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_pull_requests('1');
+CREATE TRIGGER trg_count_pull_request_inserted AFTER INSERT ON pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_pull_requests('1');
 
 
 --
 -- Name: requests trg_count_request_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_request_deleted AFTER DELETE ON requests FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_requests('-1');
+CREATE TRIGGER trg_count_request_deleted AFTER DELETE ON requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_requests('-1');
 
 
 --
 -- Name: requests trg_count_request_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_request_inserted AFTER INSERT ON requests FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_requests('1');
+CREATE TRIGGER trg_count_request_inserted AFTER INSERT ON requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_requests('1');
 
 
 --
 -- Name: tags trg_count_tag_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_tag_deleted AFTER DELETE ON tags FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_tags('-1');
+CREATE TRIGGER trg_count_tag_deleted AFTER DELETE ON tags FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_tags('-1');
 
 
 --
 -- Name: tags trg_count_tag_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON tags FOR EACH ROW WHEN ((now() > '2018-03-27 15:30:00+02'::timestamp with time zone)) EXECUTE PROCEDURE count_tags('1');
+CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON tags FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE count_tags('1');
 
 
 --
