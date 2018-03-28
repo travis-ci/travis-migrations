@@ -12,6 +12,7 @@ class CreateGithubInstallations < ActiveRecord::Migration
 
     def change
       add_reference :github_installations, :added_by, foreign_key: { to_table: :users }
+      add_reference :github_installations, :deleted_by, foreign_key: { to_table: :users }
       add_column :repositories, :active_on_org, :boolean
       add_column :repositories, :activated_by_github_apps_on, :timestamp
     end
