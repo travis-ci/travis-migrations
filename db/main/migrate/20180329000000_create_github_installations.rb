@@ -6,8 +6,11 @@ class CreateGithubInstallations < ActiveRecord::Migration
       t.belongs_to :owner, :polymorphic => true
       t.string     :owner_type
       t.integer    :owner_id
-      t.jsonb      :permissions if /PostgreSQL 9.6/.match(PSQL)
-      t.json       :permissions if /PostgreSQL 9.3/.match(PSQL)
+      if /PostgreSQL 9.3/.match(PSQL)
+        t.json       :permissions
+      else
+        t.jsonb    :permissions
+      end
       t.integer    :added_by
       t.datetime   :deleted_on
       t.datetime   :updated_on
