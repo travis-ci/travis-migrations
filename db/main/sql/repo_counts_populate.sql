@@ -108,7 +108,7 @@ begin
   for i in 0..coalesce(max, 1) by _count loop
     begin
       insert into repo_counts(repository_id, requests, range)
-      select * from count_requests(i, i + _count);
+      select * from count_requests(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -126,7 +126,7 @@ begin
   for i in 0..coalesce(max, 1) by _count loop
     begin
       insert into repo_counts(repository_id, commits, range)
-      select * from count_commits(i, i + _count);
+      select * from count_commits(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -144,7 +144,7 @@ begin
   for i in 0..coalesce(max, 1) by _count loop
     begin
       insert into repo_counts(repository_id, branches, range)
-      select * from count_branches(i, i + _count);
+      select * from count_branches(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -162,7 +162,7 @@ begin
   for i in 0..coalesce(max, 1) by _count loop
     begin
       insert into repo_counts(repository_id, pull_requests, range)
-      select * from count_pull_requests(i, i + _count);
+      select * from count_pull_requests(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -180,7 +180,7 @@ begin
   for i in 0..coalesce(max, 1) by _count loop
     begin
       insert into repo_counts(repository_id, tags, range)
-      select * from count_tags(i, i + _count);
+      select * from count_tags(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -198,7 +198,7 @@ begin
   for i in 0..coalesce(max, 1) by _count loop
     begin
       insert into repo_counts(repository_id, builds, range)
-      select * from count_builds(i, i + _count);
+      select * from count_builds(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -216,7 +216,7 @@ begin
   for i in 0..coalesce(max, 1) by _count loop
     begin
       insert into repo_counts(repository_id, stages, range)
-      select * from count_stages(i, i + _count);
+      select * from count_stages(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -234,7 +234,7 @@ begin
   for i in 0..coalesce(max, 1) by _count loop
     begin
       insert into repo_counts(repository_id, jobs, range)
-      select * from count_jobs(i, i + _count);
+      select * from count_jobs(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
