@@ -451,9 +451,11 @@ CREATE TABLE public.github_installations (
     id integer NOT NULL,
     owner_id integer,
     owner_type character varying,
+    github_installation_id integer,
     permissions jsonb,
     added_by integer,
-    deleted_on timestamp without time zone,
+    removed_by integer,
+    removed_on timestamp without time zone,
     updated_on timestamp without time zone
 );
 
