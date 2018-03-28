@@ -49,3 +49,22 @@ There are two functions for aggregating `repo_counts`:
 agg_all_repo_counts()     # aggregate all records where there is more than 1 record per repo
 agg_repo_counts(_repo_id) # aggregate records for the given owner
 ```
+
+Triggers and population functions depend on a cutoff timestamp (`now() >
+'2018-MM-DD HH:MM:SS'`).  This timestamp is interpolated to be `Time.now.utc`
+in production when the migration is run. (They are left untouched in test and
+development so that the tests are unaffected by this cutoff timestamp, and the
+structure.sql is not constantly updated when the migrations are being run
+locally.
+
+Population functions can then be run manually after that:
+
+```
+select * from count_all_requests(1000);
+select * from count_all_commits(1000);
+select * from count_all_branches(1000);
+select * from count_all_pull_requests(1000);
+select * from count_all_tags(1000);
+select * from count_all_builds(1000);
+select * from count_all_jobs(1000);
+```
