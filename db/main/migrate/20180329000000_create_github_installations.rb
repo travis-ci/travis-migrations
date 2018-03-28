@@ -1,6 +1,5 @@
 class CreateGithubInstallations < ActiveRecord::Migration
   PSQL = ActiveRecord::Base.connection.select_value('SELECT version()')
-  puts PSQL
 
   def self.up
     create_table :github_installations do |t|
