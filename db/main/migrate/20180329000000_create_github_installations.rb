@@ -1,10 +1,14 @@
 class CreateGithubInstallations < ActiveRecord::Migration
+  PSQL = ActiveRecord::Base.connection.select_value('SELECT version()')
+  puts PSQL
+
   def self.up
     create_table :github_installations do |t|
       t.belongs_to :owner, :polymorphic => true
       t.string     :owner_type
       t.integer    :owner_id
-      t.jsonb      :permissions
+      t.jsonb      :permissions if /PostgreSQL 9.6/.match(PSQL)
+      t.json       :permissions if /PostgreSQL 9.3/.match(PSQL)
       t.integer    :added_by
       t.datetime   :deleted_on
       t.datetime   :updated_on
