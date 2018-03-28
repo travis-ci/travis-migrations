@@ -1,15 +1,3 @@
--- triggers depend on now() > '2018-MM-DD'
--- populate records that were created earlier on the next day using:
---
---   select * from count_all_requests(1000);
---   select * from count_all_commits(1000);
---   select * from count_all_branches(1000);
---   select * from count_all_pull_requests(1000);
---   select * from count_all_tags(1000);
---   select * from count_all_builds(1000);
---   select * from count_all_stages(1000);
---   select * from count_all_jobs(1000);
-
 drop function if exists count_requests(_start int, _end int);
 create or replace function count_requests(_start int, _end int)
 returns table (repository_id int, requests bigint, range varchar) as $$
