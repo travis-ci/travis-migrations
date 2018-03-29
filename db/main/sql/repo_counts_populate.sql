@@ -99,14 +99,15 @@ end;
 $$
 language plpgsql;
 
-drop function if exists count_all_requests(_count int);
-create or replace function count_all_requests(_count int) returns boolean as $$
+drop function if exists count_all_requests(_count int, _start int, _end int);
+create or replace function count_all_requests(_count int, _start int, _end int) returns boolean as $$
 declare max int;
 begin
   select id + _count from requests order by id desc limit 1 into max;
-
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting requests %', i;
       insert into repo_counts(repository_id, requests, range)
       select * from count_requests(i, i + _count - 1);
     exception when unique_violation then end;
@@ -117,14 +118,16 @@ end
 $$
 language plpgsql;
 
-drop function if exists count_all_commits(_count int);
-create or replace function count_all_commits(_count int) returns boolean as $$
+drop function if exists count_all_commits(_count int, _start int, _end int);
+create or replace function count_all_commits(_count int, _start int, _end int) returns boolean as $$
 declare max int;
 begin
   select id + _count from commits order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting commits %', i;
       insert into repo_counts(repository_id, commits, range)
       select * from count_commits(i, i + _count - 1);
     exception when unique_violation then end;
@@ -135,14 +138,16 @@ end
 $$
 language plpgsql;
 
-drop function if exists count_all_branches(_count int);
-create or replace function count_all_branches(_count int) returns boolean as $$
+drop function if exists count_all_branches(_count int, _start int, _end int);
+create or replace function count_all_branches(_count int, _start int, _end int) returns boolean as $$
 declare max int;
 begin
   select id + _count from branches order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting branches %', i;
       insert into repo_counts(repository_id, branches, range)
       select * from count_branches(i, i + _count - 1);
     exception when unique_violation then end;
@@ -153,14 +158,16 @@ end
 $$
 language plpgsql;
 
-drop function if exists count_all_pull_requests(_count int);
-create or replace function count_all_pull_requests(_count int) returns boolean as $$
+drop function if exists count_all_pull_requests(_count int, _start int, _end int);
+create or replace function count_all_pull_requests(_count int, _start int, _end int) returns boolean as $$
 declare max int;
 begin
   select id + _count from pull_requests order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting pull_requests %', i;
       insert into repo_counts(repository_id, pull_requests, range)
       select * from count_pull_requests(i, i + _count - 1);
     exception when unique_violation then end;
@@ -171,14 +178,16 @@ end
 $$
 language plpgsql;
 
-drop function if exists count_all_tags(_count int);
-create or replace function count_all_tags(_count int) returns boolean as $$
+drop function if exists count_all_tags(_count int, _start int, _end int);
+create or replace function count_all_tags(_count int, _start int, _end int) returns boolean as $$
 declare max int;
 begin
   select id + _count from tags order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting tags %', i;
       insert into repo_counts(repository_id, tags, range)
       select * from count_tags(i, i + _count - 1);
     exception when unique_violation then end;
@@ -189,14 +198,16 @@ end
 $$
 language plpgsql;
 
-drop function if exists count_all_builds(_count int);
-create or replace function count_all_builds(_count int) returns boolean as $$
+drop function if exists count_all_builds(_count int, _start int, _end int);
+create or replace function count_all_builds(_count int, _start int, _end int) returns boolean as $$
 declare max int;
 begin
   select id + _count from builds order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting builds %', i;
       insert into repo_counts(repository_id, builds, range)
       select * from count_builds(i, i + _count - 1);
     exception when unique_violation then end;
@@ -207,32 +218,36 @@ end
 $$
 language plpgsql;
 
-drop function if exists count_all_stages(_count int);
-create or replace function count_all_stages(_count int) returns boolean as $$
-declare max int;
-begin
-  select id + _count from stages order by id desc limit 1 into max;
+-- drop function if exists count_all_stages(_count int, _start int, _end int);
+-- create or replace function count_all_stages(_count int, _start int, _end int) returns boolean as $$
+-- declare max int;
+-- begin
+--   select id + _count from stages order by id desc limit 1 into max;
+--
+--   for i in _start.._end by _count loop
+--     if i > max then exit; end if;
+--     begin
+--       raise notice 'counting stages %', i;
+--       insert into repo_counts(repository_id, stages, range)
+--       select * from count_stages(i, i + _count - 1);
+--     exception when unique_violation then end;
+--   end loop;
+--
+--   return true;
+-- end
+-- $$
+-- language plpgsql;
 
-  for i in 0..coalesce(max, 1) by _count loop
-    begin
-      insert into repo_counts(repository_id, stages, range)
-      select * from count_stages(i, i + _count - 1);
-    exception when unique_violation then end;
-  end loop;
-
-  return true;
-end
-$$
-language plpgsql;
-
-drop function if exists count_all_jobs(_count int);
-create or replace function count_all_jobs(_count int) returns boolean as $$
+drop function if exists count_all_jobs(_count int, _start int, _end int);
+create or replace function count_all_jobs(_count int, _start int, _end int) returns boolean as $$
 declare max int;
 begin
   select id + _count from jobs order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting jobs %', i;
       insert into repo_counts(repository_id, jobs, range)
       select * from count_jobs(i, i + _count - 1);
     exception when unique_violation then end;

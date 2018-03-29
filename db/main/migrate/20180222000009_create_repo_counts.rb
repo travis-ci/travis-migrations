@@ -14,6 +14,8 @@ class CreateRepoCounts < ActiveRecord::Migration
     end
 
     add_index :repo_counts, :repository_id
+    # CREATE UNIQUE INDEX CONCURRENTLY index_repo_counts_on_repository_id_and_range ON repo_counts USING btree (repository_id, range);
+    # add_index :repo_counts, [:repository_id, :range], unique: true
   end
 
   def down
