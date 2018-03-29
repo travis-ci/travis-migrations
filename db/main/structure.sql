@@ -861,7 +861,7 @@ CREATE TABLE public.repositories (
     migrating boolean,
     migrated_at timestamp without time zone,
     active_on_org boolean,
-    activated_by_github_apps_on timestamp without time zone
+    activated_by_github_installation_on timestamp without time zone
 );
 
 
