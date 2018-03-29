@@ -126,18 +126,6 @@ ALTER SEQUENCE public.abuses_id_seq OWNED BY public.abuses.id;
 
 
 --
--- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.ar_internal_metadata (
-    key character varying NOT NULL,
-    value character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
 -- Name: beta_features; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -183,9 +171,7 @@ CREATE TABLE public.branches (
     name character varying NOT NULL,
     exists_on_github boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    org_id integer,
-    com_id integer
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -288,9 +274,7 @@ CREATE TABLE public.builds (
     branch_id integer,
     tag_id integer,
     sender_id integer,
-    sender_type character varying,
-    org_id integer,
-    com_id integer
+    sender_type character varying
 );
 
 
@@ -333,9 +317,7 @@ CREATE TABLE public.commits (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     branch_id integer,
-    tag_id integer,
-    org_id integer,
-    com_id integer
+    tag_id integer
 );
 
 
@@ -406,9 +388,7 @@ CREATE TABLE public.crons (
     updated_at timestamp without time zone NOT NULL,
     next_run timestamp without time zone,
     last_run timestamp without time zone,
-    dont_run_if_recent_build_exists boolean DEFAULT false,
-    org_id integer,
-    com_id integer
+    dont_run_if_recent_build_exists boolean DEFAULT false
 );
 
 
@@ -471,7 +451,7 @@ CREATE TABLE public.github_installations (
     id integer NOT NULL,
     owner_id integer,
     owner_type character varying,
-    github_installation_id integer,
+    github_id integer,
     permissions jsonb,
     added_by integer,
     removed_by integer,
@@ -567,9 +547,7 @@ CREATE TABLE public.jobs (
     debug_options text,
     private boolean,
     stage_number character varying,
-    stage_id integer,
-    org_id integer,
-    com_id integer
+    stage_id integer
 );
 
 
@@ -675,11 +653,7 @@ CREATE TABLE public.organizations (
     email character varying,
     company character varying,
     homepage character varying,
-    billing_admin_only boolean,
-    org_id integer,
-    com_id integer,
-    migrating boolean,
-    migrated_at timestamp without time zone
+    billing_admin_only boolean
 );
 
 
@@ -745,9 +719,7 @@ CREATE TABLE public.permissions (
     repository_id integer,
     admin boolean DEFAULT false,
     push boolean DEFAULT false,
-    pull boolean DEFAULT false,
-    org_id integer,
-    com_id integer
+    pull boolean DEFAULT false
 );
 
 
@@ -784,9 +756,7 @@ CREATE TABLE public.pull_requests (
     head_repo_slug character varying,
     head_ref character varying,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    org_id integer,
-    com_id integer
+    updated_at timestamp without time zone
 );
 
 
@@ -868,12 +838,8 @@ CREATE TABLE public.repositories (
     next_build_number integer,
     invalidated_at timestamp without time zone,
     current_build_id bigint,
-    org_id integer,
-    com_id integer,
-    migrating boolean,
-    migrated_at timestamp without time zone,
     active_on_org boolean,
-    activated_by_github_installation_on timestamp without time zone
+    managed_by_github_installation_on timestamp without time zone
 );
 
 
@@ -926,9 +892,7 @@ CREATE TABLE public.requests (
     branch_id integer,
     tag_id integer,
     sender_id integer,
-    sender_type character varying,
-    org_id integer,
-    com_id integer
+    sender_type character varying
 );
 
 
@@ -970,9 +934,7 @@ CREATE TABLE public.ssl_keys (
     public_key text,
     private_key text,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    org_id integer,
-    com_id integer
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -1006,9 +968,7 @@ CREATE TABLE public.stages (
     name character varying,
     state character varying,
     started_at timestamp without time zone,
-    finished_at timestamp without time zone,
-    org_id integer,
-    com_id integer
+    finished_at timestamp without time zone
 );
 
 
@@ -1165,9 +1125,7 @@ CREATE TABLE public.tags (
     last_build_id integer,
     exists_on_github boolean,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    org_id integer,
-    com_id integer
+    updated_at timestamp without time zone
 );
 
 
@@ -1379,11 +1337,7 @@ CREATE TABLE public.users (
     first_logged_in_at timestamp without time zone,
     avatar_url character varying,
     suspended boolean DEFAULT false,
-    suspended_at timestamp without time zone,
-    org_id integer,
-    com_id integer,
-    migrating boolean,
-    migrated_at timestamp without time zone
+    suspended_at timestamp without time zone
 );
 
 
@@ -1629,14 +1583,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.abuses
     ADD CONSTRAINT abuses_pkey PRIMARY KEY (id);
-
-
---
--- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.ar_internal_metadata
-    ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
 
 
 --
@@ -1910,20 +1856,6 @@ CREATE UNIQUE INDEX index_abuses_on_owner_id_and_owner_type_and_level ON public.
 
 
 --
--- Name: index_branches_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_branches_on_com_id ON public.branches USING btree (com_id);
-
-
---
--- Name: index_branches_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_branches_on_org_id ON public.branches USING btree (org_id);
-
-
---
 -- Name: index_branches_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1942,20 +1874,6 @@ CREATE UNIQUE INDEX index_branches_on_repository_id_and_name ON public.branches 
 --
 
 CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON public.broadcasts USING btree (recipient_id, recipient_type);
-
-
---
--- Name: index_builds_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_builds_on_com_id ON public.builds USING btree (com_id);
-
-
---
--- Name: index_builds_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_builds_on_org_id ON public.builds USING btree (org_id);
 
 
 --
@@ -2029,34 +1947,6 @@ CREATE INDEX index_builds_on_state ON public.builds USING btree (state);
 
 
 --
--- Name: index_commits_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_commits_on_com_id ON public.commits USING btree (com_id);
-
-
---
--- Name: index_commits_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_commits_on_org_id ON public.commits USING btree (org_id);
-
-
---
--- Name: index_crons_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_crons_on_com_id ON public.crons USING btree (com_id);
-
-
---
--- Name: index_crons_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_crons_on_org_id ON public.crons USING btree (org_id);
-
-
---
 -- Name: index_emails_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2106,24 +1996,10 @@ CREATE INDEX index_invoices_on_stripe_id ON public.invoices USING btree (stripe_
 
 
 --
--- Name: index_jobs_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_jobs_on_com_id ON public.jobs USING btree (com_id);
-
-
---
 -- Name: index_jobs_on_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_jobs_on_created_at ON public.jobs USING btree (created_at);
-
-
---
--- Name: index_jobs_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_jobs_on_org_id ON public.jobs USING btree (org_id);
 
 
 --
@@ -2190,13 +2066,6 @@ CREATE INDEX index_messages_on_subject_type_and_subject_id ON public.messages US
 
 
 --
--- Name: index_organizations_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_organizations_on_com_id ON public.organizations USING btree (com_id);
-
-
---
 -- Name: index_organizations_on_github_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2218,13 +2087,6 @@ CREATE INDEX index_organizations_on_lower_login ON public.organizations USING bt
 
 
 --
--- Name: index_organizations_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_organizations_on_org_id ON public.organizations USING btree (org_id);
-
-
---
 -- Name: index_owner_groups_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2236,20 +2098,6 @@ CREATE INDEX index_owner_groups_on_owner_type_and_owner_id ON public.owner_group
 --
 
 CREATE INDEX index_owner_groups_on_uuid ON public.owner_groups USING btree (uuid);
-
-
---
--- Name: index_permissions_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_permissions_on_com_id ON public.permissions USING btree (com_id);
-
-
---
--- Name: index_permissions_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_permissions_on_org_id ON public.permissions USING btree (org_id);
 
 
 --
@@ -2274,20 +2122,6 @@ CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON public.per
 
 
 --
--- Name: index_pull_requests_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_pull_requests_on_com_id ON public.pull_requests USING btree (com_id);
-
-
---
--- Name: index_pull_requests_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_pull_requests_on_org_id ON public.pull_requests USING btree (org_id);
-
-
---
 -- Name: index_pull_requests_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2306,13 +2140,6 @@ CREATE INDEX index_queueable_jobs_on_job_id ON public.queueable_jobs USING btree
 --
 
 CREATE INDEX index_repositories_on_active ON public.repositories USING btree (active);
-
-
---
--- Name: index_repositories_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_repositories_on_com_id ON public.repositories USING btree (com_id);
 
 
 --
@@ -2337,13 +2164,6 @@ CREATE INDEX index_repositories_on_name ON public.repositories USING btree (name
 
 
 --
--- Name: index_repositories_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_repositories_on_org_id ON public.repositories USING btree (org_id);
-
-
---
 -- Name: index_repositories_on_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2362,13 +2182,6 @@ CREATE INDEX index_repositories_on_owner_name ON public.repositories USING btree
 --
 
 CREATE INDEX index_repositories_on_slug ON public.repositories USING gin (((((owner_name)::text || '/'::text) || (name)::text)) public.gin_trgm_ops);
-
-
---
--- Name: index_requests_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_requests_on_com_id ON public.requests USING btree (com_id);
 
 
 --
@@ -2393,13 +2206,6 @@ CREATE INDEX index_requests_on_head_commit ON public.requests USING btree (head_
 
 
 --
--- Name: index_requests_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_requests_on_org_id ON public.requests USING btree (org_id);
-
-
---
 -- Name: index_requests_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2421,38 +2227,10 @@ CREATE INDEX index_ssl_key_on_repository_id ON public.ssl_keys USING btree (repo
 
 
 --
--- Name: index_ssl_keys_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_ssl_keys_on_com_id ON public.ssl_keys USING btree (com_id);
-
-
---
--- Name: index_ssl_keys_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_ssl_keys_on_org_id ON public.ssl_keys USING btree (org_id);
-
-
---
 -- Name: index_stages_on_build_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_stages_on_build_id ON public.stages USING btree (build_id);
-
-
---
--- Name: index_stages_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_stages_on_com_id ON public.stages USING btree (com_id);
-
-
---
--- Name: index_stages_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_stages_on_org_id ON public.stages USING btree (org_id);
 
 
 --
@@ -2488,20 +2266,6 @@ CREATE INDEX index_stripe_events_on_event_id ON public.stripe_events USING btree
 --
 
 CREATE INDEX index_stripe_events_on_event_type ON public.stripe_events USING btree (event_type);
-
-
---
--- Name: index_tags_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_tags_on_com_id ON public.tags USING btree (com_id);
-
-
---
--- Name: index_tags_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_tags_on_org_id ON public.tags USING btree (org_id);
 
 
 --
@@ -2554,13 +2318,6 @@ CREATE INDEX index_user_beta_features_on_user_id_and_beta_feature_id ON public.u
 
 
 --
--- Name: index_users_on_com_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_users_on_com_id ON public.users USING btree (com_id);
-
-
---
 -- Name: index_users_on_github_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2586,13 +2343,6 @@ CREATE INDEX index_users_on_login ON public.users USING btree (login);
 --
 
 CREATE INDEX index_users_on_lower_login ON public.users USING btree (lower((login)::text));
-
-
---
--- Name: index_users_on_org_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_users_on_org_id ON public.users USING btree (org_id);
 
 
 --
@@ -2637,6 +2387,14 @@ ALTER TABLE ONLY public.github_installations
 
 ALTER TABLE ONLY public.github_installations
     ADD CONSTRAINT fk_rails_c36cf376a2 FOREIGN KEY (added_by) REFERENCES public.users(id);
+
+
+--
+-- Name: repositories fk_repositories_current_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.repositories
+    ADD CONSTRAINT fk_repositories_current_build_id FOREIGN KEY (current_build_id) REFERENCES public.builds(id);
 
 
 --
@@ -3158,14 +2916,6 @@ INSERT INTO schema_migrations (version) VALUES ('20171211000000');
 INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
-
-INSERT INTO schema_migrations (version) VALUES ('20180222000000');
-
-INSERT INTO schema_migrations (version) VALUES ('20180222000001');
-
-INSERT INTO schema_migrations (version) VALUES ('20180222000002');
-
-INSERT INTO schema_migrations (version) VALUES ('20180222000003');
 
 INSERT INTO schema_migrations (version) VALUES ('20180222164100');
 
