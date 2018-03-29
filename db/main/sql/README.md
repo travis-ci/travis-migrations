@@ -67,4 +67,6 @@ select * from count_all_pull_requests(1000);
 select * from count_all_tags(1000);
 select * from count_all_builds(1000);
 select * from count_all_jobs(1000);
+
+select agg_all_repo_counts();
 ```
