@@ -197,20 +197,22 @@ $$;
 
 
 --
--- Name: count_all_branches(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: count_all_branches(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION count_all_branches(_count integer) RETURNS boolean
+CREATE FUNCTION count_all_branches(_count integer, _start integer, _end integer) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
 declare max int;
 begin
   select id + _count from branches order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting branches %', i;
       insert into repo_counts(repository_id, branches, range)
-      select * from count_branches(i, i + _count);
+      select * from count_branches(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -220,20 +222,22 @@ $$;
 
 
 --
--- Name: count_all_builds(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: count_all_builds(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION count_all_builds(_count integer) RETURNS boolean
+CREATE FUNCTION count_all_builds(_count integer, _start integer, _end integer) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
 declare max int;
 begin
   select id + _count from builds order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting builds %', i;
       insert into repo_counts(repository_id, builds, range)
-      select * from count_builds(i, i + _count);
+      select * from count_builds(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -243,20 +247,22 @@ $$;
 
 
 --
--- Name: count_all_commits(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: count_all_commits(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION count_all_commits(_count integer) RETURNS boolean
+CREATE FUNCTION count_all_commits(_count integer, _start integer, _end integer) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
 declare max int;
 begin
   select id + _count from commits order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting commits %', i;
       insert into repo_counts(repository_id, commits, range)
-      select * from count_commits(i, i + _count);
+      select * from count_commits(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -266,20 +272,22 @@ $$;
 
 
 --
--- Name: count_all_jobs(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: count_all_jobs(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION count_all_jobs(_count integer) RETURNS boolean
+CREATE FUNCTION count_all_jobs(_count integer, _start integer, _end integer) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
 declare max int;
 begin
   select id + _count from jobs order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting jobs %', i;
       insert into repo_counts(repository_id, jobs, range)
-      select * from count_jobs(i, i + _count);
+      select * from count_jobs(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -289,20 +297,22 @@ $$;
 
 
 --
--- Name: count_all_pull_requests(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: count_all_pull_requests(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION count_all_pull_requests(_count integer) RETURNS boolean
+CREATE FUNCTION count_all_pull_requests(_count integer, _start integer, _end integer) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
 declare max int;
 begin
   select id + _count from pull_requests order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting pull_requests %', i;
       insert into repo_counts(repository_id, pull_requests, range)
-      select * from count_pull_requests(i, i + _count);
+      select * from count_pull_requests(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -312,20 +322,21 @@ $$;
 
 
 --
--- Name: count_all_requests(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: count_all_requests(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION count_all_requests(_count integer) RETURNS boolean
+CREATE FUNCTION count_all_requests(_count integer, _start integer, _end integer) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
 declare max int;
 begin
   select id + _count from requests order by id desc limit 1 into max;
-
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting requests %', i;
       insert into repo_counts(repository_id, requests, range)
-      select * from count_requests(i, i + _count);
+      select * from count_requests(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 
@@ -335,43 +346,22 @@ $$;
 
 
 --
--- Name: count_all_stages(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: count_all_tags(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION count_all_stages(_count integer) RETURNS boolean
-    LANGUAGE plpgsql
-    AS $$
-declare max int;
-begin
-  select id + _count from stages order by id desc limit 1 into max;
-
-  for i in 0..coalesce(max, 1) by _count loop
-    begin
-      insert into repo_counts(repository_id, stages, range)
-      select * from count_stages(i, i + _count);
-    exception when unique_violation then end;
-  end loop;
-
-  return true;
-end
-$$;
-
-
---
--- Name: count_all_tags(integer); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION count_all_tags(_count integer) RETURNS boolean
+CREATE FUNCTION count_all_tags(_count integer, _start integer, _end integer) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
 declare max int;
 begin
   select id + _count from tags order by id desc limit 1 into max;
 
-  for i in 0..coalesce(max, 1) by _count loop
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
     begin
+      raise notice 'counting tags %', i;
       insert into repo_counts(repository_id, tags, range)
-      select * from count_tags(i, i + _count);
+      select * from count_tags(i, i + _count - 1);
     exception when unique_violation then end;
   end loop;
 

@@ -60,13 +60,11 @@ locally.
 Population functions can then be run manually after that:
 
 ```
-select * from count_all_requests(1000);
-select * from count_all_commits(1000);
-select * from count_all_branches(1000);
-select * from count_all_pull_requests(1000);
-select * from count_all_tags(1000);
-select * from count_all_builds(1000);
-select * from count_all_jobs(1000);
-
-select agg_all_repo_counts();
+heroku run bundle exec bin/populate_repo_counts pull_requests -a travis-migrations-staging
+heroku run bundle exec bin/populate_repo_counts tags -a travis-migrations-staging
+heroku run bundle exec bin/populate_repo_counts branches -a travis-migrations-staging
+heroku run bundle exec bin/populate_repo_counts requests -a travis-migrations-staging
+heroku run bundle exec bin/populate_repo_counts commits -a travis-migrations-staging
+heroku run bundle exec bin/populate_repo_counts builds -a travis-migrations-staging
+heroku run bundle exec bin/populate_repo_counts jobs -a travis-migrations-staging
 ```
