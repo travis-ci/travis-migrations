@@ -70,6 +70,597 @@ CREATE TYPE public.source_type AS ENUM (
 
 
 --
+-- Name: agg_all_repo_counts(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.agg_all_repo_counts() RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+begin
+  with src as (
+    select cnt.repository_id
+    from repo_counts cnt
+    group by cnt.repository_id
+    having count(1) > 1
+  ),
+  del as (
+    delete from repo_counts cnt
+    using src
+    where cnt.repository_id = src.repository_id
+    returning cnt.*
+  ),
+  agg as (
+    select
+      del.repository_id,
+      sum(del.requests)::integer as requests,
+      sum(del.commits)::integer as commits,
+      sum(del.branches)::integer as branches,
+      sum(del.pull_requests)::integer as pull_requests,
+      sum(del.tags)::integer as tags,
+      sum(del.builds)::integer as builds,
+      -- sum(del.stages)::integer as stages,
+      sum(del.jobs)::integer as jobs
+    from del
+    group by del.repository_id
+  )
+  insert into repo_counts(
+    repository_id,
+    requests,
+    commits,
+    branches,
+    pull_requests,
+    tags,
+    builds,
+    -- stages,
+    jobs
+  )
+  select
+    agg.repository_id,
+    agg.requests,
+    agg.commits,
+    agg.branches,
+    agg.pull_requests,
+    agg.tags,
+    agg.builds,
+    -- agg.stages,
+    agg.jobs
+  from agg;
+
+  return true;
+end;
+$$;
+
+
+--
+-- Name: agg_repo_counts(integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.agg_repo_counts(_repo_id integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+begin
+  with src as (
+    select cnt.repository_id
+    from repo_counts cnt
+    where cnt.repository_id = _repo_id
+    group by cnt.repository_id
+    having count(1) > 1
+  ),
+  del as (
+    delete from repo_counts cnt
+    using src
+    where cnt.repository_id = src.repository_id
+    returning cnt.*
+  ),
+  agg as (
+    select
+      del.repository_id,
+      sum(del.requests)::integer as requests,
+      sum(del.commits)::integer as commits,
+      sum(del.branches)::integer as branches,
+      sum(del.pull_requests)::integer as pull_requests,
+      sum(del.tags)::integer as tags,
+      sum(del.builds)::integer as builds,
+      -- sum(del.stages)::integer as stages,
+      sum(del.jobs)::integer as jobs
+    from del
+    group by del.repository_id
+  )
+  insert into repo_counts(
+    repository_id,
+    requests,
+    commits,
+    branches,
+    pull_requests,
+    tags,
+    builds,
+    -- stages,
+    jobs
+  )
+  select
+    agg.repository_id,
+    agg.requests,
+    agg.commits,
+    agg.branches,
+    agg.pull_requests,
+    agg.tags,
+    agg.builds,
+    -- agg.stages,
+    agg.jobs
+  from agg
+  where agg.requests > 0 or agg.builds > 0 or agg.jobs > 0;
+
+  return true;
+end;
+$$;
+
+
+--
+-- Name: count_all_branches(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_all_branches(_count integer, _start integer, _end integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare max int;
+begin
+  select id + _count from branches order by id desc limit 1 into max;
+
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
+    begin
+      raise notice 'counting branches %', i;
+      insert into repo_counts(repository_id, branches, range)
+      select * from count_branches(i, i + _count - 1);
+    exception when unique_violation then end;
+  end loop;
+
+  return true;
+end
+$$;
+
+
+--
+-- Name: count_all_builds(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_all_builds(_count integer, _start integer, _end integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare max int;
+begin
+  select id + _count from builds order by id desc limit 1 into max;
+
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
+    begin
+      raise notice 'counting builds %', i;
+      insert into repo_counts(repository_id, builds, range)
+      select * from count_builds(i, i + _count - 1);
+    exception when unique_violation then end;
+  end loop;
+
+  return true;
+end
+$$;
+
+
+--
+-- Name: count_all_commits(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_all_commits(_count integer, _start integer, _end integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare max int;
+begin
+  select id + _count from commits order by id desc limit 1 into max;
+
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
+    begin
+      raise notice 'counting commits %', i;
+      insert into repo_counts(repository_id, commits, range)
+      select * from count_commits(i, i + _count - 1);
+    exception when unique_violation then end;
+  end loop;
+
+  return true;
+end
+$$;
+
+
+--
+-- Name: count_all_jobs(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_all_jobs(_count integer, _start integer, _end integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare max int;
+begin
+  select id + _count from jobs order by id desc limit 1 into max;
+
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
+    begin
+      raise notice 'counting jobs %', i;
+      insert into repo_counts(repository_id, jobs, range)
+      select * from count_jobs(i, i + _count - 1);
+    exception when unique_violation then end;
+  end loop;
+
+  return true;
+end
+$$;
+
+
+--
+-- Name: count_all_pull_requests(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_all_pull_requests(_count integer, _start integer, _end integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare max int;
+begin
+  select id + _count from pull_requests order by id desc limit 1 into max;
+
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
+    begin
+      raise notice 'counting pull_requests %', i;
+      insert into repo_counts(repository_id, pull_requests, range)
+      select * from count_pull_requests(i, i + _count - 1);
+    exception when unique_violation then end;
+  end loop;
+
+  return true;
+end
+$$;
+
+
+--
+-- Name: count_all_requests(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_all_requests(_count integer, _start integer, _end integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare max int;
+begin
+  select id + _count from requests order by id desc limit 1 into max;
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
+    begin
+      raise notice 'counting requests %', i;
+      insert into repo_counts(repository_id, requests, range)
+      select * from count_requests(i, i + _count - 1);
+    exception when unique_violation then end;
+  end loop;
+
+  return true;
+end
+$$;
+
+
+--
+-- Name: count_all_tags(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_all_tags(_count integer, _start integer, _end integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare max int;
+begin
+  select id + _count from tags order by id desc limit 1 into max;
+
+  for i in _start.._end by _count loop
+    if i > max then exit; end if;
+    begin
+      raise notice 'counting tags %', i;
+      insert into repo_counts(repository_id, tags, range)
+      select * from count_tags(i, i + _count - 1);
+    exception when unique_violation then end;
+  end loop;
+
+  return true;
+end
+$$;
+
+
+--
+-- Name: count_branches(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_branches() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, branches)
+    values(r.repository_id, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_branches(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_branches(_start integer, _end integer) RETURNS TABLE(repository_id integer, branches bigint, range character varying)
+    LANGUAGE plpgsql
+    AS $$
+begin
+  return query select r.id, count(t.id) as branches, ('branches' || ':' || _start || ':' || _end)::varchar as range
+  from branches as t
+  join repositories as r on t.repository_id = r.id
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
+  group by r.id;
+end;
+$$;
+
+
+--
+-- Name: count_builds(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_builds() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, builds)
+    values(r.repository_id, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_builds(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_builds(_start integer, _end integer) RETURNS TABLE(repository_id integer, builds bigint, range character varying)
+    LANGUAGE plpgsql
+    AS $$
+begin
+  return query select t.repository_id, count(id) as builds, ('builds' || ':' || _start || ':' || _end)::varchar as range
+  from builds as t
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
+  group by t.repository_id;
+end;
+$$;
+
+
+--
+-- Name: count_commits(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_commits() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, commits)
+    values(r.repository_id, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_commits(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_commits(_start integer, _end integer) RETURNS TABLE(repository_id integer, commits bigint, range character varying)
+    LANGUAGE plpgsql
+    AS $$
+begin
+  return query select r.id, count(t.id) as commits, ('commits' || ':' || _start || ':' || _end)::varchar as range
+  from commits as t
+  join repositories as r on t.repository_id = r.id
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
+  group by r.id;
+end;
+$$;
+
+
+--
+-- Name: count_jobs(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_jobs() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, jobs)
+    values(r.repository_id, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_jobs(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_jobs(_start integer, _end integer) RETURNS TABLE(repository_id integer, jobs bigint, range character varying)
+    LANGUAGE plpgsql
+    AS $$
+begin
+  return query select t.repository_id, count(id) as jobs, ('jobs' || ':' || _start || ':' || _end)::varchar as range
+  from jobs as t
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
+  group by t.repository_id;
+end;
+$$;
+
+
+--
+-- Name: count_pull_requests(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_pull_requests() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, pull_requests)
+    values(r.repository_id, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_pull_requests(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_pull_requests(_start integer, _end integer) RETURNS TABLE(repository_id integer, pull_requests bigint, range character varying)
+    LANGUAGE plpgsql
+    AS $$
+begin
+  return query select r.id, count(t.id) as pull_requests, ('pull_requests' || ':' || _start || ':' || _end)::varchar as range
+  from pull_requests as t
+  join repositories as r on t.repository_id = r.id
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
+  group by r.id;
+end;
+$$;
+
+
+--
+-- Name: count_requests(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_requests() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null then
+    insert into repo_counts(repository_id, requests)
+    values(r.repository_id, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_requests(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_requests(_start integer, _end integer) RETURNS TABLE(repository_id integer, requests bigint, range character varying)
+    LANGUAGE plpgsql
+    AS $$
+begin
+  return query select t.repository_id, count(id) as requests, ('requests' || ':' || _start || ':' || _end)::varchar as range
+  from requests as t
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
+  group by t.repository_id;
+end;
+$$;
+
+
+--
+-- Name: count_tags(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_tags() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  c text;
+  r record;
+begin
+  if tg_argv[0]::int > 0 then r := new; else r := old; end if;
+  if r.repository_id is not null is not null then
+    insert into repo_counts(repository_id, tags)
+    values(r.repository_id, tg_argv[0]::int);
+  end if;
+  return r;
+exception when others then
+  get stacked diagnostics c = pg_exception_context;
+  raise warning '% context: %s', sqlerrm, c;
+  return r;
+end;
+$$;
+
+
+--
+-- Name: count_tags(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.count_tags(_start integer, _end integer) RETURNS TABLE(repository_id integer, tags bigint, range character varying)
+    LANGUAGE plpgsql
+    AS $$
+begin
+  return query select r.id, count(t.id) as tags, ('tags' || ':' || _start || ':' || _end)::varchar as range
+  from tags as t
+  join repositories as r on t.repository_id = r.id
+  where t.id between _start and _end and t.created_at <= '2018-01-01 00:00:00' and t.repository_id is not null
+  group by r.id;
+end;
+$$;
+
+
+--
 -- Name: set_updated_at(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -806,6 +1397,24 @@ CREATE SEQUENCE public.queueable_jobs_id_seq
 --
 
 ALTER SEQUENCE public.queueable_jobs_id_seq OWNED BY public.queueable_jobs.id;
+
+
+--
+-- Name: repo_counts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.repo_counts (
+    repository_id integer NOT NULL,
+    requests integer,
+    commits integer,
+    branches integer,
+    pull_requests integer,
+    tags integer,
+    builds integer,
+    stages integer,
+    jobs integer,
+    range character varying
+);
 
 
 --
@@ -2136,6 +2745,13 @@ CREATE INDEX index_queueable_jobs_on_job_id ON public.queueable_jobs USING btree
 
 
 --
+-- Name: index_repo_counts_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repo_counts_on_repository_id ON public.repo_counts USING btree (repository_id);
+
+
+--
 -- Name: index_repositories_on_active; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2371,6 +2987,104 @@ CREATE TRIGGER set_updated_at_on_builds BEFORE INSERT OR UPDATE ON public.builds
 --
 
 CREATE TRIGGER set_updated_at_on_jobs BEFORE INSERT OR UPDATE ON public.jobs FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
+
+
+--
+-- Name: branches trg_count_branch_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_branch_deleted AFTER DELETE ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('-1');
+
+
+--
+-- Name: branches trg_count_branch_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_branch_inserted AFTER INSERT ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('1');
+
+
+--
+-- Name: builds trg_count_build_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_build_deleted AFTER DELETE ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('-1');
+
+
+--
+-- Name: builds trg_count_build_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_build_inserted AFTER INSERT ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('1');
+
+
+--
+-- Name: commits trg_count_commit_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_commit_deleted AFTER DELETE ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('-1');
+
+
+--
+-- Name: commits trg_count_commit_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_commit_inserted AFTER INSERT ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('1');
+
+
+--
+-- Name: jobs trg_count_job_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_job_deleted AFTER DELETE ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('-1');
+
+
+--
+-- Name: jobs trg_count_job_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_job_inserted AFTER INSERT ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('1');
+
+
+--
+-- Name: pull_requests trg_count_pull_request_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_pull_request_deleted AFTER DELETE ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('-1');
+
+
+--
+-- Name: pull_requests trg_count_pull_request_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_pull_request_inserted AFTER INSERT ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('1');
+
+
+--
+-- Name: requests trg_count_request_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_request_deleted AFTER DELETE ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('-1');
+
+
+--
+-- Name: requests trg_count_request_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_request_inserted AFTER INSERT ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('1');
+
+
+--
+-- Name: tags trg_count_tag_deleted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_tag_deleted AFTER DELETE ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('-1');
+
+
+--
+-- Name: tags trg_count_tag_inserted; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('1');
 
 
 --
@@ -2916,6 +3630,10 @@ INSERT INTO schema_migrations (version) VALUES ('20171211000000');
 INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222000009');
+
+INSERT INTO schema_migrations (version) VALUES ('20180222000012');
 
 INSERT INTO schema_migrations (version) VALUES ('20180222164100');
 
