@@ -1461,7 +1461,8 @@ ALTER SEQUENCE repositories_id_seq OWNED BY repositories.id;
 CREATE TABLE request_payloads (
     id integer NOT NULL,
     request_id integer NOT NULL,
-    payload text
+    payload text,
+    archived boolean DEFAULT false
 );
 
 

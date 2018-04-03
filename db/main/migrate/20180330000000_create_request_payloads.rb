@@ -3,6 +3,7 @@ class CreateRequestPayloads < ActiveRecord::Migration
     create_table :request_payloads do |t|
       t.integer :request_id, null: false
       t.text :payload
+      t.boolean :archived, default: false
     end
 
     add_index :request_payloads, :request_id
