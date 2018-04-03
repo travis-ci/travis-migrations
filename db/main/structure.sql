@@ -1455,6 +1455,36 @@ ALTER SEQUENCE repositories_id_seq OWNED BY repositories.id;
 
 
 --
+-- Name: request_payloads; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE request_payloads (
+    id integer NOT NULL,
+    request_id integer NOT NULL,
+    payload text
+);
+
+
+--
+-- Name: request_payloads_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE request_payloads_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: request_payloads_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE request_payloads_id_seq OWNED BY request_payloads.id;
+
+
+--
 -- Name: requests; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2084,6 +2114,13 @@ ALTER TABLE ONLY repositories ALTER COLUMN id SET DEFAULT nextval('repositories_
 
 
 --
+-- Name: request_payloads id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY request_payloads ALTER COLUMN id SET DEFAULT nextval('request_payloads_id_seq'::regclass);
+
+
+--
 -- Name: requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2324,6 +2361,14 @@ ALTER TABLE ONLY queueable_jobs
 
 ALTER TABLE ONLY repositories
     ADD CONSTRAINT repositories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: request_payloads request_payloads_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY request_payloads
+    ADD CONSTRAINT request_payloads_pkey PRIMARY KEY (id);
 
 
 --
@@ -2876,6 +2921,13 @@ CREATE INDEX index_repositories_on_owner_name ON repositories USING btree (owner
 --
 
 CREATE INDEX index_repositories_on_slug ON repositories USING gin (((((owner_name)::text || '/'::text) || (name)::text)) gin_trgm_ops);
+
+
+--
+-- Name: index_request_payloads_on_request_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_request_payloads_on_request_id ON request_payloads USING btree (request_id);
 
 
 --
@@ -3772,4 +3824,6 @@ INSERT INTO schema_migrations (version) VALUES ('20180222164100');
 INSERT INTO schema_migrations (version) VALUES ('20180305143800');
 
 INSERT INTO schema_migrations (version) VALUES ('20180321102400');
+
+INSERT INTO schema_migrations (version) VALUES ('20180330000000');
 
