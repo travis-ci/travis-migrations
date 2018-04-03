@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+require 'erb'
+require 'active_record'
+
+config = YAML.load(ERB.new(File.read('config/database.yml')).result)
+ActiveRecord::Base.establish_connection(config['production'])
+conn = ActiveRecord::Base.connection
+
+batch_size  = ARGV[1] ? ARGV[1].to_i : 100_000
+batch_start = ARGV[2] ? ARGV[2].to_i : 0
+
+max_id = conn.select_values("select id from requests order by id desc limit 1").first.to_i
+now = Time.now
+
+SQL = %(
+  insert into request_payloads (request_id, payload)
+  select id, payload from requests where id between %i and %i and payload is not null
+)
+
+batch_start.step(max_id, batch_size) do |min_id|
+  max_id = min_id + batch_size - 1
+  puts "Inserting payloads from requests #{min_id} - #{max_id} ..."
+  query = SQL % [min_id, max_id]
+  conn.execute(query)
+end
+
+elapsed = (Time.now - now) / 60
+puts "\n#{elapsed.round(2)} min"
