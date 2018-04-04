@@ -41,7 +41,7 @@ start.step(total, batch) do |min_id|
   print "Inserting payloads from requests #{min_id} - #{max_id} ... "
   query = SQL % [min_id, max_id]
   conn.execute(query)
-  elapsed = (Time.now - now) / 60
-  puts "#{elapsed.round(2)} min"
+  elapsed = (Time.now - now)
+  puts "#{elapsed.round(2)} sec"
   sleep pause if pause
 end
