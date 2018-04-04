@@ -3,16 +3,24 @@
 require 'yaml'
 require 'erb'
 require 'active_record'
+require 'optparse'
 
 config = YAML.load(ERB.new(File.read('config/database.yml')).result)
-ActiveRecord::Base.establish_connection(config['production'])
+ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
 conn = ActiveRecord::Base.connection
 
-batch_size  = ARGV[1] ? ARGV[1].to_i : 100_000
-batch_start = ARGV[2] ? ARGV[2].to_i : 0
+start = 0
+batch = 100_000
+total = 1_000_000
+pause = nil
 
-max_id = conn.select_values("select id from requests order by id desc limit 1").first.to_i
-now = Time.now
+ARGV.options do |o|
+  o.on("-s", "--start=START", Integer) { |v| start = v }
+  o.on('-b', "--batch=BATCH", Integer) { |v| batch = v }
+  o.on('-t', "--total=TOTAL", Integer) { |v| total = v }
+  o.on("-p", "--pause=PAUSE", Integer) { |v| pause = v }
+  o.parse!
+end
 
 SQL = %(
   insert into request_payloads (request_id, payload, created_at)
@@ -20,13 +28,13 @@ SQL = %(
   where id between %i and %i and payload is not null
 )
 
-batch_start.step(max_id, batch_size) do |min_id|
-  max_id = min_id + batch_size - 1
-  puts "Inserting payloads from requests #{min_id} - #{max_id} ..."
+start.step(total, batch) do |min_id|
+  now = Time.now
+  max_id = min_id + batch - 1
+  print "Inserting payloads from requests #{min_id} - #{max_id} ... "
   query = SQL % [min_id, max_id]
   conn.execute(query)
+  elapsed = (Time.now - now) / 60
+  puts "#{elapsed.round(2)} min"
+  sleep pause if pause
 end
-
-elapsed = (Time.now - now) / 60
-puts "\n#{elapsed.round(2)} min"
-
