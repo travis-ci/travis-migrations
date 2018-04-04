@@ -38,8 +38,8 @@ start.step(total, batch) do |min_id|
   max_id = min_id + batch - 1
   print "Inserting payloads from requests #{min_id} - #{max_id} ... "
   query = SQL % [min_id, max_id]
-  conn.execute(query)
-  elapsed = (Time.now - now) / 60
-  puts "#{elapsed.round(2)} min"
+  result = conn.execute(query)
+  elapsed = Time.now - now
+  puts "#{result.ntuples} records #{elapsed.round(2)} sec"
   sleep pause if pause
 end
