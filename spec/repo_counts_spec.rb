@@ -38,6 +38,7 @@ describe 'Repo counts' do
 
   before do
     execute %(
+      truncate builds cascade;
       truncate repositories;
       truncate repo_counts;
       truncate requests;
@@ -45,7 +46,6 @@ describe 'Repo counts' do
       truncate branches;
       truncate pull_requests;
       truncate tags;
-      truncate builds;
       truncate stages;
       truncate jobs;
 
