@@ -1035,14 +1035,14 @@ ALTER SEQUENCE public.emails_id_seq OWNED BY public.emails.id;
 
 
 --
--- Name: github_installations; Type: TABLE; Schema: public; Owner: -
+-- Name: installations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.github_installations (
+CREATE TABLE public.installations (
     id integer NOT NULL,
     owner_id integer,
     owner_type character varying,
-    github_id integer,
+    github_installation_id integer,
     permissions jsonb,
     added_by integer,
     removed_by integer,
@@ -1054,10 +1054,10 @@ CREATE TABLE public.github_installations (
 
 
 --
--- Name: github_installations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: installations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.github_installations_id_seq
+CREATE SEQUENCE public.installations_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1066,10 +1066,10 @@ CREATE SEQUENCE public.github_installations_id_seq
 
 
 --
--- Name: github_installations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: installations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.github_installations_id_seq OWNED BY public.github_installations.id;
+ALTER SEQUENCE public.installations_id_seq OWNED BY public.installations.id;
 
 
 --
@@ -1448,7 +1448,7 @@ CREATE TABLE public.repositories (
     invalidated_at timestamp without time zone,
     current_build_id bigint,
     active_on_org boolean,
-    managed_by_github_installation_on timestamp without time zone
+    managed_by_installation_on timestamp without time zone
 );
 
 
@@ -2026,10 +2026,10 @@ ALTER TABLE ONLY public.emails ALTER COLUMN id SET DEFAULT nextval('public.email
 
 
 --
--- Name: github_installations id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: installations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.github_installations ALTER COLUMN id SET DEFAULT nextval('public.github_installations_id_seq'::regclass);
+ALTER TABLE ONLY public.installations ALTER COLUMN id SET DEFAULT nextval('public.installations_id_seq'::regclass);
 
 
 --
@@ -2259,11 +2259,11 @@ ALTER TABLE ONLY public.emails
 
 
 --
--- Name: github_installations github_installations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: installations installations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.github_installations
-    ADD CONSTRAINT github_installations_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.installations
+    ADD CONSTRAINT installations_pkey PRIMARY KEY (id);
 
 
 --
@@ -2570,31 +2570,31 @@ CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
 
 
 --
--- Name: index_github_installations_on_added_by_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_installations_on_added_by_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_github_installations_on_added_by_id ON public.github_installations USING btree (added_by_id);
-
-
---
--- Name: index_github_installations_on_owner_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_github_installations_on_owner_id ON public.github_installations USING btree (owner_id);
+CREATE INDEX index_installations_on_added_by_id ON public.installations USING btree (added_by_id);
 
 
 --
--- Name: index_github_installations_on_owner_id_and_owner_type; Type: INDEX; Schema: public; Owner: -
+-- Name: index_installations_on_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_github_installations_on_owner_id_and_owner_type ON public.github_installations USING btree (owner_id, owner_type);
+CREATE INDEX index_installations_on_owner_id ON public.installations USING btree (owner_id);
 
 
 --
--- Name: index_github_installations_on_removed_by_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_installations_on_owner_id_and_owner_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_github_installations_on_removed_by_id ON public.github_installations USING btree (removed_by_id);
+CREATE INDEX index_installations_on_owner_id_and_owner_type ON public.installations USING btree (owner_id, owner_type);
+
+
+--
+-- Name: index_installations_on_removed_by_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_installations_on_removed_by_id ON public.installations USING btree (removed_by_id);
 
 
 --
@@ -3088,19 +3088,19 @@ CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON public.tags FOR EACH ROW W
 
 
 --
--- Name: github_installations fk_rails_0dd4142e01; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: installations fk_rails_7419f5a50e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.github_installations
-    ADD CONSTRAINT fk_rails_0dd4142e01 FOREIGN KEY (removed_by) REFERENCES public.users(id);
+ALTER TABLE ONLY public.installations
+    ADD CONSTRAINT fk_rails_7419f5a50e FOREIGN KEY (removed_by) REFERENCES public.users(id);
 
 
 --
--- Name: github_installations fk_rails_c36cf376a2; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: installations fk_rails_af0e17239a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.github_installations
-    ADD CONSTRAINT fk_rails_c36cf376a2 FOREIGN KEY (added_by) REFERENCES public.users(id);
+ALTER TABLE ONLY public.installations
+    ADD CONSTRAINT fk_rails_af0e17239a FOREIGN KEY (added_by) REFERENCES public.users(id);
 
 
 --

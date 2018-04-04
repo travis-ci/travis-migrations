@@ -1,10 +1,10 @@
-class CreateGithubInstallations < ActiveRecord::Migration
+class CreateInstallations < ActiveRecord::Migration
   PSQL = ActiveRecord::Base.connection.select_value('SELECT version()')
 
   def self.up
-    create_table :github_installations do |t|
+    create_table :installations do |t|
       t.belongs_to :owner, :polymorphic => true # will add owner_id and owner_type columns
-      t.integer    :github_id
+      t.integer    :github_installation_id
       if /PostgreSQL 9.3/.match(PSQL)
         t.json       :permissions
       else
