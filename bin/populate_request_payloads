@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+require 'erb'
+require 'active_record'
+require 'optparse'
+
+config = YAML.load(ERB.new(File.read('config/database.yml')).result)
+ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
+conn = ActiveRecord::Base.connection
+
+start = 0
+batch = 100_000
+total = 1_000_000
+pause = nil
+
+ARGV.options do |o|
+  o.on("-s", "--start=START", Integer) { |v| start = v }
+  o.on('-b', "--batch=BATCH", Integer) { |v| batch = v }
+  o.on('-t', "--total=TOTAL", Integer) { |v| total = v }
+  o.on("-p", "--pause=PAUSE", Integer) { |v| pause = v }
+  o.parse!
+end
+
+SQL = %(
+  insert into request_payloads (request_id, payload, created_at)
+  select id, payload, created_at from requests
+  where id between %i and %i and payload is not null
+)
+
+start.step(total, batch) do |min_id|
+  now = Time.now
+  max_id = min_id + batch - 1
+  print "Inserting payloads from requests #{min_id} - #{max_id} ... "
+  query = SQL % [min_id, max_id]
+  conn.execute(query)
+  elapsed = (Time.now - now) / 60
+  puts "#{elapsed.round(2)} min"
+  sleep pause if pause
+end

@@ -1472,6 +1472,38 @@ ALTER SEQUENCE public.repositories_id_seq OWNED BY public.repositories.id;
 
 
 --
+-- Name: request_payloads; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE request_payloads (
+    id integer NOT NULL,
+    request_id integer NOT NULL,
+    payload text,
+    archived boolean DEFAULT false,
+    created_at timestamp without time zone
+);
+
+
+--
+-- Name: request_payloads_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE request_payloads_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: request_payloads_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE request_payloads_id_seq OWNED BY request_payloads.id;
+
+
+--
 -- Name: requests; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2096,6 +2128,13 @@ ALTER TABLE ONLY public.repositories ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: request_payloads id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY request_payloads ALTER COLUMN id SET DEFAULT nextval('request_payloads_id_seq'::regclass);
+
+
+--
 -- Name: requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2347,6 +2386,14 @@ ALTER TABLE ONLY public.repositories
 
 
 --
+-- Name: request_payloads request_payloads_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY request_payloads
+    ADD CONSTRAINT request_payloads_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: requests requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2496,7 +2543,11 @@ CREATE INDEX index_builds_on_repository_id ON public.builds USING btree (reposit
 -- Name: index_builds_on_repository_id_and_branch_and_event_type; Type: INDEX; Schema: public; Owner: -
 --
 
+<<<<<<< HEAD
 CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying])::text[]));
+=======
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text]));
+>>>>>>> master
 
 
 --
@@ -2531,7 +2582,11 @@ CREATE INDEX index_builds_on_repository_id_and_number_and_event_type ON public.b
 -- Name: index_builds_on_repository_id_where_state_not_finished; Type: INDEX; Schema: public; Owner: -
 --
 
+<<<<<<< HEAD
 CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+=======
+CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON builds USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
+>>>>>>> master
 
 
 --
@@ -2622,7 +2677,11 @@ CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON public.jobs USIN
 -- Name: index_jobs_on_repository_id_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
+<<<<<<< HEAD
 CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+=======
+CREATE INDEX index_jobs_on_repository_id_where_state_running ON jobs USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
+>>>>>>> master
 
 
 --
@@ -2797,7 +2856,32 @@ CREATE INDEX index_repositories_on_owner_name ON public.repositories USING btree
 -- Name: index_repositories_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
+<<<<<<< HEAD
 CREATE INDEX index_repositories_on_slug ON public.repositories USING gin (((((owner_name)::text || '/'::text) || (name)::text)) public.gin_trgm_ops);
+=======
+CREATE INDEX index_repositories_on_slug ON repositories USING gin (((((owner_name)::text || '/'::text) || (name)::text)) gin_trgm_ops);
+
+
+--
+-- Name: index_request_payloads_on_created_at_and_archived; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_request_payloads_on_created_at_and_archived ON request_payloads USING btree (created_at, archived);
+
+
+--
+-- Name: index_request_payloads_on_request_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_request_payloads_on_request_id ON request_payloads USING btree (request_id);
+
+
+--
+-- Name: index_requests_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_requests_on_com_id ON requests USING btree (com_id);
+>>>>>>> master
 
 
 --
@@ -3645,3 +3729,4 @@ INSERT INTO schema_migrations (version) VALUES ('20180329000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180329000001');
 
+INSERT INTO schema_migrations (version) VALUES ('20180330000000');
