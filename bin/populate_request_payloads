@@ -22,13 +22,16 @@ ARGV.options do |o|
   o.parse!
 end
 
-SQL = %(
+max_id = conn.select_values("select id from requests order by id desc limit 1").first.to_i
+total = max_id if total > max_id
+
+SQL = <<~sql
   insert into request_payloads (request_id, payload, created_at)
   select r.id, r.payload, r.created_at
   from requests r
   left outer join request_payloads p on p.request_id = r.id
   where r.id between %i and %i and r.payload is not null and p.id is null
-)
+sql
 
 start.step(total, batch) do |min_id|
   now = Time.now
