@@ -20,6 +20,6 @@ class CreateInstallations < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :github_installations
+    drop_table :installations
   end
 end
