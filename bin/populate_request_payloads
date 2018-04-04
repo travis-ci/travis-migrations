@@ -15,8 +15,9 @@ max_id = conn.select_values("select id from requests order by id desc limit 1").
 now = Time.now
 
 SQL = %(
-  insert into request_payloads (request_id, payload)
-  select id, payload from requests where id between %i and %i and payload is not null
+  insert into request_payloads (request_id, payload, created_at)
+  select id, payload, created_at from requests
+  where id between %i and %i and payload is not null
 )
 
 batch_start.step(max_id, batch_size) do |min_id|
@@ -28,3 +29,4 @@ end
 
 elapsed = (Time.now - now) / 60
 puts "\n#{elapsed.round(2)} min"
+
