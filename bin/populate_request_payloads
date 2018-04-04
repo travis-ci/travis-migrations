@@ -23,6 +23,8 @@ ARGV.options do |o|
 end
 
 max_id = conn.select_values("select id from requests order by id desc limit 1").first.to_i
+
+total = start + total
 total = max_id if total > max_id
 
 SQL = <<~sql
