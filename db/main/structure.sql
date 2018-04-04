@@ -825,6 +825,37 @@ ALTER SEQUENCE broadcasts_id_seq OWNED BY broadcasts.id;
 
 
 --
+-- Name: build_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE build_configs (
+    id integer NOT NULL,
+    repository_id integer NOT NULL,
+    key character varying NOT NULL,
+    config text
+);
+
+
+--
+-- Name: build_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE build_configs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: build_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE build_configs_id_seq OWNED BY build_configs.id;
+
+
+--
 -- Name: shared_builds_tasks_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -870,7 +901,8 @@ CREATE TABLE builds (
     sender_id integer,
     sender_type character varying,
     org_id integer,
-    com_id integer
+    com_id integer,
+    config_id integer
 );
 
 
@@ -1079,6 +1111,37 @@ ALTER SEQUENCE invoices_id_seq OWNED BY invoices.id;
 
 
 --
+-- Name: job_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE job_configs (
+    id integer NOT NULL,
+    repository_id integer NOT NULL,
+    key character varying NOT NULL,
+    config text
+);
+
+
+--
+-- Name: job_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE job_configs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: job_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE job_configs_id_seq OWNED BY job_configs.id;
+
+
+--
 -- Name: jobs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1111,7 +1174,8 @@ CREATE TABLE jobs (
     stage_number character varying,
     stage_id integer,
     org_id integer,
-    com_id integer
+    com_id integer,
+    config_id integer
 );
 
 
@@ -1455,6 +1519,37 @@ ALTER SEQUENCE repositories_id_seq OWNED BY repositories.id;
 
 
 --
+-- Name: request_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE request_configs (
+    id integer NOT NULL,
+    repository_id integer NOT NULL,
+    key character varying NOT NULL,
+    config text
+);
+
+
+--
+-- Name: request_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE request_configs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: request_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE request_configs_id_seq OWNED BY request_configs.id;
+
+
+--
 -- Name: request_payloads; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1518,7 +1613,8 @@ CREATE TABLE requests (
     sender_id integer,
     sender_type character varying,
     org_id integer,
-    com_id integer
+    com_id integer,
+    config_id integer
 );
 
 
@@ -2025,6 +2121,13 @@ ALTER TABLE ONLY broadcasts ALTER COLUMN id SET DEFAULT nextval('broadcasts_id_s
 
 
 --
+-- Name: build_configs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY build_configs ALTER COLUMN id SET DEFAULT nextval('build_configs_id_seq'::regclass);
+
+
+--
 -- Name: commits id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2057,6 +2160,13 @@ ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::reg
 --
 
 ALTER TABLE ONLY invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq'::regclass);
+
+
+--
+-- Name: job_configs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY job_configs ALTER COLUMN id SET DEFAULT nextval('job_configs_id_seq'::regclass);
 
 
 --
@@ -2113,6 +2223,13 @@ ALTER TABLE ONLY queueable_jobs ALTER COLUMN id SET DEFAULT nextval('queueable_j
 --
 
 ALTER TABLE ONLY repositories ALTER COLUMN id SET DEFAULT nextval('repositories_id_seq'::regclass);
+
+
+--
+-- Name: request_configs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY request_configs ALTER COLUMN id SET DEFAULT nextval('request_configs_id_seq'::regclass);
 
 
 --
@@ -2246,6 +2363,14 @@ ALTER TABLE ONLY broadcasts
 
 
 --
+-- Name: build_configs build_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY build_configs
+    ADD CONSTRAINT build_configs_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: builds builds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2291,6 +2416,14 @@ ALTER TABLE ONLY emails
 
 ALTER TABLE ONLY invoices
     ADD CONSTRAINT invoices_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: job_configs job_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY job_configs
+    ADD CONSTRAINT job_configs_pkey PRIMARY KEY (id);
 
 
 --
@@ -2363,6 +2496,14 @@ ALTER TABLE ONLY queueable_jobs
 
 ALTER TABLE ONLY repositories
     ADD CONSTRAINT repositories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: request_configs request_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY request_configs
+    ADD CONSTRAINT request_configs_pkey PRIMARY KEY (id);
 
 
 --
@@ -2527,6 +2668,13 @@ CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON broadcasts U
 
 
 --
+-- Name: index_build_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_build_configs_on_repository_id_and_key ON build_configs USING btree (repository_id, key);
+
+
+--
 -- Name: index_builds_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2551,7 +2699,7 @@ CREATE INDEX index_builds_on_repository_id ON builds USING btree (repository_id)
 -- Name: index_builds_on_repository_id_and_branch_and_event_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text]));
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying])::text[]));
 
 
 --
@@ -2586,7 +2734,7 @@ CREATE INDEX index_builds_on_repository_id_and_number_and_event_type ON builds U
 -- Name: index_builds_on_repository_id_where_state_not_finished; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON builds USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
+CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON builds USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
 
 
 --
@@ -2660,6 +2808,13 @@ CREATE INDEX index_invoices_on_stripe_id ON invoices USING btree (stripe_id);
 
 
 --
+-- Name: index_job_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_job_configs_on_repository_id_and_key ON job_configs USING btree (repository_id, key);
+
+
+--
 -- Name: index_jobs_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2691,7 +2846,7 @@ CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON jobs USING btree
 -- Name: index_jobs_on_repository_id_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_repository_id_where_state_running ON jobs USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
+CREATE INDEX index_jobs_on_repository_id_where_state_running ON jobs USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
 
 
 --
@@ -2923,6 +3078,13 @@ CREATE INDEX index_repositories_on_owner_name ON repositories USING btree (owner
 --
 
 CREATE INDEX index_repositories_on_slug ON repositories USING gin (((((owner_name)::text || '/'::text) || (name)::text)) gin_trgm_ops);
+
+
+--
+-- Name: index_request_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_request_configs_on_repository_id_and_key ON request_configs USING btree (repository_id, key);
 
 
 --
@@ -3835,4 +3997,6 @@ INSERT INTO schema_migrations (version) VALUES ('20180305143800');
 INSERT INTO schema_migrations (version) VALUES ('20180321102400');
 
 INSERT INTO schema_migrations (version) VALUES ('20180330000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180331000000');
 
