@@ -35,7 +35,7 @@ SQL = <<~sql
   where r.id between %i and %i and r.payload is not null and p.id is null
 sql
 
-start.step(total, batch) do |min_id|
+start.step(total - 1, batch) do |min_id|
   now = Time.now
   max_id = min_id + batch - 1
   print "Inserting payloads from requests #{min_id} - #{max_id} ... "
