@@ -4,9 +4,11 @@ class CreateRequestPayloads < ActiveRecord::Migration
       t.integer :request_id, null: false
       t.text :payload
       t.boolean :archived, default: false
+      t.timestamp :created_at
     end
 
     add_index :request_payloads, :request_id
+    add_index :request_payloads, [:created_at, :archived]
   end
 
   def down
