@@ -24,8 +24,10 @@ end
 
 SQL = %(
   insert into request_payloads (request_id, payload, created_at)
-  select id, payload, created_at from requests
-  where id between %i and %i and payload is not null
+  select r.id, r.payload, r.created_at
+  from requests r
+  left outer join request_payloads p on p.request_id = r.id
+  where r.id between %i and %i and r.payload is not null and p.id is null
 )
 
 start.step(total, batch) do |min_id|
