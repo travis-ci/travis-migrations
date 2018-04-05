@@ -10,10 +10,10 @@ class CreateInstallations < ActiveRecord::Migration
       else
         t.jsonb    :permissions
       end
-      t.integer    :added_by
-      t.integer    :removed_by
-      t.datetime   :removed_on
-      t.datetime   :updated_on
+      t.integer    :added_by_id
+      t.integer    :removed_by_id
+      t.datetime   :removed_at
+      t.timestamps null: false
       t.index      ([:owner_id, :owner_type])
       t.index      :owner_id
     end

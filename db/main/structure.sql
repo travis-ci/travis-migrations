@@ -1052,12 +1052,13 @@ CREATE TABLE public.installations (
     owner_type character varying,
     github_id integer,
     permissions jsonb,
-    added_by integer,
-    removed_by integer,
-    removed_on timestamp without time zone,
-    updated_on timestamp without time zone,
     added_by_id integer,
-    removed_by_id integer
+    removed_by_id integer,
+    removed_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    added_by_id_id integer,
+    removed_by_id_id integer
 );
 
 
@@ -2707,10 +2708,10 @@ CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
 
 
 --
--- Name: index_installations_on_added_by_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_installations_on_added_by_id_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_installations_on_added_by_id ON public.installations USING btree (added_by_id);
+CREATE INDEX index_installations_on_added_by_id_id ON public.installations USING btree (added_by_id_id);
 
 
 --
@@ -2728,10 +2729,10 @@ CREATE INDEX index_installations_on_owner_id_and_owner_type ON public.installati
 
 
 --
--- Name: index_installations_on_removed_by_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_installations_on_removed_by_id_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_installations_on_removed_by_id ON public.installations USING btree (removed_by_id);
+CREATE INDEX index_installations_on_removed_by_id_id ON public.installations USING btree (removed_by_id_id);
 
 
 --
@@ -3379,19 +3380,19 @@ CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON public.tags FOR EACH ROW W
 
 
 --
--- Name: installations fk_rails_7419f5a50e; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: installations fk_rails_2d567d406d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.installations
-    ADD CONSTRAINT fk_rails_7419f5a50e FOREIGN KEY (removed_by) REFERENCES public.users(id);
+    ADD CONSTRAINT fk_rails_2d567d406d FOREIGN KEY (added_by_id) REFERENCES public.users(id);
 
 
 --
--- Name: installations fk_rails_af0e17239a; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: installations fk_rails_75a0a2a3b4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.installations
-    ADD CONSTRAINT fk_rails_af0e17239a FOREIGN KEY (added_by) REFERENCES public.users(id);
+    ADD CONSTRAINT fk_rails_75a0a2a3b4 FOREIGN KEY (removed_by_id) REFERENCES public.users(id);
 
 
 --
