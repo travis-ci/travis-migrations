@@ -4,7 +4,7 @@ class CreateInstallations < ActiveRecord::Migration
   def self.up
     create_table :installations do |t|
       t.belongs_to :owner, :polymorphic => true # will add owner_id and owner_type columns
-      t.integer    :github_installation_id
+      t.integer    :github_id
       if /PostgreSQL 9.3/.match(PSQL)
         t.json       :permissions
       else

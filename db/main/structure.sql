@@ -1050,7 +1050,7 @@ CREATE TABLE public.installations (
     id integer NOT NULL,
     owner_id integer,
     owner_type character varying,
-    github_installation_id integer,
+    github_id integer,
     permissions jsonb,
     added_by integer,
     removed_by integer,
