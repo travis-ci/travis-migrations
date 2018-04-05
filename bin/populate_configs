@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require 'digest/sha1'
+require 'erb'
+require 'optparse'
+require 'yaml'
+require 'active_record'
+
+STDOUT.sync = true
+
+config = YAML.load(ERB.new(File.read('config/database.yml')).result)
+ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
+
+start = 0
+batch = 100_000
+total = 1_000_000
+pause = nil
+
+ARGV.options do |o|
+  o.on("-s", "--start=START", Integer) { |v| start = v }
+  o.on('-b', "--batch=BATCH", Integer) { |v| batch = v }
+  o.on('-c', "--count=COUNT", Integer) { |v| count = v }
+  o.on("-p", "--pause=PAUSE", Integer) { |v| pause = v.to_f / 1000 }
+  o.parse!
+end
+p pause
+exit
+name = ARGV.shift || fail('No model name specified (request|build|job)')
+max  = start + count - 1
+
+Model = Class.new(ActiveRecord::Base) do
+  self.table_name = "#{name}s"
+  serialize :config
+end
+
+Config = Class.new(ActiveRecord::Base) do
+  self.table_name = "#{name}_configs"
+  serialize :config
+end
+
+scope = Model.where(config_id: nil)
+scope = scope.select(:id, :repository_id, :config)
+scope = scope.where('id between ? and ?', start, max)
+
+scope.find_each do |obj|
+  next unless obj.config
+  key = Digest::MD5.hexdigest(obj.config.inspect)
+  record = Config.find_by(repository_id: obj.repository_id, key: key) # cache in memory?
+  record ||= Config.create!(key: key, repository_id: obj.repository_id, config: obj.config)
+  obj.update_attributes!(config_id: record.id)
+  sleep pause if pause
+end

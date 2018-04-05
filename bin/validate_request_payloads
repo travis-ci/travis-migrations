@@ -1,0 +1,27 @@
+#!/bin/env ruby
+
+SQL = <<~sql
+  select count(r.id)
+  from requests r
+  left outer join request_payloads p on
+    r.id = p.request_id
+  where
+    r.id between %i and %i and
+    r.payload is not null and
+    p.id is null
+sql
+
+start = 0
+step  = 100_000
+total = 111_000_000
+
+start.step(total, step) do |min|
+  max = min + step - 1
+  sql = SQL % [min, max]
+  sql = sql.split("\n").map(&:strip).join(' ')
+  print "#{min} - #{max} ... "
+  out = `echo "#{sql}" | heroku pg:psql FOLLOWER -a travis-production 2>/dev/null`
+  num = out.split("\n")[2].to_i
+  puts "#{num} requests with missing request_payloads"
+end
+
