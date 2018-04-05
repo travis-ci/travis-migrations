@@ -4,6 +4,8 @@ require 'yaml'
 require 'erb'
 require 'active_record'
 
+STDOUT.sync = true
+
 table = ARGV[0]
 
 config = YAML.load(ERB.new(File.read('config/database.yml')).result)

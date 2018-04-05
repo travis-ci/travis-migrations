@@ -5,6 +5,8 @@ require 'erb'
 require 'active_record'
 require 'optparse'
 
+STDOUT.sync = true
+
 config = YAML.load(ERB.new(File.read('config/database.yml')).result)
 ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
 conn = ActiveRecord::Base.connection
