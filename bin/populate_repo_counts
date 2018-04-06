@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 
+STDOUT.sync = true
+
 require 'yaml'
 require 'erb'
 require 'active_record'
 
-STDOUT.sync = true
-
 table = ARGV[0]
 
 config = YAML.load(ERB.new(File.read('config/database.yml')).result)
-ActiveRecord::Base.establish_connection(config['production'])
+ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
 conn = ActiveRecord::Base.connection
 
 shard_size  = ARGV[1] ? ARGV[1].to_i : 10_000_000

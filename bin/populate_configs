@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
+STDOUT.sync = true
+
 require 'digest/sha1'
 require 'erb'
 require 'optparse'
 require 'yaml'
 require 'active_record'
-
-STDOUT.sync = true
 
 config = YAML.load(ERB.new(File.read('config/database.yml')).result)
 ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
