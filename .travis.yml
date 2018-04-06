@@ -5,6 +5,9 @@ sudo: false
 services:
   - postgresql
 
+addons:
+  postgresql: "9.6"
+
 cache:
   directories:
     - vendor/bundle
@@ -13,14 +16,6 @@ rvm: "2.3.4"
 
 env:
   - RAILS_ENV=test
-
-matrix:
-include:
-  - addons:
-      postgresql: "9.3"
-  - addons:
-      postgresql: "9.6"
-fast_finish: true
 
 before_install:
   - gem install bundler -v 1.12.4
