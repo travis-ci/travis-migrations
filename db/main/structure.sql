@@ -1096,7 +1096,6 @@ CREATE TABLE public.installations (
 --
 
 CREATE SEQUENCE public.installations_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -4079,4 +4078,3 @@ INSERT INTO schema_migrations (version) VALUES ('20180331000000');
 INSERT INTO schema_migrations (version) VALUES ('20180404000001');
 
 INSERT INTO schema_migrations (version) VALUES ('20180404000002');
-
