@@ -19,13 +19,13 @@ pause = nil
 ARGV.options do |o|
   o.on("-s", "--start=START", Integer) { |v| start = v }
   o.on('-b', "--batch=BATCH", Integer) { |v| batch = v }
-  o.on('-c', "--count=COUNT", Integer) { |v| count = v }
+  o.on('-c', "--total=TOTAL", Integer) { |v| total = v }
   o.on("-p", "--pause=PAUSE", Integer) { |v| pause = v.to_f / 1000 }
   o.parse!
 end
 
 name = ARGV.shift || fail('No model name specified (request|build|job)')
-max  = start + count - 1
+max  = start + total - 1
 
 Model = Class.new(ActiveRecord::Base) do
   self.table_name = "#{name}s"
