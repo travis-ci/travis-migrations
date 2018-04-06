@@ -1,25 +1,27 @@
 class CreateInstallations < ActiveRecord::Migration
-  PSQL = ActiveRecord::Base.connection.select_value('SELECT version()')
+  def change
+    create_table    :installations do |t|
+      t.integer     :github_id
+      t.column      :permissions, json_type
+      t.belongs_to  :owner, polymorphic: true, index: true
+      t.belongs_to  :added_by, :removed_by
+      t.foreign_key :users, column: :added_by_id
+      t.foreign_key :users, column: :removed_by_id
+      t.timestamps
+    end
 
-  def self.up
-    create_table :installations do |t|
-      t.belongs_to :owner, :polymorphic => true # will add owner_id and owner_type columns
-      t.integer    :github_id
-      if /PostgreSQL 9.3/.match(PSQL)
-        t.json       :permissions
-      else
-        t.jsonb    :permissions
-      end
-      t.integer    :added_by_id
-      t.integer    :removed_by_id
-      t.datetime   :removed_at
-      t.timestamps null: false
-      t.index      ([:owner_id, :owner_type])
-      t.index      :owner_id
+    change_table    :repositories do |t|
+      t.boolean     :active_on_org
+      t.timestamp   :managed_by_installation_at
     end
   end
 
-  def self.down
-    drop_table :installations
+  def json_type
+    postgres_version == '9.3' ? :json : :jsonb
+  end
+
+  def postgres_version
+    full = ActiveRecord::Base.connection.select_value('SELECT version()')
+    full[/^PostgreSQL (\d+\.\d+)/, 1]
   end
 end

@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.8
--- Dumped by pg_dump version 9.6.8
+-- Dumped from database version 10.3
+-- Dumped by pg_dump version 10.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1080,17 +1080,14 @@ ALTER SEQUENCE public.emails_id_seq OWNED BY public.emails.id;
 
 CREATE TABLE public.installations (
     id integer NOT NULL,
-    owner_id integer,
-    owner_type character varying,
     github_id integer,
     permissions jsonb,
+    owner_id integer,
+    owner_type character varying,
     added_by_id integer,
     removed_by_id integer,
-    removed_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    added_by_id_id integer,
-    removed_by_id_id integer
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -1099,6 +1096,7 @@ CREATE TABLE public.installations (
 --
 
 CREATE SEQUENCE public.installations_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2754,7 +2752,7 @@ CREATE INDEX index_builds_on_repository_id ON public.builds USING btree (reposit
 -- Name: index_builds_on_repository_id_and_branch_and_event_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying])::text[]));
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text]));
 
 
 --
@@ -2789,7 +2787,7 @@ CREATE INDEX index_builds_on_repository_id_and_number_and_event_type ON public.b
 -- Name: index_builds_on_repository_id_where_state_not_finished; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
 
 
 --
@@ -2856,31 +2854,10 @@ CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
 
 
 --
--- Name: index_installations_on_added_by_id_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_installations_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_installations_on_added_by_id_id ON public.installations USING btree (added_by_id_id);
-
-
---
--- Name: index_installations_on_owner_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_installations_on_owner_id ON public.installations USING btree (owner_id);
-
-
---
--- Name: index_installations_on_owner_id_and_owner_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_installations_on_owner_id_and_owner_type ON public.installations USING btree (owner_id, owner_type);
-
-
---
--- Name: index_installations_on_removed_by_id_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_installations_on_removed_by_id_id ON public.installations USING btree (removed_by_id_id);
+CREATE INDEX index_installations_on_owner_type_and_owner_id ON public.installations USING btree (owner_type, owner_id);
 
 
 --
@@ -2929,7 +2906,7 @@ CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON public.jobs USIN
 -- Name: index_jobs_on_repository_id_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
 
 
 --
