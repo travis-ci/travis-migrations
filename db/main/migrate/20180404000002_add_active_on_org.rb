@@ -6,7 +6,7 @@ class AddActiveOnOrg < ActiveRecord::Migration
     add_reference :installations, :removed_by_id, index: true
     add_foreign_key :installations, :users, column: :removed_by_id
     add_column :repositories, :active_on_org, :boolean
-    add_column :repositories, :managed_by_installation_on, :timestamp
+    add_column :repositories, :managed_by_installation_at, :timestamp
   end
 
 end

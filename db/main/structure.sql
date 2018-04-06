@@ -1471,7 +1471,7 @@ CREATE TABLE public.repositories (
     migrating boolean,
     migrated_at timestamp without time zone,
     active_on_org boolean,
-    managed_by_installation_on timestamp without time zone
+    managed_by_installation_at timestamp without time zone
 );
 
 
