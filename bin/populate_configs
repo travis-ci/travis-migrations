@@ -23,8 +23,7 @@ ARGV.options do |o|
   o.on("-p", "--pause=PAUSE", Integer) { |v| pause = v.to_f / 1000 }
   o.parse!
 end
-p pause
-exit
+
 name = ARGV.shift || fail('No model name specified (request|build|job)')
 max  = start + count - 1
 
