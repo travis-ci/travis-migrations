@@ -24,8 +24,9 @@ ARGV.options do |o|
   o.parse!
 end
 
-name = ARGV.shift || fail('No model name specified (request|build|job)')
-max  = start + total - 1
+names = %(request build job)
+name  = ARGV.shift || fail('No model name specified (request|build|job)')
+names.include?(name) or fail "model name given must be one of: #{names.join(', ')}"
 
 Model = Class.new(ActiveRecord::Base) do
   self.table_name = "#{name}s"
@@ -39,7 +40,7 @@ end
 
 scope = Model.where(config_id: nil)
 scope = scope.select(:id, :repository_id, :config)
-scope = scope.where('id between ? and ?', start, max)
+scope = scope.where('id between ? and ?', start, start + total - 1)
 
 configs = {}
 
@@ -52,6 +53,7 @@ scope.find_each do |obj|
   config ||= Config.create!(key: key, repository_id: obj.repository_id, config: obj.config)
   configs[key] ||= Config.new(id: config.id)
 
+  puts "Updating #{name} id=#{obj.id} with config_id: #{config.id}"
   obj.update_attributes!(config_id: config.id)
 
   sleep pause if pause
