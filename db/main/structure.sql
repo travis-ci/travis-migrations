@@ -832,7 +832,7 @@ CREATE TABLE build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config text
+    config jsonb
 );
 
 
@@ -1118,7 +1118,7 @@ CREATE TABLE job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config text
+    config jsonb
 );
 
 
@@ -1526,7 +1526,7 @@ CREATE TABLE request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config text
+    config jsonb
 );
 
 
