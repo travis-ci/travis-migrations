@@ -3,19 +3,19 @@ class CreateConfigs < ActiveRecord::Migration
     create_table :request_configs do |t|
       t.integer :repository_id, null: false
       t.string :key, size: 32, null: false
-      t.text :config
+      t.jsonb :config
     end
 
     create_table :build_configs do |t|
       t.integer :repository_id, null: false
       t.string :key, size: 32, null: false
-      t.text :config
+      t.jsonb :config
     end
 
     create_table :job_configs do |t|
       t.integer :repository_id, null: false
       t.string :key, size: 32, null: false
-      t.text :config
+      t.jsonb :config
     end
 
     add_index :request_configs, [:repository_id, :key]
