@@ -30,7 +30,7 @@ GEM
     arel (6.0.4)
     builder (3.2.3)
     concurrent-ruby (1.0.5)
-    crass (1.0.3)
+    crass (1.0.4)
     data_migrations (0.0.1)
       activerecord
       rake
@@ -39,7 +39,7 @@ GEM
     i18n (0.9.3)
       concurrent-ruby (~> 1.0)
     json (1.8.6)
-    loofah (2.1.1)
+    loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     micro_migrations (0.0.2)
