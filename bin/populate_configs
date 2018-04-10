@@ -2,11 +2,12 @@
 
 STDOUT.sync = true
 
+require 'active_record'
 require 'digest/sha1'
+require 'json'
 require 'erb'
 require 'optparse'
 require 'yaml'
-require 'active_record'
 
 config = YAML.load(ERB.new(File.read('config/database.yml')).result)
 ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
@@ -45,7 +46,7 @@ configs = {}
 
 scope.find_each do |obj|
   next unless obj.config
-  key = Digest::MD5.hexdigest(obj.config.inspect)
+  key = Digest::MD5.hexdigest(JSON.dump(obj.config))
 
   config = configs[key]
   config ||= Config.where(repository_id: obj.repository_id, key: key).select(:id).first
@@ -56,3 +57,4 @@ scope.find_each do |obj|
 
   sleep pause if pause
 end
+
