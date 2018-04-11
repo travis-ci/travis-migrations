@@ -20,6 +20,7 @@ env:
 script:
   - bundle exec rspec spec
   - script/validate_structure_file.rb
+  - cat db/main/structure.sql| grep "AS integer"
 
 before_script:
   - cp config/database.yml.travis config/database.yml
