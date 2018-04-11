@@ -1,6 +1,7 @@
 #!/usr/bin/env rake
 
 require "bundler/setup"
+$:.unshift 'lib'
 require 'travis/migrations'
 
 ActiveRecord::Base.schema_format = :sql
