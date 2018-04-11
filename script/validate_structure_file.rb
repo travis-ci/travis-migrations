@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-path = File.expand_path('../../db/main/structure.sql', __FILE__)
-p path
+path_to_structure = ARGV[0] || 'db/main/structure.sql'
+path = File.expand_path("../../#{path_to_structure}", __FILE__)
 structure = File.read(path)
 if structure =~ /AS integer/
   STDERR.puts <<-MESSAGE
