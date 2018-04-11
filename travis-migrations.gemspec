@@ -20,4 +20,9 @@ Gem::Specification.new do |spec|
 
   # Disallow pushing to rubygems
   spec.metadata['allowed_push_host'] = 'https://nonexistent-host.example.com' if spec.respond_to?(:metadata)
+
+
+  spec.add_development_dependency 'rails', '~> 5.2'
+  spec.add_development_dependency 'pg', '~> 1.0'
+  spec.add_development_dependency 'rspec', '~> 3.4'
 end
