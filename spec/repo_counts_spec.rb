@@ -12,6 +12,7 @@ describe 'Repo counts' do
 
   before(:all) { run 'rake db:drop db:create db:migrate' }
   before { ActiveRecord::Base.establish_connection(config['test']) }
+  after { ActiveRecord::Base.remove_connection }
 
   def run(cmd)
     system "RAILS_ENV=test bundle exec #{cmd}"
