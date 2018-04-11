@@ -1,4 +1,4 @@
-class UpdateFinishedBuilds < ActiveRecord::Migration
+class UpdateFinishedBuilds < ActiveRecord::Migration[4.2]
   def up
     execute "UPDATE builds SET state = 'passed' WHERE state = 'finished' AND result = 0"
     execute "UPDATE builds SET state = 'failed' WHERE state = 'finished' AND result = 1"

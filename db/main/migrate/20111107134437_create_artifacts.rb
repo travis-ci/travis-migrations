@@ -1,6 +1,4 @@
-require 'data_migrations'
-
-class CreateArtifacts < ActiveRecord::Migration
+class CreateArtifacts < ActiveRecord::Migration[4.2]
   def self.up
     create_table :artifacts do |t|
       t.text    :content
@@ -10,10 +8,10 @@ class CreateArtifacts < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    migrate_table :jobs, :to => :artifacts do |t|
-      t.move :log, :to => :content
-      t.set  :type, 'Artifact::Log'
-    end
+    #migrate_table :jobs, :to => :artifacts do |t|
+    #  t.move :log, :to => :content
+    #  t.set  :type, 'Artifact::Log'
+    #end
 
     execute 'UPDATE artifacts SET job_id = id'
     execute "select setval('artifacts_id_seq', (select max(id) + 1 from artifacts));"
@@ -26,9 +24,9 @@ class CreateArtifacts < ActiveRecord::Migration
       t.text :log rescue nil
     end
 
-    migrate_table :artifacts, :to => :jobs do |t|
-      t.move :content, :to => :log rescue nil
-    end
+    #migrate_table :artifacts, :to => :jobs do |t|
+    #  t.move :content, :to => :log rescue nil
+    #end
 
     drop_table :artifacts rescue nil
   end

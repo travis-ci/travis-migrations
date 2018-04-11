@@ -1,4 +1,4 @@
-class AddBillingEmailCreditCardDataToSubscriptions < ActiveRecord::Migration
+class AddBillingEmailCreditCardDataToSubscriptions < ActiveRecord::Migration[4.2]
   def change
     change_table :subscriptions do |t|
       t.string :cc_owner

@@ -1,4 +1,4 @@
-class AddMoreIndexesToBuilds < ActiveRecord::Migration
+class AddMoreIndexesToBuilds < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
   def up
      execute <<-SQL

@@ -1,4 +1,4 @@
-class AddCronTable < ActiveRecord::Migration
+class AddCronTable < ActiveRecord::Migration[4.2]
 
   def up
     create_table :crons do |t|

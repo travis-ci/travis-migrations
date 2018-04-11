@@ -1,4 +1,4 @@
-class CreateTrials < ActiveRecord::Migration
+class CreateTrials < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

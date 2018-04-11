@@ -1,4 +1,4 @@
-class AddUniqueIndexOnRepositoryGithubId < ActiveRecord::Migration
+class AddUniqueIndexOnRepositoryGithubId < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

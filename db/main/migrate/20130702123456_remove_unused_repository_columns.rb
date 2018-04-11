@@ -1,4 +1,4 @@
-class RemoveUnusedRepositoryColumns < ActiveRecord::Migration
+class RemoveUnusedRepositoryColumns < ActiveRecord::Migration[4.2]
   def change
     remove_column :repositories, :last_duration
     remove_column :repositories, :last_build_status

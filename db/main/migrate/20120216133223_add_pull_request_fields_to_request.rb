@@ -1,4 +1,4 @@
-class AddPullRequestFieldsToRequest < ActiveRecord::Migration
+class AddPullRequestFieldsToRequest < ActiveRecord::Migration[4.2]
   def change
     add_column :requests, :event_type, :string
     add_column :requests, :comments_url, :string

@@ -1,4 +1,4 @@
-class CreateUserBetaFeatures < ActiveRecord::Migration
+class CreateUserBetaFeatures < ActiveRecord::Migration[4.2]
   def change
     create_table :user_beta_features do |t|
       t.references :user

@@ -1,4 +1,4 @@
-class ArtifactPartsChangeContentToText < ActiveRecord::Migration
+class ArtifactPartsChangeContentToText < ActiveRecord::Migration[4.2]
   def up
     change_column :artifact_parts, :content, :text
   end

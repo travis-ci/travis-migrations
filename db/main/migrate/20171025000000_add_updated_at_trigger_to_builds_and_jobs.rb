@@ -1,4 +1,4 @@
-class AddUpdatedAtTriggerToBuildsAndJobs < ActiveRecord::Migration
+class AddUpdatedAtTriggerToBuildsAndJobs < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       CREATE FUNCTION set_updated_at() RETURNS trigger AS $$

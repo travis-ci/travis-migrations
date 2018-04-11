@@ -1,4 +1,4 @@
-class BuildsAddRef < ActiveRecord::Migration
+class BuildsAddRef < ActiveRecord::Migration[4.2]
   def self.up
     change_table :builds do |t|
       t.string :ref

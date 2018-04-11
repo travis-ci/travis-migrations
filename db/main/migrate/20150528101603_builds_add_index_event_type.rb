@@ -1,4 +1,4 @@
-class BuildsAddIndexEventType < ActiveRecord::Migration
+class BuildsAddIndexEventType < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

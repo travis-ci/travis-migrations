@@ -1,4 +1,4 @@
-class RequestsAddIndexOnHeadCommit < ActiveRecord::Migration
+class RequestsAddIndexOnHeadCommit < ActiveRecord::Migration[4.2]
   def self.up
     add_index :requests, :head_commit
   end

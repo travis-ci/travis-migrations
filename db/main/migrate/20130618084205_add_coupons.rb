@@ -1,4 +1,4 @@
-class AddCoupons < ActiveRecord::Migration
+class AddCoupons < ActiveRecord::Migration[4.2]
   def up
     create_table :coupons do |t|
       t.integer :percent_off

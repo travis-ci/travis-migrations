@@ -1,4 +1,4 @@
-class CreateAnnotationProviders < ActiveRecord::Migration
+class CreateAnnotationProviders < ActiveRecord::Migration[4.2]
   def change
     create_table :annotation_providers do |t|
       t.string :name

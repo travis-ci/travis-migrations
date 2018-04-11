@@ -1,4 +1,4 @@
-class AddArtifactParts < ActiveRecord::Migration
+class AddArtifactParts < ActiveRecord::Migration[4.2]
   def change
     create_table :artifact_parts do |t|
       t.references :artifact

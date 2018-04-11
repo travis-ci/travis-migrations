@@ -1,4 +1,4 @@
-class CreateStars < ActiveRecord::Migration
+class CreateStars < ActiveRecord::Migration[4.2]
   def self.up
     create_table :stars do |t|
       t.integer   :repository_id

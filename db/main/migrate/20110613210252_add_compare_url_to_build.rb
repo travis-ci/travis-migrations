@@ -1,4 +1,4 @@
-class AddCompareUrlToBuild < ActiveRecord::Migration
+class AddCompareUrlToBuild < ActiveRecord::Migration[4.2]
   def self.up
     add_column :builds, :compare_url, :string
   end

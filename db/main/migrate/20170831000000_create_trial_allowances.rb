@@ -1,4 +1,4 @@
-class CreateTrialAllowances < ActiveRecord::Migration
+class CreateTrialAllowances < ActiveRecord::Migration[4.2]
   def change
     create_table :trial_allowances do |t|
       t.integer :trial_id

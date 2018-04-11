@@ -1,4 +1,4 @@
-class AddCcLastDigitsToInvoices < ActiveRecord::Migration
+class AddCcLastDigitsToInvoices < ActiveRecord::Migration[4.2]
   def change
     change_table :invoices do |t|
       t.string :cc_last_digits

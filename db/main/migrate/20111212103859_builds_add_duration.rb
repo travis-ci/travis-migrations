@@ -1,4 +1,4 @@
-class BuildsAddDuration < ActiveRecord::Migration
+class BuildsAddDuration < ActiveRecord::Migration[4.2]
   def up
     change_table :builds do |t|
       t.integer :duration

@@ -1,4 +1,4 @@
-class RepositoriesAddUsername < ActiveRecord::Migration
+class RepositoriesAddUsername < ActiveRecord::Migration[4.2]
   def self.up
     change_table :repositories do |t|
       t.string :username

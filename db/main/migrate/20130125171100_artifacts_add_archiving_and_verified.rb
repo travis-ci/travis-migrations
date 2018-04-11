@@ -1,4 +1,4 @@
-class ArtifactsAddArchivingAndVerified < ActiveRecord::Migration
+class ArtifactsAddArchivingAndVerified < ActiveRecord::Migration[4.2]
   def change
     add_column :artifacts, :archiving, :boolean
     add_column :artifacts, :archive_verified, :boolean

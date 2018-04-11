@@ -1,4 +1,4 @@
-class AddRemovedInfoToLogs < ActiveRecord::Migration
+class AddRemovedInfoToLogs < ActiveRecord::Migration[4.2]
   def change
     # These columns are needed for travis-core specs as well as enterprise, but may conflict
     # with migrations in travis-logs
