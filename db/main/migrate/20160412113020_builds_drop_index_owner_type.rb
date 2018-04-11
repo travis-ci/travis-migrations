@@ -1,4 +1,4 @@
-class BuildsDropIndexOwnerType < ActiveRecord::Migration
+class BuildsDropIndexOwnerType < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

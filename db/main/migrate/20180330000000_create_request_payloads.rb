@@ -1,4 +1,4 @@
-class CreateRequestPayloads < ActiveRecord::Migration
+class CreateRequestPayloads < ActiveRecord::Migration[4.2]
   def up
     create_table :request_payloads do |t|
       t.integer :request_id, null: false

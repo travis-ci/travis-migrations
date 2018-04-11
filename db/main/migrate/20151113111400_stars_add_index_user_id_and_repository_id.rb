@@ -1,4 +1,4 @@
-class StarsAddIndexUserIdAndRepositoryId < ActiveRecord::Migration
+class StarsAddIndexUserIdAndRepositoryId < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

@@ -1,4 +1,4 @@
-class OwnerGroupsIndexOwnerIdOwnerType < ActiveRecord::Migration
+class OwnerGroupsIndexOwnerIdOwnerType < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

@@ -1,4 +1,4 @@
-class RemoveWorkersTableAndIndexes < ActiveRecord::Migration
+class RemoveWorkersTableAndIndexes < ActiveRecord::Migration[4.2]
   def up
     drop_table :workers
   end

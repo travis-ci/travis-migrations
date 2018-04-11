@@ -1,4 +1,4 @@
-class BuildsAddGithubPayload < ActiveRecord::Migration
+class BuildsAddGithubPayload < ActiveRecord::Migration[4.2]
   def self.up
     change_table :builds do |t|
       t.text :github_payload

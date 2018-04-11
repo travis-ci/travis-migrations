@@ -1,4 +1,4 @@
-class AddExtraColumnsToOrganizations < ActiveRecord::Migration
+class AddExtraColumnsToOrganizations < ActiveRecord::Migration[4.2]
   def change
     add_column :organizations, :avatar_url, :string
     add_column :organizations, :location, :string

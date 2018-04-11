@@ -1,4 +1,4 @@
-class CreateSslKeys < ActiveRecord::Migration
+class CreateSslKeys < ActiveRecord::Migration[4.2]
   def self.up
     create_table :ssl_keys do |t|
       t.integer :repository_id

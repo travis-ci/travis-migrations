@@ -1,4 +1,4 @@
-class CreatePermissions < ActiveRecord::Migration
+class CreatePermissions < ActiveRecord::Migration[4.2]
   def self.up
     create_table :permissions do |t|
       t.belongs_to :user

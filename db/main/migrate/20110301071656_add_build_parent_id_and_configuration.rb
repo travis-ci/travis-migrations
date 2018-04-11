@@ -1,4 +1,4 @@
-class AddBuildParentIdAndConfiguration < ActiveRecord::Migration
+class AddBuildParentIdAndConfiguration < ActiveRecord::Migration[4.2]
   def self.up
     change_table :builds do |t|
       t.references :parent

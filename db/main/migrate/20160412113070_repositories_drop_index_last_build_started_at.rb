@@ -1,4 +1,4 @@
-class RepositoriesDropIndexLastBuildStartedAt < ActiveRecord::Migration
+class RepositoriesDropIndexLastBuildStartedAt < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

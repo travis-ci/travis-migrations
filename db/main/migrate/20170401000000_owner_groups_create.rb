@@ -1,4 +1,4 @@
-class OwnerGroupsCreate < ActiveRecord::Migration
+class OwnerGroupsCreate < ActiveRecord::Migration[4.2]
   def change
     create_table :owner_groups do |t|
       t.string :uuid

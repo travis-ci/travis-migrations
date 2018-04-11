@@ -1,4 +1,4 @@
-class CreateBetaFeatures < ActiveRecord::Migration
+class CreateBetaFeatures < ActiveRecord::Migration[4.2]
   def change
     create_table :beta_features do |t|
       t.string :name

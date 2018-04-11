@@ -1,4 +1,4 @@
-class AddIndexOnRepositoryIdToCommits < ActiveRecord::Migration
+class AddIndexOnRepositoryIdToCommits < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

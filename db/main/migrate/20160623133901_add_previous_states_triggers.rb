@@ -1,4 +1,4 @@
-class AddPreviousStatesTriggers < ActiveRecord::Migration
+class AddPreviousStatesTriggers < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       CREATE FUNCTION save_state_change() RETURNS trigger AS $$

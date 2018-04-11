@@ -1,4 +1,4 @@
-class DropAnnotations < ActiveRecord::Migration
+class DropAnnotations < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

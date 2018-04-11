@@ -1,4 +1,4 @@
-class StagesCreate < ActiveRecord::Migration
+class StagesCreate < ActiveRecord::Migration[4.2]
   def change
     create_table :stages do |t|
       t.belongs_to :build

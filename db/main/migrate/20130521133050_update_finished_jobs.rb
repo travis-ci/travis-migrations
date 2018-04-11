@@ -1,4 +1,4 @@
-class UpdateFinishedJobs < ActiveRecord::Migration
+class UpdateFinishedJobs < ActiveRecord::Migration[4.2]
   def up
     execute "UPDATE jobs SET state = 'passed' WHERE state = 'finished' AND result = 0 AND type = 'Job::Test'"
     execute "UPDATE jobs SET state = 'failed' WHERE state = 'finished' AND result = 1 AND type = 'Job::Test'"

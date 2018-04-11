@@ -1,4 +1,4 @@
-class CreateBuilds < ActiveRecord::Migration
+class CreateBuilds < ActiveRecord::Migration[4.2]
   def self.up
     create_table :builds do |t|
       t.references :repository

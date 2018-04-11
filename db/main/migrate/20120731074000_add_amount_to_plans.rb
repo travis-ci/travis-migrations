@@ -1,4 +1,4 @@
-class AddAmountToPlans < ActiveRecord::Migration
+class AddAmountToPlans < ActiveRecord::Migration[4.2]
   def change
     change_table :plans do |t|
       t.integer :amount

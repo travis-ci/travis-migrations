@@ -1,4 +1,4 @@
-class AddMissingIndexes < ActiveRecord::Migration
+class AddMissingIndexes < ActiveRecord::Migration[4.2]
   def self.up
     add_index :repositories, :last_build_started_at
     add_index :repositories, [:owner_name, :name]

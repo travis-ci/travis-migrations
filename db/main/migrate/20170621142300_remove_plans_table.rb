@@ -1,4 +1,4 @@
-class RemovePlansTable < ActiveRecord::Migration
+class RemovePlansTable < ActiveRecord::Migration[4.2]
   def up
     drop_table :plans
   end

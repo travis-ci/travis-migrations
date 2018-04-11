@@ -1,4 +1,4 @@
-class JobsRenameOwnerToSource < ActiveRecord::Migration
+class JobsRenameOwnerToSource < ActiveRecord::Migration[4.2]
   def up
     change_table :jobs do |t|
       t.rename :owner_id, :source_id

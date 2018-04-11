@@ -1,4 +1,4 @@
-class RemoveEventsTable < ActiveRecord::Migration
+class RemoveEventsTable < ActiveRecord::Migration[4.2]
   def up
     drop_table :events
   end

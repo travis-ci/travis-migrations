@@ -1,4 +1,4 @@
-class RevertPreviousJobStates < ActiveRecord::Migration
+class RevertPreviousJobStates < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       DROP TRIGGER IF EXISTS save_state_change_on_update on jobs;

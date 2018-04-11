@@ -1,4 +1,4 @@
-class AddRepositoryIdIndexToJobs < ActiveRecord::Migration
+class AddRepositoryIdIndexToJobs < ActiveRecord::Migration[4.2]
   def self.up
     add_index(:jobs, :repository_id)
   end

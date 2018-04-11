@@ -1,4 +1,4 @@
-class AddSourceToSubscriptions < ActiveRecord::Migration
+class AddSourceToSubscriptions < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       CREATE TYPE source_type AS ENUM ('manual', 'stripe', 'github', 'unknown');

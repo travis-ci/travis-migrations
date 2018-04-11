@@ -1,4 +1,4 @@
-class TagsIndexRepoIdAndName < ActiveRecord::Migration
+class TagsIndexRepoIdAndName < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

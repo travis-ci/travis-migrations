@@ -1,4 +1,4 @@
-class AddActiveToRepositories < ActiveRecord::Migration
+class AddActiveToRepositories < ActiveRecord::Migration[4.2]
   def self.up
     add_column :repositories, :is_active, :boolean
   end

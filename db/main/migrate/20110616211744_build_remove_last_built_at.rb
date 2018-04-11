@@ -1,4 +1,4 @@
-class BuildRemoveLastBuiltAt < ActiveRecord::Migration
+class BuildRemoveLastBuiltAt < ActiveRecord::Migration[4.2]
   def self.up
     change_table :repositories do |t|
       t.remove :last_built_at

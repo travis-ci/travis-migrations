@@ -1,4 +1,4 @@
-class JobsAddIndexOwnerId < ActiveRecord::Migration
+class JobsAddIndexOwnerId < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

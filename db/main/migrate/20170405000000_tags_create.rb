@@ -1,4 +1,4 @@
-class TagsCreate < ActiveRecord::Migration
+class TagsCreate < ActiveRecord::Migration[4.2]
   def change
     create_table :tags do |t|
       t.belongs_to :repository

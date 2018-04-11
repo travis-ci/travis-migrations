@@ -1,4 +1,4 @@
-class AddAbuseTable < ActiveRecord::Migration
+class AddAbuseTable < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

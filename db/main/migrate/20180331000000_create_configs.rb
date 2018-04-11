@@ -1,4 +1,4 @@
-class CreateConfigs < ActiveRecord::Migration
+class CreateConfigs < ActiveRecord::Migration[4.2]
   def up
     create_table :request_configs do |t|
       t.integer :repository_id, null: false

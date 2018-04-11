@@ -1,4 +1,4 @@
-class CopyStatusToResult < ActiveRecord::Migration
+class CopyStatusToResult < ActiveRecord::Migration[4.2]
   def self.up
     add_column :builds, :result, :integer
     add_column :jobs, :result, :integer

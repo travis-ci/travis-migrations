@@ -1,4 +1,4 @@
-class AddEventIdToStripeEvents < ActiveRecord::Migration
+class AddEventIdToStripeEvents < ActiveRecord::Migration[4.2]
   def change
     change_table :stripe_events do |t|
       t.string :event_id
