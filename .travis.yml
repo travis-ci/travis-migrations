@@ -17,5 +17,9 @@ rvm: "2.5.1"
 env:
   - RAILS_ENV=test
 
+script:
+  - bundle exec rspec spec
+  - script/validate_structure_file.rb
+
 before_script:
   - cp config/database.yml.travis config/database.yml
