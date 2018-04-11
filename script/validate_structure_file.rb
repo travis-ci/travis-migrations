@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-structure = File.read(File.expand_path('../../db/main/structure.sql', __FILE__))
+path = File.expand_path('../../db/main/structure.sql', __FILE__)
+p path
+structure = File.read(path)
 if structure =~ /AS integer/
   STDERR.puts <<-MESSAGE
 \033[0;31mStructure dump was generated using a PostgreSQL 10 or later.
