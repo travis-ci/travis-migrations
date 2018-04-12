@@ -1,4 +1,4 @@
-class StagesAddStateAndTimestamps < ActiveRecord::Migration
+class StagesAddStateAndTimestamps < ActiveRecord::Migration[4.2]
   def change
     change_table :stages do |t|
       t.string :state

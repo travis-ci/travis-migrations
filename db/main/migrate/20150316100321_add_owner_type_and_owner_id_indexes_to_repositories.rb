@@ -1,4 +1,4 @@
-class AddOwnerTypeAndOwnerIdIndexesToRepositories < ActiveRecord::Migration
+class AddOwnerTypeAndOwnerIdIndexesToRepositories < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

@@ -12,17 +12,12 @@ describe 'Rake tasks' do
     stars crons subscriptions coupons stripe_events invoices queueable_jobs
     pull_requests stages owner_groups tags trials messages trial_allowances abuses
     repo_counts request_payloads request_configs build_configs job_configs 
-    installations
+    installations ar_internal_metadata
     )
   }
 
-  before do
-    ActiveRecord::Base.establish_connection(config['test'])
-  end
-
-  after do
-    ActiveRecord::Base.remove_connection
-  end
+  before { ActiveRecord::Base.establish_connection(config['test']) }
+  after { ActiveRecord::Base.remove_connection }
 
   def run(cmd)
     system "RAILS_ENV=test bundle exec #{cmd}"

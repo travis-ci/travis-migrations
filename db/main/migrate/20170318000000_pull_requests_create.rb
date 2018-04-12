@@ -1,4 +1,4 @@
-class PullRequestsCreate < ActiveRecord::Migration
+class PullRequestsCreate < ActiveRecord::Migration[4.2]
   def change
     create_table :pull_requests do |t|
       t.belongs_to :repository

@@ -1,4 +1,4 @@
-class RepositoryRenameIsActiveToActive < ActiveRecord::Migration
+class RepositoryRenameIsActiveToActive < ActiveRecord::Migration[4.2]
   def self.up
     rename_column :repositories, :is_active, :active
   end

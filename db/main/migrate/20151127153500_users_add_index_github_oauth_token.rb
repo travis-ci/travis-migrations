@@ -1,4 +1,4 @@
-class UsersAddIndexGithubOauthToken < ActiveRecord::Migration
+class UsersAddIndexGithubOauthToken < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

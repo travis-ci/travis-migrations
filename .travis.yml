@@ -17,11 +17,10 @@ rvm: "2.3.4"
 env:
   - RAILS_ENV=test
 
-before_install:
-  - gem install bundler -v 1.12.4
-
-install:
-  - bundle _1.12.4_ install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}
+script:
+  - bundle exec rspec spec
+  - script/validate_structure_file.rb db/main/structure-original.sql
 
 before_script:
+  - cp db/main/structure.sql db/main/structure-original.sql
   - cp config/database.yml.travis config/database.yml

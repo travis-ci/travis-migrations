@@ -1,4 +1,4 @@
-class CreateInstallations < ActiveRecord::Migration
+class CreateInstallations < ActiveRecord::Migration[4.2]
   def change
     create_table    :installations do |t|
       t.integer     :github_id

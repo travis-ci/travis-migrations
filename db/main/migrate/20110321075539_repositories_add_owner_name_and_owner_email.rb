@@ -2,7 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-class RepositoriesAddOwnerNameAndOwnerEmail < ActiveRecord::Migration
+class RepositoriesAddOwnerNameAndOwnerEmail < ActiveRecord::Migration[4.2]
   def self.up
     change_table :repositories do |t|
       t.string :owner_name

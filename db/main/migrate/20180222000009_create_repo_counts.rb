@@ -1,4 +1,4 @@
-class CreateRepoCounts < ActiveRecord::Migration
+class CreateRepoCounts < ActiveRecord::Migration[4.2]
   def up
     create_table :repo_counts, id: false do |t|
       t.belongs_to :repository, null: false

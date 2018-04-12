@@ -1,4 +1,4 @@
-class RemoveUnusedBuildColumns < ActiveRecord::Migration
+class RemoveUnusedBuildColumns < ActiveRecord::Migration[4.2]
   def change
     remove_column :builds, :result
     remove_column :builds, :status

@@ -1,4 +1,4 @@
-class CreateMemberships < ActiveRecord::Migration
+class CreateMemberships < ActiveRecord::Migration[4.2]
   def up
     create_table :memberships do |t|
       t.references :organization

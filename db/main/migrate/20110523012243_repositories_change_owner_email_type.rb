@@ -1,4 +1,4 @@
-class RepositoriesChangeOwnerEmailType < ActiveRecord::Migration
+class RepositoriesChangeOwnerEmailType < ActiveRecord::Migration[4.2]
   def self.up
     change_column :repositories, :owner_email, :text
   end

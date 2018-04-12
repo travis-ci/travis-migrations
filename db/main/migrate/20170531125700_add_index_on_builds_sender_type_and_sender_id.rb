@@ -1,4 +1,4 @@
-class AddIndexOnBuildsSenderTypeAndSenderId < ActiveRecord::Migration
+class AddIndexOnBuildsSenderTypeAndSenderId < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

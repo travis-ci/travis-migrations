@@ -1,4 +1,4 @@
-class JobsAddIndexSourceType < ActiveRecord::Migration
+class JobsAddIndexSourceType < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

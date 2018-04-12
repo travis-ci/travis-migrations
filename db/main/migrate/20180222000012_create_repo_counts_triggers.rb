@@ -1,4 +1,4 @@
-class CreateRepoCountsTriggers < ActiveRecord::Migration
+class CreateRepoCountsTriggers < ActiveRecord::Migration[4.2]
   FILES = %w(
     repo_counts_triggers.sql
     repo_counts_populate.sql

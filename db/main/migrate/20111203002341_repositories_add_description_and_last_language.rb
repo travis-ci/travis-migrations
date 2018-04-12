@@ -1,6 +1,6 @@
 require 'yaml'
 
-class RepositoriesAddDescriptionAndLastLanguage < ActiveRecord::Migration
+class RepositoriesAddDescriptionAndLastLanguage < ActiveRecord::Migration[4.2]
   def up
     change_table :repositories do |t|
       t.text :description

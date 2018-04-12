@@ -1,4 +1,4 @@
-class AddNextRunLastRunToCrons < ActiveRecord::Migration
+class AddNextRunLastRunToCrons < ActiveRecord::Migration[4.2]
   def up
     unless column_exists? :crons, :next_run
         add_column :crons, :next_run, :datetime

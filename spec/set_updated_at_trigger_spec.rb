@@ -11,14 +11,15 @@ describe 'set_updated_at trigger' do
   before(:all) do
     run 'rake db:drop db:create db:migrate'
   end
+
+  before { ActiveRecord::Base.establish_connection(config['test']) }
+  after { ActiveRecord::Base.remove_connection }
+
   before do
-    ActiveRecord::Base.establish_connection(config['test'])
     conn.execute('TRUNCATE builds CASCADE;')
     conn.execute('TRUNCATE jobs CASCADE;')
   end
-  after do
-    ActiveRecord::Base.remove_connection
-  end
+
   let(:conn)   { ActiveRecord::Base.connection }
 
   def e(query)

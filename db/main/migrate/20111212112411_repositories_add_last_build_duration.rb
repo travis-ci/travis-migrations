@@ -1,4 +1,4 @@
-class RepositoriesAddLastBuildDuration < ActiveRecord::Migration
+class RepositoriesAddLastBuildDuration < ActiveRecord::Migration[4.2]
   def up
     change_table :repositories do |t|
       t.integer :last_build_duration

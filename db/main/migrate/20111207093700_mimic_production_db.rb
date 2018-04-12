@@ -1,4 +1,4 @@
-class MimicProductionDb < ActiveRecord::Migration
+class MimicProductionDb < ActiveRecord::Migration[4.2]
   def up
     remove_column :users, :oauth2_uid if column_exists?(:users, :oauth2_uid, :integer)
     remove_column :users, :oauth2_token if column_exists?(:users, :oauth2_token, :string)

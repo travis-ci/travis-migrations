@@ -1,4 +1,4 @@
-class AddMigrating < ActiveRecord::Migration
+class AddMigrating < ActiveRecord::Migration[4.2]
   def change
     add_column :repositories, :migrating, :boolean
     add_column :repositories, :migrated_at, :datetime

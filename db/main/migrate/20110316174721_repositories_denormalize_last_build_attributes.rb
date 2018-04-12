@@ -1,7 +1,7 @@
 # $: << 'lib' unless $:.include?('lib')
 # require 'travis/model/repository'
 
-class RepositoriesDenormalizeLastBuildAttributes < ActiveRecord::Migration
+class RepositoriesDenormalizeLastBuildAttributes < ActiveRecord::Migration[4.2]
   def self.up
     change_table :repositories do |t|
       t.integer  :last_build_id

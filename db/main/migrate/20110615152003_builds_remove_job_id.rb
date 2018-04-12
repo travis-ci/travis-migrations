@@ -1,4 +1,4 @@
-class BuildsRemoveJobId < ActiveRecord::Migration
+class BuildsRemoveJobId < ActiveRecord::Migration[4.2]
   def self.up
     change_table :builds do |t|
       t.remove :job_id

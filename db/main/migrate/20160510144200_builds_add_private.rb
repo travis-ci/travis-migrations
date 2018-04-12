@@ -1,4 +1,4 @@
-class BuildsAddPrivate < ActiveRecord::Migration
+class BuildsAddPrivate < ActiveRecord::Migration[4.2]
   def up
     change_table :builds do |t|
       t.boolean :private

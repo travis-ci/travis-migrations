@@ -1,4 +1,4 @@
-class BuildsAddOwner < ActiveRecord::Migration
+class BuildsAddOwner < ActiveRecord::Migration[4.2]
   def change
     change_table :builds do |t|
       t.references :owner, :polymorphic => true

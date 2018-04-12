@@ -1,4 +1,4 @@
-class CacheOneNumberForSharedBuildsTasksSequence < ActiveRecord::Migration
+class CacheOneNumberForSharedBuildsTasksSequence < ActiveRecord::Migration[4.2]
   def up
     # From http://www.postgresql.org/docs/8.4/static/sql-createsequence.html#AEN58611
     # Unexpected results might be obtained if a cache setting greater than one

@@ -1,4 +1,4 @@
-class AddComIdAndOrgId < ActiveRecord::Migration
+class AddComIdAndOrgId < ActiveRecord::Migration[4.2]
   def change
     add_column :branches, :org_id, :integer
     add_column :builds, :org_id, :integer

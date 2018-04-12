@@ -1,4 +1,4 @@
-class BroadcastsAddIndexRecipientIdAndRecipientType < ActiveRecord::Migration
+class BroadcastsAddIndexRecipientIdAndRecipientType < ActiveRecord::Migration[4.2]
   self.disable_ddl_transaction!
 
   def up

@@ -1,4 +1,4 @@
-class UpdateEventTypeOnBuilds < ActiveRecord::Migration
+class UpdateEventTypeOnBuilds < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       UPDATE builds

@@ -1,4 +1,4 @@
-class CommitsAddBranchIdAndTagId < ActiveRecord::Migration
+class CommitsAddBranchIdAndTagId < ActiveRecord::Migration[4.2]
   def change
     change_table :commits do |t|
       t.belongs_to :branch

@@ -1,6 +1,4 @@
-require 'data_migrations'
-
-class CreateRequestsCommitsAndTasks < ActiveRecord::Migration
+class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
   def self.up
     change_table :builds do |t|
       t.references :commit
@@ -63,30 +61,30 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    migrate_table :builds, :to => :commits do |t|
-      t.copy   :repository_id, :created_at, :updated_at, :commit,
-               :ref, :branch, :message, :compare_url, :committed_at,
-               :committer_name, :committer_email, :author_name, :author_email
-      t.remove :ref, :branch, :message, :compare_url, :committed_at,
-               :committer_name, :committer_email, :author_name, :author_email
-    end
+    #migrate_table :builds, :to => :commits do |t|
+    #  t.copy   :repository_id, :created_at, :updated_at, :commit,
+    #           :ref, :branch, :message, :compare_url, :committed_at,
+    #           :committer_name, :committer_email, :author_name, :author_email
+    #  t.remove :ref, :branch, :message, :compare_url, :committed_at,
+    #           :committer_name, :committer_email, :author_name, :author_email
+    #end
 
-    migrate_table :builds, :to => :requests do |t|
-      t.copy :repository_id, :config, :created_at, :updated_at, :commit, :started_at, :finished_at
-      t.move :github_payload, :token, :to => [:payload, :token]
-      t.set  :state, 'finished'
-      t.set  :source, 'github'
-    end
+    #migrate_table :builds, :to => :requests do |t|
+    #  t.copy :repository_id, :config, :created_at, :updated_at, :commit, :started_at, :finished_at
+    #  t.move :github_payload, :token, :to => [:payload, :token]
+    #  t.set  :state, 'finished'
+    #  t.set  :source, 'github'
+    #end
 
-    migrate_table :builds, :to => :tasks do |t|
-      t.where  'parent_id IS NOT NULL OR parent_id IS NULL AND (SELECT COUNT(*) FROM builds AS children WHERE children.id = builds.id) = 0'
-      t.copy   :number, :status, :started_at, :finished_at, :commit, :config, :log
-      t.remove :log
-      t.copy   :parent_id, :to => :owner_id
-      t.set    :owner_type, 'Build'
-      t.set    :type, 'Task::Test'
-      t.set    :state, 'finished'
-    end
+    #migrate_table :builds, :to => :tasks do |t|
+    #  t.where  'parent_id IS NOT NULL OR parent_id IS NULL AND (SELECT COUNT(*) FROM builds AS children WHERE children.id = builds.id) = 0'
+    #  t.copy   :number, :status, :started_at, :finished_at, :commit, :config, :log
+    #  t.remove :log
+    #  t.copy   :parent_id, :to => :owner_id
+    #  t.set    :owner_type, 'Build'
+    #  t.set    :type, 'Task::Test'
+    #  t.set    :state, 'finished'
+    #end
 
     add_index :commits, :commit
     add_index :builds, :commit
