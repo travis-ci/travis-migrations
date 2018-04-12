@@ -8,7 +8,7 @@ path = File.expand_path("../../#{path_to_structure}", __FILE__)
 structure = File.read(path)
 
 service = S3::Service.new(access_key_id: ENV['ARTIFACTS_KEY'],
-                          secret_access_key: ['ARTIFACTS_SECRET'])
+                          secret_access_key: ENV['ARTIFACTS_SECRET'])
 
 bucket = service.buckets.find("travis-migrations-structure-dumps")
 object = bucket.objects.build("structure-#{ENV['TRAVIS_BUILD_NUMBER']}.sql")
