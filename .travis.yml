@@ -30,3 +30,6 @@ script:
 before_script:
   - cp db/main/structure.sql db/main/structure-original.sql
   - cp config/database.yml.travis config/database.yml
+
+after_success:
+  - script/upload_structure.rb
