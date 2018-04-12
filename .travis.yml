@@ -6,13 +6,6 @@ services:
 
 addons:
   postgresql: "9.6"
-  artifacts:
-    region: "us-west-1"
-    paths:
-      - db/main/structure.sql
-    target_paths:
-      - /${TRAVIS_BUILD_NUMBER}
-    debug: true
 
 cache:
   directories:
