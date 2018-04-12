@@ -7,7 +7,7 @@ services:
 addons:
   postgresql: "9.6"
   artifacts:
-    s3_region: "eu-central-1"
+    region: "us-west-1"
     paths:
       - db/main/structure.sql
     target_paths:
