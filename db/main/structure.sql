@@ -9,6 +9,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
+
+--
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -2738,10 +2745,10 @@ CREATE INDEX index_branches_on_repository_id ON public.branches USING btree (rep
 
 
 --
--- Name: index_branches_on_repository_id_and_name; Type: INDEX; Schema: public; Owner: -
+-- Name: index_branches_on_repository_id_and_name_and_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_branches_on_repository_id_and_name ON public.branches USING btree (repository_id, name);
+CREATE INDEX index_branches_on_repository_id_and_name_and_id ON public.branches USING btree (repository_id, name, id);
 
 
 --
@@ -3448,98 +3455,98 @@ CREATE TRIGGER set_updated_at_on_jobs BEFORE INSERT OR UPDATE ON public.jobs FOR
 -- Name: branches trg_count_branch_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_branch_deleted AFTER DELETE ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('-1');
+CREATE TRIGGER trg_count_branch_deleted AFTER DELETE ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('-1');
 
 
 --
 -- Name: branches trg_count_branch_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_branch_inserted AFTER INSERT ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('1');
+CREATE TRIGGER trg_count_branch_inserted AFTER INSERT ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('1');
 
 
 --
 -- Name: builds trg_count_build_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_build_deleted AFTER DELETE ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('-1');
+CREATE TRIGGER trg_count_build_deleted AFTER DELETE ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('-1');
 
 
 --
 -- Name: builds trg_count_build_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_build_inserted AFTER INSERT ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('1');
+CREATE TRIGGER trg_count_build_inserted AFTER INSERT ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('1');
 
 
 --
 -- Name: commits trg_count_commit_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_commit_deleted AFTER DELETE ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('-1');
+CREATE TRIGGER trg_count_commit_deleted AFTER DELETE ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('-1');
 
 
 --
 -- Name: commits trg_count_commit_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_commit_inserted AFTER INSERT ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('1');
+CREATE TRIGGER trg_count_commit_inserted AFTER INSERT ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('1');
 
 
 --
 -- Name: jobs trg_count_job_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_job_deleted AFTER DELETE ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('-1');
+CREATE TRIGGER trg_count_job_deleted AFTER DELETE ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('-1');
 
 
 --
 -- Name: jobs trg_count_job_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_job_inserted AFTER INSERT ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('1');
+CREATE TRIGGER trg_count_job_inserted AFTER INSERT ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('1');
 
 
 --
 -- Name: pull_requests trg_count_pull_request_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_pull_request_deleted AFTER DELETE ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('-1');
+CREATE TRIGGER trg_count_pull_request_deleted AFTER DELETE ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('-1');
 
 
 --
 -- Name: pull_requests trg_count_pull_request_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_pull_request_inserted AFTER INSERT ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('1');
+CREATE TRIGGER trg_count_pull_request_inserted AFTER INSERT ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('1');
 
 
 --
 -- Name: requests trg_count_request_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_request_deleted AFTER DELETE ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('-1');
+CREATE TRIGGER trg_count_request_deleted AFTER DELETE ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('-1');
 
 
 --
 -- Name: requests trg_count_request_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_request_inserted AFTER INSERT ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('1');
+CREATE TRIGGER trg_count_request_inserted AFTER INSERT ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('1');
 
 
 --
 -- Name: tags trg_count_tag_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_tag_deleted AFTER DELETE ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('-1');
+CREATE TRIGGER trg_count_tag_deleted AFTER DELETE ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('-1');
 
 
 --
 -- Name: tags trg_count_tag_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('1');
+CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('1');
 
 
 --
@@ -3833,6 +3840,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180330000000'),
 ('20180331000000'),
 ('20180404000001'),
-('20180410000000');
+('20180410000000'),
+('20180413000000');
 
 
