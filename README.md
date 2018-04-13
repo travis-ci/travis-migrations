@@ -24,6 +24,9 @@ To add a migration, create a file and add it to the `db/main/migrate` folder, ma
 
 Please make sure your migrations are production safe as per this guide: [Safe Operations For High Volume PostgreSQL](https://www.braintreepayments.com/blog/safe-operations-for-high-volume-postgresql/).
 
+You can run `script/dump-schema-docker.sh` to generate the schema file
+using a consistent version of postgres (running in a docker container).
+
 Running migrations locally
 --------------------------
 
