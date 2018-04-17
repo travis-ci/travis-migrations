@@ -2850,6 +2850,13 @@ CREATE INDEX index_builds_on_state ON public.builds USING btree (state);
 
 
 --
+-- Name: index_builds_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_updated_at ON public.builds USING btree (updated_at);
+
+
+--
 -- Name: index_commits_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3032,6 +3039,13 @@ CREATE UNIQUE INDEX index_organizations_on_org_id ON public.organizations USING 
 
 
 --
+-- Name: index_organizations_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organizations_on_updated_at ON public.organizations USING btree (updated_at);
+
+
+--
 -- Name: index_owner_groups_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3176,6 +3190,13 @@ CREATE INDEX index_repositories_on_owner_name ON public.repositories USING btree
 --
 
 CREATE INDEX index_repositories_on_slug ON public.repositories USING gin (((((owner_name)::text || '/'::text) || (name)::text)) public.gin_trgm_ops);
+
+
+--
+-- Name: index_repositories_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree (updated_at);
 
 
 --
@@ -3428,6 +3449,13 @@ CREATE INDEX index_users_on_lower_login ON public.users USING btree (lower((logi
 --
 
 CREATE UNIQUE INDEX index_users_on_org_id ON public.users USING btree (org_id);
+
+
+--
+-- Name: index_users_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_updated_at ON public.users USING btree (updated_at);
 
 
 --
@@ -3841,6 +3869,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180331000000'),
 ('20180404000001'),
 ('20180410000000'),
-('20180413000000');
+('20180413000000'),
+('20180417000000');
 
 
