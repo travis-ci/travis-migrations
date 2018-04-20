@@ -2712,6 +2712,20 @@ ALTER TABLE ONLY users
 
 
 --
+-- Name: favo_2col_uni_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX favo_2col_uni_idx ON installations USING btree (owner_id, owner_type) WHERE (removed_by_id IS NULL);
+
+
+--
+-- Name: favo_3col_uni_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX favo_3col_uni_idx ON installations USING btree (owner_id, owner_type, removed_by_id) WHERE (removed_by_id IS NOT NULL);
+
+
+--
 -- Name: index_abuses_on_owner; Type: INDEX; Schema: public; Owner: -
 --
 
