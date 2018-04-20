@@ -2680,14 +2680,6 @@ ALTER TABLE ONLY trials
 
 
 --
--- Name: installations unique_github_id_on_installations; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY installations
-    ADD CONSTRAINT unique_github_id_on_installations UNIQUE (github_id);
-
-
---
 -- Name: urls urls_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2723,6 +2715,13 @@ CREATE UNIQUE INDEX favo_2col_uni_idx ON installations USING btree (owner_id, ow
 --
 
 CREATE UNIQUE INDEX favo_3col_uni_idx ON installations USING btree (owner_id, owner_type, removed_by_id) WHERE (removed_by_id IS NOT NULL);
+
+
+--
+-- Name: github_id_installations_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX github_id_installations_idx ON installations USING btree (github_id);
 
 
 --
@@ -3174,13 +3173,6 @@ CREATE INDEX index_repositories_on_lower_name ON repositories USING btree (lower
 
 
 --
--- Name: index_repositories_on_managed; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_repositories_on_managed ON repositories USING btree (managed_by_installation_at);
-
-
---
 -- Name: index_repositories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3479,6 +3471,13 @@ CREATE UNIQUE INDEX index_users_on_org_id ON users USING btree (org_id);
 --
 
 CREATE INDEX index_users_on_updated_at ON users USING btree (updated_at);
+
+
+--
+-- Name: managed_repositories_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX managed_repositories_idx ON repositories USING btree (managed_by_installation_at);
 
 
 --
