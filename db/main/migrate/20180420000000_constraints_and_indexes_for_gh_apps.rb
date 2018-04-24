@@ -4,7 +4,6 @@ class ConstraintsAndIndexesForGhApps < ActiveRecord::Migration[4.2]
   def up
     execute "CREATE UNIQUE INDEX CONCURRENTLY github_id_installations_idx ON installations (github_id)"
     execute "CREATE INDEX CONCURRENTLY managed_repositories_idx ON repositories (managed_by_installation_at)"
-    execute "CREATE UNIQUE INDEX CONCURRENTLY owner_removed_installations_idx ON installations (owner_id, owner_type, removed_by_id) WHERE removed_by_id IS NOT NULL"
     execute "CREATE UNIQUE INDEX CONCURRENTLY owner_installations_idx ON installations (owner_id, owner_type) WHERE removed_by_id IS NULL"
   end
 
