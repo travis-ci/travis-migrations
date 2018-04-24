@@ -680,8 +680,8 @@ SET default_with_oids = false;
 
 CREATE TABLE public.abuses (
     id integer NOT NULL,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     request_id integer,
     level integer NOT NULL,
     reason character varying NOT NULL,
@@ -798,8 +798,8 @@ ALTER SEQUENCE public.branches_id_seq OWNED BY public.branches.id;
 
 CREATE TABLE public.broadcasts (
     id integer NOT NULL,
-    recipient_id integer,
     recipient_type character varying,
+    recipient_id integer,
     kind character varying,
     message character varying,
     expired boolean,
@@ -836,7 +836,7 @@ CREATE TABLE public.build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config text
+    config jsonb
 );
 
 
@@ -881,20 +881,31 @@ CREATE TABLE public.builds (
     number character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
+    log text DEFAULT ''::text,
+    message text,
+    committed_at timestamp without time zone,
+    committer_name character varying,
+    committer_email character varying,
+    author_name character varying,
+    author_email character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     config text,
+    ref character varying,
+    branch character varying,
+    github_payload text,
+    compare_url character varying,
+    token character varying,
     commit_id integer,
     request_id integer,
     state character varying,
     duration integer,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     event_type character varying,
     previous_state character varying,
     pull_request_title text,
     pull_request_number integer,
-    branch character varying,
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
@@ -902,8 +913,8 @@ CREATE TABLE public.builds (
     pull_request_id integer,
     branch_id integer,
     tag_id integer,
-    sender_id integer,
     sender_type character varying,
+    sender_id integer,
     org_id integer,
     com_id integer,
     config_id integer
@@ -1087,8 +1098,8 @@ CREATE TABLE public.installations (
     id integer NOT NULL,
     github_id integer,
     permissions jsonb,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     added_by_id integer,
     removed_by_id integer,
     created_at timestamp without time zone,
@@ -1158,7 +1169,7 @@ CREATE TABLE public.job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config text
+    config jsonb
 );
 
 
@@ -1189,13 +1200,14 @@ CREATE TABLE public.jobs (
     id bigint DEFAULT nextval('public.shared_builds_tasks_seq'::regclass) NOT NULL,
     repository_id integer,
     commit_id integer,
-    source_id integer,
     source_type character varying,
+    source_id integer,
     queue character varying,
     type character varying,
     state character varying,
     number character varying,
     config text,
+    log text DEFAULT ''::text,
     worker character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
@@ -1203,8 +1215,8 @@ CREATE TABLE public.jobs (
     updated_at timestamp without time zone NOT NULL,
     tags text,
     allow_failure boolean DEFAULT false,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     result integer,
     queued_at timestamp without time zone,
     canceled_at timestamp without time zone,
@@ -1355,8 +1367,8 @@ ALTER SEQUENCE public.organizations_id_seq OWNED BY public.organizations.id;
 CREATE TABLE public.owner_groups (
     id integer NOT NULL,
     uuid character varying,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -1521,8 +1533,8 @@ CREATE TABLE public.repositories (
     active boolean,
     description text,
     last_build_duration integer,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     private boolean DEFAULT false,
     last_build_state character varying,
     github_id integer,
@@ -1568,7 +1580,7 @@ CREATE TABLE public.request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config text
+    config jsonb
 );
 
 
@@ -1643,16 +1655,16 @@ CREATE TABLE public.requests (
     comments_url character varying,
     base_commit character varying,
     head_commit character varying,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     result character varying,
     message character varying,
     private boolean,
     pull_request_id integer,
     branch_id integer,
     tag_id integer,
-    sender_id integer,
     sender_type character varying,
+    sender_id integer,
     org_id integer,
     com_id integer,
     config_id integer
@@ -1832,8 +1844,8 @@ CREATE TABLE public.subscriptions (
     id integer NOT NULL,
     cc_token character varying,
     valid_to timestamp without time zone,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     first_name character varying,
     last_name character varying,
     company character varying,
@@ -1990,8 +2002,8 @@ ALTER SEQUENCE public.trial_allowances_id_seq OWNED BY public.trial_allowances.i
 
 CREATE TABLE public.trials (
     id integer NOT NULL,
-    owner_id integer,
     owner_type character varying,
+    owner_id integer,
     chartmogul_customer_uuids text[] DEFAULT '{}'::text[],
     status character varying DEFAULT 'new'::character varying,
     created_at timestamp without time zone NOT NULL,
@@ -2584,6 +2596,14 @@ ALTER TABLE ONLY public.request_payloads
 
 ALTER TABLE ONLY public.requests
     ADD CONSTRAINT requests_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
 
 
 --
@@ -3453,24 +3473,10 @@ CREATE UNIQUE INDEX owner_installations_idx ON public.installations USING btree 
 
 
 --
--- Name: owner_removed_installations_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX owner_removed_installations_idx ON public.installations USING btree (owner_id, owner_type, removed_by_id) WHERE (removed_by_id IS NOT NULL);
-
-
---
 -- Name: subscriptions_owner; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX subscriptions_owner ON public.subscriptions USING btree (owner_id, owner_type) WHERE ((status)::text = 'subscribed'::text);
-
-
---
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
 
 
 --
@@ -3716,7 +3722,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20130327100801'),
 ('20130418101437'),
 ('20130418103306'),
-('20130504230850'),
 ('20130505023259'),
 ('20130521115725'),
 ('20130521133050'),
