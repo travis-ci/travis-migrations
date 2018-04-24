@@ -48,6 +48,30 @@ To run migrations after the database has been set up:
 bundle exec rake db:migrate
 ```
 
+When getting ActiveRecord::NoEnvironmentInSchemaError error
+-----------------------------------------------------------
+
+Since version 5.0 ActiveRecord will complain if the env info is not saved in the
+database with an error:
+
+```
+ActiveRecord::NoEnvironmentInSchemaError:
+
+Environment data not found in the schema. To resolve this issue, run:
+
+        bin/rails db:environment:set RAILS_ENV=test
+```
+
+The command that it outputs will not work, because we don't install rails
+scripts. You can run this instead:
+
+```bash
+bundle exec rake db:environment:set RAILS_ENV=test
+```
+
+You may need to change `RAILS_ENV=test` to whatever environment you're trying to
+migrate.
+
 Deploy latest migrations
 ------------------------
 
