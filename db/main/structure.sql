@@ -3453,13 +3453,7 @@ CREATE UNIQUE INDEX owner_installations_idx ON public.installations USING btree 
 
 
 --
--- Name: owner_removed_installations_idx; Type: INDEX; Schema: public; Owner: -
---
 
-CREATE UNIQUE INDEX owner_removed_installations_idx ON public.installations USING btree (owner_id, owner_type, removed_by_id) WHERE (removed_by_id IS NOT NULL);
-
-
---
 -- Name: subscriptions_owner; Type: INDEX; Schema: public; Owner: -
 --
 
