@@ -9,13 +9,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON DATABASE postgres IS 'default administrative connection database';
-
-
---
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -687,8 +680,8 @@ SET default_with_oids = false;
 
 CREATE TABLE public.abuses (
     id integer NOT NULL,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     request_id integer,
     level integer NOT NULL,
     reason character varying NOT NULL,
@@ -805,8 +798,8 @@ ALTER SEQUENCE public.branches_id_seq OWNED BY public.branches.id;
 
 CREATE TABLE public.broadcasts (
     id integer NOT NULL,
-    recipient_type character varying,
     recipient_id integer,
+    recipient_type character varying,
     kind character varying,
     message character varying,
     expired boolean,
@@ -843,7 +836,7 @@ CREATE TABLE public.build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config text
 );
 
 
@@ -888,31 +881,20 @@ CREATE TABLE public.builds (
     number character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
-    log text DEFAULT ''::text,
-    message text,
-    committed_at timestamp without time zone,
-    committer_name character varying,
-    committer_email character varying,
-    author_name character varying,
-    author_email character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     config text,
-    ref character varying,
-    branch character varying,
-    github_payload text,
-    compare_url character varying,
-    token character varying,
     commit_id integer,
     request_id integer,
     state character varying,
     duration integer,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     event_type character varying,
     previous_state character varying,
     pull_request_title text,
     pull_request_number integer,
+    branch character varying,
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
@@ -920,8 +902,8 @@ CREATE TABLE public.builds (
     pull_request_id integer,
     branch_id integer,
     tag_id integer,
-    sender_type character varying,
     sender_id integer,
+    sender_type character varying,
     org_id integer,
     com_id integer,
     config_id integer
@@ -1105,8 +1087,8 @@ CREATE TABLE public.installations (
     id integer NOT NULL,
     github_id integer,
     permissions jsonb,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     added_by_id integer,
     removed_by_id integer,
     created_at timestamp without time zone,
@@ -1176,7 +1158,7 @@ CREATE TABLE public.job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config text
 );
 
 
@@ -1207,14 +1189,13 @@ CREATE TABLE public.jobs (
     id bigint DEFAULT nextval('public.shared_builds_tasks_seq'::regclass) NOT NULL,
     repository_id integer,
     commit_id integer,
-    source_type character varying,
     source_id integer,
+    source_type character varying,
     queue character varying,
     type character varying,
     state character varying,
     number character varying,
     config text,
-    log text DEFAULT ''::text,
     worker character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
@@ -1222,8 +1203,8 @@ CREATE TABLE public.jobs (
     updated_at timestamp without time zone NOT NULL,
     tags text,
     allow_failure boolean DEFAULT false,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     result integer,
     queued_at timestamp without time zone,
     canceled_at timestamp without time zone,
@@ -1374,8 +1355,8 @@ ALTER SEQUENCE public.organizations_id_seq OWNED BY public.organizations.id;
 CREATE TABLE public.owner_groups (
     id integer NOT NULL,
     uuid character varying,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -1540,8 +1521,8 @@ CREATE TABLE public.repositories (
     active boolean,
     description text,
     last_build_duration integer,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     private boolean DEFAULT false,
     last_build_state character varying,
     github_id integer,
@@ -1587,7 +1568,7 @@ CREATE TABLE public.request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config text
 );
 
 
@@ -1662,16 +1643,16 @@ CREATE TABLE public.requests (
     comments_url character varying,
     base_commit character varying,
     head_commit character varying,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     result character varying,
     message character varying,
     private boolean,
     pull_request_id integer,
     branch_id integer,
     tag_id integer,
-    sender_type character varying,
     sender_id integer,
+    sender_type character varying,
     org_id integer,
     com_id integer,
     config_id integer
@@ -1851,8 +1832,8 @@ CREATE TABLE public.subscriptions (
     id integer NOT NULL,
     cc_token character varying,
     valid_to timestamp without time zone,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     first_name character varying,
     last_name character varying,
     company character varying,
@@ -2009,8 +1990,8 @@ ALTER SEQUENCE public.trial_allowances_id_seq OWNED BY public.trial_allowances.i
 
 CREATE TABLE public.trials (
     id integer NOT NULL,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     chartmogul_customer_uuids text[] DEFAULT '{}'::text[],
     status character varying DEFAULT 'new'::character varying,
     created_at timestamp without time zone NOT NULL,
@@ -2606,14 +2587,6 @@ ALTER TABLE ONLY public.requests
 
 
 --
--- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.schema_migrations
-    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
 -- Name: ssl_keys ssl_keys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2707,6 +2680,13 @@ ALTER TABLE ONLY public.user_beta_features
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: github_id_installations_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX github_id_installations_idx ON public.installations USING btree (github_id);
 
 
 --
@@ -3459,10 +3439,38 @@ CREATE INDEX index_users_on_updated_at ON public.users USING btree (updated_at);
 
 
 --
+-- Name: managed_repositories_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX managed_repositories_idx ON public.repositories USING btree (managed_by_installation_at);
+
+
+--
+-- Name: owner_installations_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX owner_installations_idx ON public.installations USING btree (owner_id, owner_type) WHERE (removed_by_id IS NULL);
+
+
+--
+-- Name: owner_removed_installations_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX owner_removed_installations_idx ON public.installations USING btree (owner_id, owner_type, removed_by_id) WHERE (removed_by_id IS NOT NULL);
+
+
+--
 -- Name: subscriptions_owner; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX subscriptions_owner ON public.subscriptions USING btree (owner_id, owner_type) WHERE ((status)::text = 'subscribed'::text);
+
+
+--
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
 
 
 --
@@ -3483,98 +3491,98 @@ CREATE TRIGGER set_updated_at_on_jobs BEFORE INSERT OR UPDATE ON public.jobs FOR
 -- Name: branches trg_count_branch_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_branch_deleted AFTER DELETE ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('-1');
+CREATE TRIGGER trg_count_branch_deleted AFTER DELETE ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('-1');
 
 
 --
 -- Name: branches trg_count_branch_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_branch_inserted AFTER INSERT ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('1');
+CREATE TRIGGER trg_count_branch_inserted AFTER INSERT ON public.branches FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_branches('1');
 
 
 --
 -- Name: builds trg_count_build_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_build_deleted AFTER DELETE ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('-1');
+CREATE TRIGGER trg_count_build_deleted AFTER DELETE ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('-1');
 
 
 --
 -- Name: builds trg_count_build_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_build_inserted AFTER INSERT ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('1');
+CREATE TRIGGER trg_count_build_inserted AFTER INSERT ON public.builds FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_builds('1');
 
 
 --
 -- Name: commits trg_count_commit_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_commit_deleted AFTER DELETE ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('-1');
+CREATE TRIGGER trg_count_commit_deleted AFTER DELETE ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('-1');
 
 
 --
 -- Name: commits trg_count_commit_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_commit_inserted AFTER INSERT ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('1');
+CREATE TRIGGER trg_count_commit_inserted AFTER INSERT ON public.commits FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_commits('1');
 
 
 --
 -- Name: jobs trg_count_job_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_job_deleted AFTER DELETE ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('-1');
+CREATE TRIGGER trg_count_job_deleted AFTER DELETE ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('-1');
 
 
 --
 -- Name: jobs trg_count_job_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_job_inserted AFTER INSERT ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('1');
+CREATE TRIGGER trg_count_job_inserted AFTER INSERT ON public.jobs FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_jobs('1');
 
 
 --
 -- Name: pull_requests trg_count_pull_request_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_pull_request_deleted AFTER DELETE ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('-1');
+CREATE TRIGGER trg_count_pull_request_deleted AFTER DELETE ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('-1');
 
 
 --
 -- Name: pull_requests trg_count_pull_request_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_pull_request_inserted AFTER INSERT ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('1');
+CREATE TRIGGER trg_count_pull_request_inserted AFTER INSERT ON public.pull_requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_pull_requests('1');
 
 
 --
 -- Name: requests trg_count_request_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_request_deleted AFTER DELETE ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('-1');
+CREATE TRIGGER trg_count_request_deleted AFTER DELETE ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('-1');
 
 
 --
 -- Name: requests trg_count_request_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_request_inserted AFTER INSERT ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('1');
+CREATE TRIGGER trg_count_request_inserted AFTER INSERT ON public.requests FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_requests('1');
 
 
 --
 -- Name: tags trg_count_tag_deleted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_tag_deleted AFTER DELETE ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('-1');
+CREATE TRIGGER trg_count_tag_deleted AFTER DELETE ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('-1');
 
 
 --
 -- Name: tags trg_count_tag_inserted; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 00:00:00+00'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('1');
+CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON public.tags FOR EACH ROW WHEN ((now() > '2018-01-01 01:00:00+01'::timestamp with time zone)) EXECUTE PROCEDURE public.count_tags('1');
 
 
 --
@@ -3708,6 +3716,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20130327100801'),
 ('20130418101437'),
 ('20130418103306'),
+('20130504230850'),
 ('20130505023259'),
 ('20130521115725'),
 ('20130521133050'),
@@ -3870,6 +3879,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180404000001'),
 ('20180410000000'),
 ('20180413000000'),
-('20180417000000');
+('20180417000000'),
+('20180420000000');
 
 
