@@ -2724,6 +2724,13 @@ CREATE UNIQUE INDEX index_abuses_on_owner_id_and_owner_type_and_level ON public.
 
 
 --
+-- Name: index_active_on_org; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_active_on_org ON public.repositories USING btree (active_on_org);
+
+
+--
 -- Name: index_branches_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3885,6 +3892,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180410000000'),
 ('20180413000000'),
 ('20180417000000'),
-('20180420000000');
+('20180420000000'),
+('20180425000000');
 
 
