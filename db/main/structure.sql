@@ -1103,7 +1103,8 @@ CREATE TABLE public.installations (
     added_by_id integer,
     removed_by_id integer,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    removed_at timestamp without time zone
 );
 
 
@@ -3893,6 +3894,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180413000000'),
 ('20180417000000'),
 ('20180420000000'),
-('20180425000000');
+('20180425000000'),
+('20180425100000');
 
 
