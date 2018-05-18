@@ -19,6 +19,5 @@ RUN ruby-install --system --no-install-deps ruby `cat .ruby-version`
 RUN which ruby
 
 # gem setup
-COPY Gemfile .
 RUN apt-get install libpq-dev
 RUN gem install bundler
