@@ -2,3 +2,4 @@
 .ruby-gemset
 log
 *.gem
+vendor

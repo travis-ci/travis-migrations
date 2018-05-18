@@ -8,9 +8,10 @@ docker run --name travis-migrations -v `pwd`:/travis-migrations -d -p 5433:5432 
 
 sleep 5
 
-
 docker exec -it travis-migrations psql -U postgres -c "CREATE ROLE root WITH CREATEDB CREATEROLE LOGIN SUPERUSER"
-docker exec -it travis-migrations bundle && (bundle exec rake db:create || true) && bundle exec rake db:migrate db:structure:dump
+docker exec -it travis-migrations bundle install --path ./vendor
+docker exec -it travis-migrations bundle exec rake db:create
+docker exec -it travis-migrations bundle exec rake db:migrate db:structure:dump
 
 docker kill travis-migrations
 docker rm travis-migrations
