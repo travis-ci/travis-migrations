@@ -2,16 +2,16 @@
 
 set -e
 
-docker kill postgres-travis-migrations || true
-docker rm postgres-travis-migrations || true
-docker run --name postgres-travis-migrations -d -p 5433:5432 postgres:9.6
+docker kill travis-migrations || true
+docker rm travis-migrations || true
+docker run --name travis-migrations -v `pwd`:/travis-migrations -d travisci/travis-migrations:0.1
 
 sleep 5
 
-export DATABASE_URL=postgres://postgres@127.0.0.1:5433/postgres
+docker exec -it travis-migrations psql -U postgres -c "CREATE ROLE root WITH CREATEDB CREATEROLE LOGIN SUPERUSER"
+docker exec -it travis-migrations bundle install --path ./vendor
+docker exec -it travis-migrations bundle exec rake db:create
+docker exec -it travis-migrations bundle exec rake db:migrate db:structure:dump
 
-bundle exec rake db:migrate
-bundle exec rake db:structure:dump
-
-docker kill postgres-travis-migrations
-docker rm postgres-travis-migrations
+docker kill travis-migrations
+docker rm travis-migrations
