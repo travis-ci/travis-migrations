@@ -8,6 +8,8 @@ class AddActiveFlagToCrons < ActiveRecord::Migration[4.2]
       end
     end
 
-    add_index :crons, :next_run, where: "(active IS TRUE)", algorithm: :concurrently
+    unless index_exists?(:crons, :next_run, name: "index_crons_on_next_run")
+      add_index :crons, :next_run, where: "(active IS TRUE)", algorithm: :concurrently
+    end
   end
 end
