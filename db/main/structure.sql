@@ -1638,6 +1638,36 @@ ALTER SEQUENCE public.request_payloads_id_seq OWNED BY public.request_payloads.i
 
 
 --
+-- Name: request_yaml_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.request_yaml_configs (
+    id integer NOT NULL,
+    yaml text,
+    key character varying NOT NULL
+);
+
+
+--
+-- Name: request_yaml_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.request_yaml_configs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: request_yaml_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.request_yaml_configs_id_seq OWNED BY public.request_yaml_configs.id;
+
+
+--
 -- Name: requests; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1669,7 +1699,8 @@ CREATE TABLE public.requests (
     sender_id integer,
     org_id integer,
     com_id integer,
-    config_id integer
+    config_id integer,
+    yaml_config_id integer
 );
 
 
@@ -2302,6 +2333,13 @@ ALTER TABLE ONLY public.request_payloads ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: request_yaml_configs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.request_yaml_configs ALTER COLUMN id SET DEFAULT nextval('public.request_yaml_configs_id_seq'::regclass);
+
+
+--
 -- Name: requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2590,6 +2628,14 @@ ALTER TABLE ONLY public.request_configs
 
 ALTER TABLE ONLY public.request_payloads
     ADD CONSTRAINT request_payloads_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: request_yaml_configs request_yaml_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.request_yaml_configs
+    ADD CONSTRAINT request_yaml_configs_pkey PRIMARY KEY (id);
 
 
 --
@@ -3269,6 +3315,13 @@ CREATE INDEX index_request_payloads_on_created_at_and_archived ON public.request
 --
 
 CREATE INDEX index_request_payloads_on_request_id ON public.request_payloads USING btree (request_id);
+
+
+--
+-- Name: index_request_yaml_configs_on_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_request_yaml_configs_on_key ON public.request_yaml_configs USING btree (key);
 
 
 --
@@ -3952,6 +4005,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180517000001'),
 ('20180517000002'),
 ('20180518000000'),
-('20180522000000');
+('20180522000000'),
+('20180531000000');
 
 
