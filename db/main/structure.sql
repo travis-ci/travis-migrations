@@ -1644,6 +1644,7 @@ ALTER SEQUENCE public.request_payloads_id_seq OWNED BY public.request_payloads.i
 CREATE TABLE public.request_yaml_configs (
     id integer NOT NULL,
     yaml text,
+    repository_id integer,
     key character varying NOT NULL
 );
 
@@ -3318,10 +3319,10 @@ CREATE INDEX index_request_payloads_on_request_id ON public.request_payloads USI
 
 
 --
--- Name: index_request_yaml_configs_on_key; Type: INDEX; Schema: public; Owner: -
+-- Name: index_request_yaml_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_request_yaml_configs_on_key ON public.request_yaml_configs USING btree (key);
+CREATE INDEX index_request_yaml_configs_on_repository_id_and_key ON public.request_yaml_configs USING btree (repository_id, key);
 
 
 --

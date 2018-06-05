@@ -4,9 +4,10 @@ class CreateRequestYamlConfigs < ActiveRecord::Migration[4.2]
   def up
     create_table :request_yaml_configs do |t|
       t.text :yaml
+      t.integer :repository_id
       t.string :key, size: 32, null: false
     end
-    add_index :request_yaml_configs, [:key]
+    add_index :request_yaml_configs, [:repository_id, :key]
     add_column :requests, :yaml_config_id, :integer
   end
 
