@@ -2892,6 +2892,13 @@ CREATE INDEX index_builds_on_repository_id_and_number_and_event_type ON public.b
 
 
 --
+-- Name: index_builds_on_repository_id_event_type_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_repository_id_event_type_id ON public.builds USING btree (repository_id, event_type, id DESC);
+
+
+--
 -- Name: index_builds_on_repository_id_where_state_not_finished; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2938,6 +2945,13 @@ CREATE UNIQUE INDEX index_commits_on_com_id ON public.commits USING btree (com_i
 --
 
 CREATE UNIQUE INDEX index_commits_on_org_id ON public.commits USING btree (org_id);
+
+
+--
+-- Name: index_commits_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_commits_on_repository_id ON public.commits USING btree (repository_id);
 
 
 --
@@ -3036,6 +3050,13 @@ CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON public.jobs USIN
 --
 
 CREATE INDEX index_jobs_on_owner_where_state_running ON public.jobs USING btree (owner_id, owner_type) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+
+
+--
+-- Name: index_jobs_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_repository_id ON public.jobs USING btree (repository_id);
 
 
 --
@@ -4007,6 +4028,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180517000002'),
 ('20180518000000'),
 ('20180522000000'),
-('20180531000000');
+('20180531000000'),
+('20180606000000'),
+('20180606000001'),
+('20180620000000');
 
 
