@@ -1,6 +1,5 @@
 travis-migrations
 =================
-_________________
 
 This is the central repository for storing migrations, and executing them against production and development databases on both .org and .com.
 
