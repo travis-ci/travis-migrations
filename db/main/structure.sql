@@ -890,7 +890,6 @@ CREATE TABLE public.builds (
     author_email character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    config text,
     ref character varying,
     branch character varying,
     github_payload text,
@@ -938,6 +937,43 @@ CREATE SEQUENCE public.builds_id_seq
 --
 
 ALTER SEQUENCE public.builds_id_seq OWNED BY public.builds.id;
+
+
+--
+-- Name: cancellations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.cancellations (
+    id integer NOT NULL,
+    subscription_id integer NOT NULL,
+    user_id integer,
+    plan character varying NOT NULL,
+    subscription_start_date date NOT NULL,
+    cancellation_date date NOT NULL,
+    reason character varying,
+    reason_details text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: cancellations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.cancellations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: cancellations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.cancellations_id_seq OWNED BY public.cancellations.id;
 
 
 --
@@ -1208,7 +1244,6 @@ CREATE TABLE public.jobs (
     type character varying,
     state character varying,
     number character varying,
-    config text,
     log text DEFAULT ''::text,
     worker character varying,
     started_at timestamp without time zone,
@@ -1679,7 +1714,6 @@ CREATE TABLE public.requests (
     state character varying,
     source character varying,
     token character varying,
-    config text,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
@@ -2215,6 +2249,13 @@ ALTER TABLE ONLY public.build_configs ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: cancellations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cancellations ALTER COLUMN id SET DEFAULT nextval('public.cancellations_id_seq'::regclass);
+
+
+--
 -- Name: commits id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2485,6 +2526,14 @@ ALTER TABLE ONLY public.build_configs
 
 ALTER TABLE ONLY public.builds
     ADD CONSTRAINT builds_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cancellations cancellations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cancellations
+    ADD CONSTRAINT cancellations_pkey PRIMARY KEY (id);
 
 
 --
@@ -2931,6 +2980,13 @@ CREATE INDEX index_builds_on_state ON public.builds USING btree (state);
 --
 
 CREATE INDEX index_builds_on_updated_at ON public.builds USING btree (updated_at);
+
+
+--
+-- Name: index_cancellations_on_subscription_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cancellations_on_subscription_id ON public.cancellations USING btree (subscription_id);
 
 
 --
@@ -4031,6 +4087,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180531000000'),
 ('20180606000000'),
 ('20180606000001'),
-('20180620000000');
+('20180614000000'),
+('20180614000001'),
+('20180614000002'),
+('20180620000000'),
+('20180725000000');
 
 
