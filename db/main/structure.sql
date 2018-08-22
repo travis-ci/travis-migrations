@@ -1096,6 +1096,38 @@ ALTER SEQUENCE public.crons_id_seq OWNED BY public.crons.id;
 
 
 --
+-- Name: email_unsubscribes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.email_unsubscribes (
+    id integer NOT NULL,
+    user_id integer,
+    repository_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: email_unsubscribes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.email_unsubscribes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: email_unsubscribes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.email_unsubscribes_id_seq OWNED BY public.email_unsubscribes.id;
+
+
+--
 -- Name: emails; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2278,6 +2310,13 @@ ALTER TABLE ONLY public.crons ALTER COLUMN id SET DEFAULT nextval('public.crons_
 
 
 --
+-- Name: email_unsubscribes id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.email_unsubscribes ALTER COLUMN id SET DEFAULT nextval('public.email_unsubscribes_id_seq'::regclass);
+
+
+--
 -- Name: emails id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2559,6 +2598,14 @@ ALTER TABLE ONLY public.coupons
 
 ALTER TABLE ONLY public.crons
     ADD CONSTRAINT crons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_unsubscribes email_unsubscribes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.email_unsubscribes
+    ADD CONSTRAINT email_unsubscribes_pkey PRIMARY KEY (id);
 
 
 --
@@ -3044,6 +3091,27 @@ CREATE INDEX index_crons_on_next_run ON public.crons USING btree (next_run) WHER
 --
 
 CREATE UNIQUE INDEX index_crons_on_org_id ON public.crons USING btree (org_id);
+
+
+--
+-- Name: index_email_unsubscribes_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_email_unsubscribes_on_repository_id ON public.email_unsubscribes USING btree (repository_id);
+
+
+--
+-- Name: index_email_unsubscribes_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_email_unsubscribes_on_user_id ON public.email_unsubscribes USING btree (user_id);
+
+
+--
+-- Name: index_email_unsubscribes_on_user_id_and_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_email_unsubscribes_on_user_id_and_repository_id ON public.email_unsubscribes USING btree (user_id, repository_id);
 
 
 --
@@ -4109,6 +4177,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180725000000'),
 ('20180726000000'),
 ('20180726000001'),
-('20180801000001');
+('20180801000001'),
+('20180822000000');
 
 
