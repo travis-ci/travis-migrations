@@ -1,7 +1,7 @@
 class AddPreferences < ActiveRecord::Migration[4.2]
   def change
     change_table :users do |t|
-      t.column :preferences, json_type, default: {}, null: false
+      t.column :preferences, json_type
     end
   end
 

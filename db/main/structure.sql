@@ -2224,7 +2224,7 @@ CREATE TABLE public.users (
     migrating boolean,
     migrated_at timestamp without time zone,
     redacted_at timestamp without time zone,
-    preferences jsonb DEFAULT '{}'::jsonb NOT NULL
+    preferences jsonb
 );
 
 
