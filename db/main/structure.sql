@@ -916,7 +916,8 @@ CREATE TABLE public.builds (
     sender_id integer,
     org_id integer,
     com_id integer,
-    config_id integer
+    config_id integer,
+    restarted_at timestamp without time zone
 );
 
 
@@ -1263,6 +1264,43 @@ ALTER SEQUENCE public.job_configs_id_seq OWNED BY public.job_configs.id;
 
 
 --
+-- Name: job_versions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.job_versions (
+    id integer NOT NULL,
+    job_id integer,
+    number integer,
+    state character varying,
+    created_at timestamp without time zone,
+    queued_at timestamp without time zone,
+    received_at timestamp without time zone,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    restarted_at timestamp without time zone
+);
+
+
+--
+-- Name: job_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.job_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: job_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.job_versions_id_seq OWNED BY public.job_versions.id;
+
+
+--
 -- Name: jobs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1296,7 +1334,8 @@ CREATE TABLE public.jobs (
     stage_id integer,
     org_id integer,
     com_id integer,
-    config_id integer
+    config_id integer,
+    restarted_at timestamp without time zone
 );
 
 
@@ -2346,6 +2385,13 @@ ALTER TABLE ONLY public.job_configs ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: job_versions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.job_versions ALTER COLUMN id SET DEFAULT nextval('public.job_versions_id_seq'::regclass);
+
+
+--
 -- Name: memberships id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2639,6 +2685,14 @@ ALTER TABLE ONLY public.invoices
 
 ALTER TABLE ONLY public.job_configs
     ADD CONSTRAINT job_configs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: job_versions job_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.job_versions
+    ADD CONSTRAINT job_versions_pkey PRIMARY KEY (id);
 
 
 --
@@ -4180,6 +4234,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180726000001'),
 ('20180801000001'),
 ('20180822000000'),
-('20180823000000');
+('20180823000000'),
+('20180830000001'),
+('20180830000002'),
+('20180830000003');
 
 

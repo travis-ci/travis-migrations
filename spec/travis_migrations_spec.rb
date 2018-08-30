@@ -5,16 +5,55 @@ describe 'Rake tasks' do
   let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result) }
   let(:conn)   { ActiveRecord::Base.connection }
   let(:tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") }
-  let(:expected_main_tables) { %w(
-    schema_migrations tokens users builds repositories commits requests
-    ssl_keys memberships urls permissions jobs broadcasts emails beta_features
-    user_beta_features organizations branches
-    stars crons subscriptions coupons stripe_events invoices queueable_jobs
-    pull_requests stages owner_groups tags trials messages trial_allowances abuses
-    repo_counts request_payloads request_configs build_configs job_configs
-    installations ar_internal_metadata request_yaml_configs cancellations email_unsubscribes
+
+  let(:expected_main_tables) do
+    %w(
+      abuses
+      beta_features
+      branches
+      broadcasts
+      build_configs
+      builds
+      cancellations
+      commits
+      coupons
+      crons
+      email_unsubscribes
+      emails
+      installations
+      invoices
+      job_configs
+      job_versions
+      jobs
+      memberships
+      messages
+      organizations
+      owner_groups
+      permissions
+      pull_requests
+      queueable_jobs
+      repo_counts
+      repositories
+      request_configs
+      request_payloads
+      request_yaml_configs
+      requests
+      ssl_keys
+      stages
+      stars
+      stripe_events
+      subscriptions
+      tags
+      tokens
+      trial_allowances
+      trials
+      urls
+      user_beta_features
+      users
+      ar_internal_metadata
+      schema_migrations
     )
-  }
+  end
 
   before { ActiveRecord::Base.establish_connection(config['test']) }
   after { ActiveRecord::Base.remove_connection }
