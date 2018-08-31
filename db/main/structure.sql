@@ -2263,7 +2263,7 @@ CREATE TABLE public.users (
     migrating boolean,
     migrated_at timestamp without time zone,
     redacted_at timestamp without time zone,
-    preferences jsonb
+    preferences jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -4235,6 +4235,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180801000001'),
 ('20180822000000'),
 ('20180823000000'),
+('20180828000000'),
 ('20180830000001'),
 ('20180830000002'),
 ('20180830000003');
