@@ -654,6 +654,22 @@ $$;
 
 
 --
+-- Name: is_json(text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.is_json(text) RETURNS boolean
+    LANGUAGE plpgsql IMMUTABLE
+    AS $_$
+  BEGIN
+    perform $1::json;
+    return true;
+  EXCEPTION WHEN invalid_text_representation THEN
+    return false;
+  END
+$_$;
+
+
+--
 -- Name: set_updated_at(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -3198,6 +3214,13 @@ CREATE INDEX index_invoices_on_stripe_id ON public.invoices USING btree (stripe_
 
 
 --
+-- Name: index_job_configs_on_config_resources_gpu; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_job_configs_on_config_resources_gpu ON public.job_configs USING btree (((((config ->> 'resources'::text))::jsonb ->> 'gpu'::text))) WHERE (public.is_json((config ->> 'resources'::text)) AND ((((config ->> 'resources'::text))::jsonb ->> 'gpu'::text) IS NOT NULL));
+
+
+--
 -- Name: index_job_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4238,6 +4261,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180828000000'),
 ('20180830000001'),
 ('20180830000002'),
-('20180830000003');
+('20180830000003'),
+('20180903000000');
 
 
