@@ -3000,7 +3000,7 @@ CREATE UNIQUE INDEX index_builds_on_com_id ON public.builds USING btree (com_id)
 -- Name: index_builds_on_config_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_config_id ON public.builds USING btree (config_id);
+CREATE INDEX index_builds_on_config_id ON public.requests USING btree (config_id);
 
 
 --
@@ -3238,7 +3238,7 @@ CREATE UNIQUE INDEX index_jobs_on_com_id ON public.jobs USING btree (com_id);
 -- Name: index_jobs_on_config_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_config_id ON public.jobs USING btree (config_id);
+CREATE INDEX index_jobs_on_config_id ON public.requests USING btree (config_id);
 
 
 --
@@ -4262,7 +4262,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180830000001'),
 ('20180830000002'),
 ('20180830000003'),
-('20180903000000'),
-('20180903000001');
+('20180903000000');
 
 
