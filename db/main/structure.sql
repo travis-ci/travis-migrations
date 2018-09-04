@@ -1261,6 +1261,17 @@ CREATE TABLE public.job_configs (
 
 
 --
+-- Name: job_configs_gpu; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW public.job_configs_gpu AS
+ SELECT job_configs.id
+   FROM public.job_configs
+  WHERE (public.is_json((job_configs.config ->> 'resources'::text)) AND ((((job_configs.config ->> 'resources'::text))::jsonb ->> 'gpu'::text) IS NOT NULL))
+  WITH NO DATA;
+
+
+--
 -- Name: job_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -4263,6 +4274,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180830000002'),
 ('20180830000003'),
 ('20180903000000'),
-('20180903000001');
+('20180903000001'),
+('20180904000001');
 
 
