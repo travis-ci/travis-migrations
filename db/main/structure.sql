@@ -1117,7 +1117,7 @@ ALTER SEQUENCE public.crons_id_seq OWNED BY public.crons.id;
 --
 
 CREATE TABLE public.email_unsubscribes (
-    id integer NOT NULL,
+    id bigint NOT NULL,
     user_id integer,
     repository_id integer,
     created_at timestamp without time zone,
@@ -4270,6 +4270,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180822000000'),
 ('20180823000000'),
 ('20180828000000'),
+('20180829000000'),
 ('20180830000001'),
 ('20180830000002'),
 ('20180830000003'),
