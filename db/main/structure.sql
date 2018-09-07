@@ -3841,6 +3841,13 @@ CREATE UNIQUE INDEX subscriptions_owner ON public.subscriptions USING btree (own
 
 
 --
+-- Name: user_preferences_build_emails_false; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX user_preferences_build_emails_false ON public.users USING btree (id) WHERE ((preferences ->> 'build_emails'::text) = 'false'::text);
+
+
+--
 -- Name: builds set_updated_at_on_builds; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -4276,6 +4283,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180830000003'),
 ('20180903000000'),
 ('20180903000001'),
-('20180904000001');
+('20180904000001'),
+('20180906000000');
 
 
