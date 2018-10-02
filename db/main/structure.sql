@@ -3344,6 +3344,13 @@ CREATE INDEX index_messages_on_subject_type_and_subject_id ON public.messages US
 
 
 --
+-- Name: index_organization_id_and_user_id_on_memberships; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_organization_id_and_user_id_on_memberships ON public.memberships USING btree (organization_id, user_id);
+
+
+--
 -- Name: index_organizations_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4284,6 +4291,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180903000000'),
 ('20180903000001'),
 ('20180904000001'),
-('20180906000000');
+('20180906000000'),
+('20181002115306'),
+('20181002115307');
 
 
