@@ -1,4 +1,6 @@
 class AddConstraintOnOrganizationAndUserToMemberships < ActiveRecord::Migration[4.2]
+  self.disable_ddl_transaction!
+
   def up
     execute <<~sql
 DELETE FROM memberships WHERE id in (
