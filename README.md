@@ -19,7 +19,20 @@ git clone https://github.com/travis-ci/travis-migrations.git
 Adding migrations
 -------------------
 
-To add a migration, create a file and add it to the `db/main/migrate` folder, making sure the filename contains a timestamp later than the one used in the most recent migration file. See [this guide](http://edgeguides.rubyonrails.org/active_record_migrations.html#creating-a-standalone-migration) for creating standalone migrations.
+To add a migration, run the `gen_migration` rake task. For example:
+
+```
+bundle exec rake gen_migration["add_column_x_to_table_y"]
+```
+
+This creates a new ActiveRecord migration file in `db/main/migrate`,
+with the current timestamp and the name `add_column_x_to_table_y`:
+
+```
+      create  db/main/migrate/20181007154333_add_column_x_to_table_y.rb
+```
+
+See [this guide](http://edgeguides.rubyonrails.org/active_record_migrations.html#creating-a-standalone-migration) for creating standalone migrations.
 
 Please make sure your migrations are production safe as per this guide: [Safe Operations For High Volume PostgreSQL](https://www.braintreepayments.com/blog/safe-operations-for-high-volume-postgresql/).
 

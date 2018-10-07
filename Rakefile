@@ -3,6 +3,7 @@
 require "bundler/setup"
 $:.unshift 'lib'
 require 'travis/migrations'
+require 'rails/generators/active_record/migration/migration_generator'
 
 ActiveRecord::Base.schema_format = :sql
 
@@ -35,4 +36,9 @@ MESSAGE
       end
     end
   end
+end
+
+task :gen_migration, [:name] do |t, args|
+  name = args.fetch(:name)
+  ActiveRecord::Generators::MigrationGenerator.new([name]).create_migration_file
 end
