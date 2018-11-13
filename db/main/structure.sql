@@ -1835,7 +1835,8 @@ CREATE TABLE requests (
     org_id integer,
     com_id integer,
     config_id integer,
-    yaml_config_id integer
+    yaml_config_id integer,
+    github_guid text
 );
 
 
@@ -3619,6 +3620,13 @@ CREATE INDEX index_requests_on_created_at ON requests USING btree (created_at);
 
 
 --
+-- Name: index_requests_on_github_guid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_requests_on_github_guid ON requests USING btree (github_guid);
+
+
+--
 -- Name: index_requests_on_head_commit; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4304,6 +4312,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181002115306'),
 ('20181002115307'),
 ('20181018000000'),
-('20181029120000');
+('20181029120000'),
+('20181113120000');
 
 
