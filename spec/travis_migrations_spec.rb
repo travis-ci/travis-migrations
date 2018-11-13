@@ -36,6 +36,7 @@ describe 'Rake tasks' do
       repositories
       request_configs
       request_payloads
+      request_payload_hashes
       request_yaml_configs
       requests
       ssl_keys
