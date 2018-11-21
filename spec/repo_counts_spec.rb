@@ -40,15 +40,15 @@ describe 'Repo counts' do
   before do
     execute %(
       truncate builds cascade;
-      truncate repositories cascade;
-      truncate repo_counts cascade;
-      truncate requests cascade;
-      truncate commits cascade;
-      truncate branches cascade;
-      truncate pull_requests cascade;
-      truncate tags cascade;
-      truncate stages cascade;
-      truncate jobs cascade;
+      truncate repositories;
+      truncate repo_counts;
+      truncate requests;
+      truncate commits;
+      truncate branches;
+      truncate pull_requests;
+      truncate tags;
+      truncate stages;
+      truncate jobs;
 
       alter sequence repositories_id_seq restart with 1;
       alter sequence requests_id_seq restart with 1;
@@ -319,7 +319,7 @@ describe 'Repo counts' do
 
   it 'does not raise if repos are missing' do
     execute %(
-      truncate repositories cascade;
+      truncate repositories;
       insert into requests(repository_id, created_at, updated_at)
       values (1, now(), now());
     )
