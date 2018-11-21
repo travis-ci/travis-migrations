@@ -3976,6 +3976,30 @@ CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON tags FOR EACH ROW WHEN ((n
 
 
 --
+-- Name: jobs fk_rails_0dddead30e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk_rails_0dddead30e FOREIGN KEY (commit_id) REFERENCES commits(id) ON DELETE CASCADE;
+
+
+--
+-- Name: builds fk_rails_168564a6b5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_rails_168564a6b5 FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE;
+
+
+--
+-- Name: requests fk_rails_252a19de62; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_rails_252a19de62 FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE;
+
+
+--
 -- Name: installations fk_rails_2d567d406d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3984,11 +4008,235 @@ ALTER TABLE ONLY installations
 
 
 --
+-- Name: job_configs fk_rails_3ab8774f19; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY job_configs
+    ADD CONSTRAINT fk_rails_3ab8774f19 FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: branches fk_rails_497a8d4bba; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY branches
+    ADD CONSTRAINT fk_rails_497a8d4bba FOREIGN KEY (last_build_id) REFERENCES builds(id) ON DELETE SET NULL;
+
+
+--
+-- Name: commits fk_rails_4cc3cf9188; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY commits
+    ADD CONSTRAINT fk_rails_4cc3cf9188 FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE;
+
+
+--
+-- Name: crons fk_rails_4cca2fa175; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY crons
+    ADD CONSTRAINT fk_rails_4cca2fa175 FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE CASCADE;
+
+
+--
+-- Name: builds fk_rails_4ec8ef3203; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_rails_4ec8ef3203 FOREIGN KEY (config_id) REFERENCES build_configs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: jobs fk_rails_52ad1b7588; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk_rails_52ad1b7588 FOREIGN KEY (stage_id) REFERENCES stages(id) ON DELETE CASCADE;
+
+
+--
+-- Name: requests fk_rails_5dbe7150d5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_rails_5dbe7150d5 FOREIGN KEY (config_id) REFERENCES request_configs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: builds fk_rails_611c2c73d7; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_rails_611c2c73d7 FOREIGN KEY (request_id) REFERENCES requests(id) ON DELETE CASCADE;
+
+
+--
+-- Name: jobs fk_rails_6ba0573674; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk_rails_6ba0573674 FOREIGN KEY (config_id) REFERENCES job_configs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: builds fk_rails_6cb7a3add7; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_rails_6cb7a3add7 FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
 -- Name: installations fk_rails_75a0a2a3b4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY installations
     ADD CONSTRAINT fk_rails_75a0a2a3b4 FOREIGN KEY (removed_by_id) REFERENCES users(id);
+
+
+--
+-- Name: requests fk_rails_764f8441e5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_rails_764f8441e5 FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id) ON DELETE CASCADE;
+
+
+--
+-- Name: builds fk_rails_79160dec1d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_rails_79160dec1d FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE CASCADE;
+
+
+--
+-- Name: repositories fk_rails_877596446a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY repositories
+    ADD CONSTRAINT fk_rails_877596446a FOREIGN KEY (last_build_id) REFERENCES builds(id) ON DELETE SET NULL;
+
+
+--
+-- Name: commits fk_rails_8db4015570; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY commits
+    ADD CONSTRAINT fk_rails_8db4015570 FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE CASCADE;
+
+
+--
+-- Name: stages fk_rails_8f9b8ff7db; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stages
+    ADD CONSTRAINT fk_rails_8f9b8ff7db FOREIGN KEY (build_id) REFERENCES builds(id) ON DELETE CASCADE;
+
+
+--
+-- Name: pull_requests fk_rails_8fa503b550; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY pull_requests
+    ADD CONSTRAINT fk_rails_8fa503b550 FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: builds fk_rails_95e803bd85; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_rails_95e803bd85 FOREIGN KEY (commit_id) REFERENCES commits(id) ON DELETE CASCADE;
+
+
+--
+-- Name: commits fk_rails_a8299bc69b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY commits
+    ADD CONSTRAINT fk_rails_a8299bc69b FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: ssl_keys fk_rails_b951411a5e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY ssl_keys
+    ADD CONSTRAINT fk_rails_b951411a5e FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: jobs fk_rails_b99b125bd9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk_rails_b99b125bd9 FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: repositories fk_rails_c9d3b39063; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY repositories
+    ADD CONSTRAINT fk_rails_c9d3b39063 FOREIGN KEY (current_build_id) REFERENCES builds(id) ON DELETE SET NULL;
+
+
+--
+-- Name: branches fk_rails_ce3c7008c0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY branches
+    ADD CONSTRAINT fk_rails_ce3c7008c0 FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: tags fk_rails_d1678c4497; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tags
+    ADD CONSTRAINT fk_rails_d1678c4497 FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: requests fk_rails_db4592ca95; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_rails_db4592ca95 FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE CASCADE;
+
+
+--
+-- Name: build_configs fk_rails_dd43b3d7ec; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY build_configs
+    ADD CONSTRAINT fk_rails_dd43b3d7ec FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: requests fk_rails_e416516bcc; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_rails_e416516bcc FOREIGN KEY (commit_id) REFERENCES commits(id) ON DELETE CASCADE;
+
+
+--
+-- Name: tags fk_rails_fa6bbf251b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tags
+    ADD CONSTRAINT fk_rails_fa6bbf251b FOREIGN KEY (last_build_id) REFERENCES builds(id) ON DELETE SET NULL;
+
+
+--
+-- Name: builds fk_rails_fda91d0c93; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_rails_fda91d0c93 FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id) ON DELETE CASCADE;
 
 
 --
@@ -4304,6 +4552,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181002115306'),
 ('20181002115307'),
 ('20181018000000'),
-('20181029120000');
+('20181029120000'),
+('20181116800000');
 
 
