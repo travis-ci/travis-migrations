@@ -2968,6 +2968,13 @@ CREATE UNIQUE INDEX index_branches_on_com_id ON branches USING btree (com_id);
 
 
 --
+-- Name: index_branches_on_last_build_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_branches_on_last_build_id ON branches USING btree (last_build_id);
+
+
+--
 -- Name: index_branches_on_org_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2996,6 +3003,13 @@ CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON broadcasts U
 
 
 --
+-- Name: index_build_configs_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_build_configs_on_repository_id ON build_configs USING btree (repository_id);
+
+
+--
 -- Name: index_build_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3003,10 +3017,24 @@ CREATE INDEX index_build_configs_on_repository_id_and_key ON build_configs USING
 
 
 --
+-- Name: index_builds_on_branch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_branch_id ON builds USING btree (branch_id);
+
+
+--
 -- Name: index_builds_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_builds_on_com_id ON builds USING btree (com_id);
+
+
+--
+-- Name: index_builds_on_commit_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_commit_id ON builds USING btree (commit_id);
 
 
 --
@@ -3028,6 +3056,13 @@ CREATE INDEX index_builds_on_created_at ON builds USING btree (created_at);
 --
 
 CREATE UNIQUE INDEX index_builds_on_org_id ON builds USING btree (org_id);
+
+
+--
+-- Name: index_builds_on_pull_request_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_pull_request_id ON builds USING btree (pull_request_id);
 
 
 --
@@ -3115,6 +3150,13 @@ CREATE INDEX index_builds_on_state ON builds USING btree (state);
 
 
 --
+-- Name: index_builds_on_tag_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_tag_id ON builds USING btree (tag_id);
+
+
+--
 -- Name: index_builds_on_updated_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3133,6 +3175,13 @@ CREATE INDEX index_cancellations_on_subscription_id ON cancellations USING btree
 --
 
 CREATE INDEX index_commits_on_author_email ON commits USING btree (author_email);
+
+
+--
+-- Name: index_commits_on_branch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_commits_on_branch_id ON commits USING btree (branch_id);
 
 
 --
@@ -3161,6 +3210,20 @@ CREATE UNIQUE INDEX index_commits_on_org_id ON commits USING btree (org_id);
 --
 
 CREATE INDEX index_commits_on_repository_id ON commits USING btree (repository_id);
+
+
+--
+-- Name: index_commits_on_tag_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_commits_on_tag_id ON commits USING btree (tag_id);
+
+
+--
+-- Name: index_crons_on_branch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_crons_on_branch_id ON crons USING btree (branch_id);
 
 
 --
@@ -3241,6 +3304,13 @@ CREATE INDEX index_job_configs_on_config_resources_gpu ON job_configs USING btre
 
 
 --
+-- Name: index_job_configs_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_job_configs_on_repository_id ON job_configs USING btree (repository_id);
+
+
+--
 -- Name: index_job_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3252,6 +3322,13 @@ CREATE INDEX index_job_configs_on_repository_id_and_key ON job_configs USING btr
 --
 
 CREATE UNIQUE INDEX index_jobs_on_com_id ON jobs USING btree (com_id);
+
+
+--
+-- Name: index_jobs_on_commit_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_commit_id ON jobs USING btree (commit_id);
 
 
 --
@@ -3465,6 +3542,13 @@ CREATE UNIQUE INDEX index_pull_requests_on_org_id ON pull_requests USING btree (
 
 
 --
+-- Name: index_pull_requests_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_pull_requests_on_repository_id ON pull_requests USING btree (repository_id);
+
+
+--
 -- Name: index_pull_requests_on_repository_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3500,10 +3584,24 @@ CREATE UNIQUE INDEX index_repositories_on_com_id ON repositories USING btree (co
 
 
 --
+-- Name: index_repositories_on_current_build_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_current_build_id ON repositories USING btree (current_build_id);
+
+
+--
 -- Name: index_repositories_on_github_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_repositories_on_github_id ON repositories USING btree (github_id);
+
+
+--
+-- Name: index_repositories_on_last_build_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_last_build_id ON repositories USING btree (last_build_id);
 
 
 --
@@ -3591,6 +3689,13 @@ CREATE INDEX index_request_yaml_configs_on_repository_id_and_key ON request_yaml
 
 
 --
+-- Name: index_requests_on_branch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_requests_on_branch_id ON requests USING btree (branch_id);
+
+
+--
 -- Name: index_requests_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3633,6 +3738,13 @@ CREATE UNIQUE INDEX index_requests_on_org_id ON requests USING btree (org_id);
 
 
 --
+-- Name: index_requests_on_pull_request_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_requests_on_pull_request_id ON requests USING btree (pull_request_id);
+
+
+--
 -- Name: index_requests_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3644,6 +3756,13 @@ CREATE INDEX index_requests_on_repository_id ON requests USING btree (repository
 --
 
 CREATE INDEX index_requests_on_repository_id_and_id_desc ON requests USING btree (repository_id, id DESC);
+
+
+--
+-- Name: index_requests_on_tag_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_requests_on_tag_id ON requests USING btree (tag_id);
 
 
 --
@@ -3731,10 +3850,24 @@ CREATE UNIQUE INDEX index_tags_on_com_id ON tags USING btree (com_id);
 
 
 --
+-- Name: index_tags_on_last_build_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_tags_on_last_build_id ON tags USING btree (last_build_id);
+
+
+--
 -- Name: index_tags_on_org_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_tags_on_org_id ON tags USING btree (org_id);
+
+
+--
+-- Name: index_tags_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_tags_on_repository_id ON tags USING btree (repository_id);
 
 
 --
@@ -4304,6 +4437,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181002115306'),
 ('20181002115307'),
 ('20181018000000'),
-('20181029120000');
+('20181029120000'),
+('20181126080000');
 
 
