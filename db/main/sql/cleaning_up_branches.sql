@@ -1,5 +1,5 @@
 BEGIN;
-explain analyze WITH duplicated_branches_names AS (
+WITH duplicated_branches_names AS (
     SELECT repository_id, name FROM (
       SELECT  branches.repository_id AS repository_id,
               branches.name AS name,
@@ -10,7 +10,7 @@ explain analyze WITH duplicated_branches_names AS (
 ),
 ranked_branches AS (
   SELECT branches.*,
-    ROW_NUMBER() OVER(PARTITION BY repository_id, name ORDER BY last_build_id DESC NULLS LAST) AS row
+    ROW_NUMBER() OVER(PARTITION BY repository_id, name ORDER BY last_build_id DESC NULLS LAST, updated_at DESC) AS row
   FROM branches
   WHERE (repository_id, name) IN (SELECT repository_id, name FROM duplicated_branches_names)
 ),
