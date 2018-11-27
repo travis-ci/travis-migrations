@@ -1,44 +1,69 @@
 class AddConstraintsToMultipleTables < ActiveRecord::Migration[4.2]
-  def change
-    add_foreign_key :repositories, :builds, column: :current_build_id
-    add_foreign_key :repositories, :builds, column: :last_build_id
+  def up
+    execute "ALTER TABLE repositories ADD CONSTRAINT fk_repositories_on_current_build_id FOREIGN KEY (current_build_id) REFERENCES builds(id) NOT VALID"
+    execute "ALTER TABLE repositories ADD CONSTRAINT fk_repositories_on_last_build_id FOREIGN KEY (last_build_id) REFERENCES builds(id) NOT VALID"
+    execute "ALTER TABLE builds ADD CONSTRAINT fk_builds_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE builds ADD CONSTRAINT fk_builds_on_commit_id FOREIGN KEY (commit_id) REFERENCES commits(id) NOT VALID"
+    execute "ALTER TABLE builds ADD CONSTRAINT fk_builds_on_request_id FOREIGN KEY (request_id) REFERENCES requests(id) NOT VALID"
+    execute "ALTER TABLE builds ADD CONSTRAINT fk_builds_on_pull_request_id FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id) NOT VALID"
+    execute "ALTER TABLE builds ADD CONSTRAINT fk_builds_on_branch_id FOREIGN KEY (branch_id) REFERENCES branches(id) NOT VALID"
+    execute "ALTER TABLE builds ADD CONSTRAINT fk_builds_on_tag_id FOREIGN KEY (tag_id) REFERENCES tags(id) NOT VALID"
+    execute "ALTER TABLE builds ADD CONSTRAINT fk_builds_on_config_id FOREIGN KEY (config_id) REFERENCES build_configs(id) NOT VALID"
+    execute "ALTER TABLE jobs ADD CONSTRAINT fk_jobs_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE jobs ADD CONSTRAINT fk_jobs_on_commit_id FOREIGN KEY (commit_id) REFERENCES commits(id) NOT VALID"
+    execute "ALTER TABLE jobs ADD CONSTRAINT fk_jobs_on_stage_id FOREIGN KEY (stage_id) REFERENCES stages(id) NOT VALID"
+    execute "ALTER TABLE jobs ADD CONSTRAINT fk_jobs_on_config_id FOREIGN KEY (config_id) REFERENCES job_configs(id) NOT VALID"
+    execute "ALTER TABLE branches ADD CONSTRAINT fk_branches_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE branches ADD CONSTRAINT fk_branches_on_last_build_id FOREIGN KEY (last_build_id) REFERENCES builds(id) NOT VALID"
+    execute "ALTER TABLE tags ADD CONSTRAINT fk_tags_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE tags ADD CONSTRAINT fk_tags_on_last_build_id FOREIGN KEY (last_build_id) REFERENCES builds(id) NOT VALID"
+    execute "ALTER TABLE commits ADD CONSTRAINT fk_commits_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE commits ADD CONSTRAINT fk_commits_on_branch_id FOREIGN KEY (branch_id) REFERENCES branches(id) NOT VALID"
+    execute "ALTER TABLE commits ADD CONSTRAINT fk_commits_on_tag_id FOREIGN KEY (tag_id) REFERENCES tags(id) NOT VALID"
+    execute "ALTER TABLE crons ADD CONSTRAINT fk_crons_on_branch_id FOREIGN KEY (branch_id) REFERENCES branches(id) NOT VALID"
+    execute "ALTER TABLE job_configs ADD CONSTRAINT fk_job_configs_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE build_configs ADD CONSTRAINT fk_build_configs_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE pull_requests ADD CONSTRAINT fk_pull_requests_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE ssl_keys ADD CONSTRAINT fk_ssl_keys_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) NOT VALID"
+    execute "ALTER TABLE requests ADD CONSTRAINT fk_requests_on_commit_id FOREIGN KEY (commit_id) REFERENCES commits(id) NOT VALID"
+    execute "ALTER TABLE requests ADD CONSTRAINT fk_requests_on_pull_request_id FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id) NOT VALID"
+    execute "ALTER TABLE requests ADD CONSTRAINT fk_requests_on_branch_id FOREIGN KEY (branch_id) REFERENCES branches(id) NOT VALID"
+    execute "ALTER TABLE requests ADD CONSTRAINT fk_requests_on_tag_id FOREIGN KEY (tag_id) REFERENCES tags(id) NOT VALID"
+    execute "ALTER TABLE requests ADD CONSTRAINT fk_requests_on_config_id FOREIGN KEY (config_id) REFERENCES request_configs(id) NOT VALID"
+    execute "ALTER TABLE stages ADD CONSTRAINT fk_stages_on_build_id FOREIGN KEY (build_id) REFERENCES builds(id) NOT VALID"
+  end
 
-    add_foreign_key :builds, :repositories
-    add_foreign_key :builds, :commits
-    add_foreign_key :builds, :requests
-    add_foreign_key :builds, :pull_requests
-    add_foreign_key :builds, :branches
-    add_foreign_key :builds, :tags
-    add_foreign_key :builds, :build_configs, column: :config_id
-
-    add_foreign_key :jobs, :repositories
-    add_foreign_key :jobs, :commits
-    add_foreign_key :jobs, :stages
-    add_foreign_key :jobs, :job_configs, column: :config_id
-
-    add_foreign_key :branches, :repositories
-    add_foreign_key :branches, :builds, column: :last_build_id
-
-    add_foreign_key :tags, :repositories
-    add_foreign_key :tags, :builds, column: :last_build_id
-
-    add_foreign_key :commits, :repositories
-    add_foreign_key :commits, :branches
-    add_foreign_key :commits, :tags
-
-    add_foreign_key :crons, :branches
-
-    add_foreign_key :job_configs, :repositories
-    add_foreign_key :build_configs, :repositories
-    add_foreign_key :pull_requests, :repositories
-    add_foreign_key :ssl_keys, :repositories
-
-    add_foreign_key :requests, :commits
-    add_foreign_key :requests, :pull_requests
-    add_foreign_key :requests, :branches
-    add_foreign_key :requests, :tags
-    add_foreign_key :requests, :request_configs, column: :config_id
-
-    add_foreign_key :stages, :builds
+  def down
+    execute "ALTER TABLE repositories REMOVE CONSTRAINT fk_repositories_on_current_build_id"
+    execute "ALTER TABLE repositories REMOVE CONSTRAINT fk_repositories_on_last_build_id"
+    execute "ALTER TABLE builds REMOVE CONSTRAINT fk_builds_on_repository_id"
+    execute "ALTER TABLE builds REMOVE CONSTRAINT fk_builds_on_commit_id"
+    execute "ALTER TABLE builds REMOVE CONSTRAINT fk_builds_on_request_id"
+    execute "ALTER TABLE builds REMOVE CONSTRAINT fk_builds_on_pull_request_id"
+    execute "ALTER TABLE builds REMOVE CONSTRAINT fk_builds_on_branch_id"
+    execute "ALTER TABLE builds REMOVE CONSTRAINT fk_builds_on_tag_id"
+    execute "ALTER TABLE builds REMOVE CONSTRAINT fk_builds_on_config_id"
+    execute "ALTER TABLE jobs REMOVE CONSTRAINT fk_jobs_on_repository_id"
+    execute "ALTER TABLE jobs REMOVE CONSTRAINT fk_jobs_on_commit_id"
+    execute "ALTER TABLE jobs REMOVE CONSTRAINT fk_jobs_on_stage_id"
+    execute "ALTER TABLE jobs REMOVE CONSTRAINT fk_jobs_on_config_id"
+    execute "ALTER TABLE branches REMOVE CONSTRAINT fk_branches_on_repository_id"
+    execute "ALTER TABLE branches REMOVE CONSTRAINT fk_branches_on_last_build_id"
+    execute "ALTER TABLE tags REMOVE CONSTRAINT fk_tags_on_repository_id"
+    execute "ALTER TABLE tags REMOVE CONSTRAINT fk_tags_on_last_build_id"
+    execute "ALTER TABLE commits REMOVE CONSTRAINT fk_commits_on_repository_id"
+    execute "ALTER TABLE commits REMOVE CONSTRAINT fk_commits_on_branch_id"
+    execute "ALTER TABLE commits REMOVE CONSTRAINT fk_commits_on_tag_id"
+    execute "ALTER TABLE crons REMOVE CONSTRAINT fk_crons_on_branch_id"
+    execute "ALTER TABLE job_configs REMOVE CONSTRAINT fk_job_configs_on_repository_id"
+    execute "ALTER TABLE build_configs REMOVE CONSTRAINT fk_build_configs_on_repository_id"
+    execute "ALTER TABLE pull_requests REMOVE CONSTRAINT fk_pull_requests_on_repository_id"
+    execute "ALTER TABLE ssl_keys REMOVE CONSTRAINT fk_ssl_keys_on_repository_id"
+    execute "ALTER TABLE requests REMOVE CONSTRAINT fk_requests_on_commit_id"
+    execute "ALTER TABLE requests REMOVE CONSTRAINT fk_requests_on_pull_request_id"
+    execute "ALTER TABLE requests REMOVE CONSTRAINT fk_requests_on_branch_id"
+    execute "ALTER TABLE requests REMOVE CONSTRAINT fk_requests_on_tag_id"
+    execute "ALTER TABLE requests REMOVE CONSTRAINT fk_requests_on_config_id"
+    execute "ALTER TABLE stages REMOVE CONSTRAINT fk_stages_on_build_id"
   end
 end
