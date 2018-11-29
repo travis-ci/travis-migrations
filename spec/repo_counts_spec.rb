@@ -32,23 +32,23 @@ describe 'Repo counts' do
   end
 
   def delete_all
-    %w(requests commits branches pull_requests tags stages builds jobs).each do |table|
-      execute "delete from #{table}"
+    %w(requests commits pull_requests tags stages jobs builds branches).each do |table|
+      execute "delete from #{table};"
     end
   end
 
   before do
     execute %(
       truncate builds cascade;
-      truncate repositories;
-      truncate repo_counts;
-      truncate requests;
-      truncate commits;
-      truncate branches;
-      truncate pull_requests;
-      truncate tags;
-      truncate stages;
-      truncate jobs;
+      truncate repositories cascade;
+      truncate repo_counts cascade;
+      truncate requests cascade;
+      truncate commits cascade;
+      truncate branches cascade;
+      truncate pull_requests cascade;
+      truncate tags cascade;
+      truncate stages cascade;
+      truncate jobs cascade;
 
       alter sequence repositories_id_seq restart with 1;
       alter sequence requests_id_seq restart with 1;
@@ -319,7 +319,7 @@ describe 'Repo counts' do
 
   it 'does not raise if repos are missing' do
     execute %(
-      truncate repositories;
+      truncate repositories cascade;
       insert into requests(repository_id, created_at, updated_at)
       values (1, now(), now());
     )
@@ -327,8 +327,8 @@ describe 'Repo counts' do
 
   it 'does not raise if builds are deleted before stages' do
     execute %(
-      delete from builds;
       delete from stages;
+      delete from builds;
     )
   end
 end

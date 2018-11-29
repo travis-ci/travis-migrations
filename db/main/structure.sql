@@ -4109,6 +4109,166 @@ CREATE TRIGGER trg_count_tag_inserted AFTER INSERT ON tags FOR EACH ROW WHEN ((n
 
 
 --
+-- Name: branches fk_branches_on_last_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY branches
+    ADD CONSTRAINT fk_branches_on_last_build_id FOREIGN KEY (last_build_id) REFERENCES builds(id) ON DELETE SET NULL;
+
+
+--
+-- Name: branches fk_branches_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY branches
+    ADD CONSTRAINT fk_branches_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
+
+
+--
+-- Name: build_configs fk_build_configs_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY build_configs
+    ADD CONSTRAINT fk_build_configs_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
+
+
+--
+-- Name: builds fk_builds_on_branch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_builds_on_branch_id FOREIGN KEY (branch_id) REFERENCES branches(id);
+
+
+--
+-- Name: builds fk_builds_on_commit_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_builds_on_commit_id FOREIGN KEY (commit_id) REFERENCES commits(id);
+
+
+--
+-- Name: builds fk_builds_on_config_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_builds_on_config_id FOREIGN KEY (config_id) REFERENCES build_configs(id);
+
+
+--
+-- Name: builds fk_builds_on_pull_request_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_builds_on_pull_request_id FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id);
+
+
+--
+-- Name: builds fk_builds_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_builds_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
+
+
+--
+-- Name: builds fk_builds_on_request_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_builds_on_request_id FOREIGN KEY (request_id) REFERENCES requests(id);
+
+
+--
+-- Name: builds fk_builds_on_tag_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY builds
+    ADD CONSTRAINT fk_builds_on_tag_id FOREIGN KEY (tag_id) REFERENCES tags(id);
+
+
+--
+-- Name: commits fk_commits_on_branch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY commits
+    ADD CONSTRAINT fk_commits_on_branch_id FOREIGN KEY (branch_id) REFERENCES branches(id);
+
+
+--
+-- Name: commits fk_commits_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY commits
+    ADD CONSTRAINT fk_commits_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
+
+
+--
+-- Name: commits fk_commits_on_tag_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY commits
+    ADD CONSTRAINT fk_commits_on_tag_id FOREIGN KEY (tag_id) REFERENCES tags(id);
+
+
+--
+-- Name: crons fk_crons_on_branch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY crons
+    ADD CONSTRAINT fk_crons_on_branch_id FOREIGN KEY (branch_id) REFERENCES branches(id);
+
+
+--
+-- Name: job_configs fk_job_configs_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY job_configs
+    ADD CONSTRAINT fk_job_configs_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
+
+
+--
+-- Name: jobs fk_jobs_on_commit_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk_jobs_on_commit_id FOREIGN KEY (commit_id) REFERENCES commits(id);
+
+
+--
+-- Name: jobs fk_jobs_on_config_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk_jobs_on_config_id FOREIGN KEY (config_id) REFERENCES job_configs(id);
+
+
+--
+-- Name: jobs fk_jobs_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk_jobs_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
+
+
+--
+-- Name: jobs fk_jobs_on_stage_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk_jobs_on_stage_id FOREIGN KEY (stage_id) REFERENCES stages(id);
+
+
+--
+-- Name: pull_requests fk_pull_requests_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY pull_requests
+    ADD CONSTRAINT fk_pull_requests_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
+
+
+--
 -- Name: installations fk_rails_2d567d406d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4122,6 +4282,94 @@ ALTER TABLE ONLY installations
 
 ALTER TABLE ONLY installations
     ADD CONSTRAINT fk_rails_75a0a2a3b4 FOREIGN KEY (removed_by_id) REFERENCES users(id);
+
+
+--
+-- Name: repositories fk_repositories_on_current_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY repositories
+    ADD CONSTRAINT fk_repositories_on_current_build_id FOREIGN KEY (current_build_id) REFERENCES builds(id) ON DELETE SET NULL;
+
+
+--
+-- Name: repositories fk_repositories_on_last_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY repositories
+    ADD CONSTRAINT fk_repositories_on_last_build_id FOREIGN KEY (last_build_id) REFERENCES builds(id) ON DELETE SET NULL;
+
+
+--
+-- Name: requests fk_requests_on_branch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_requests_on_branch_id FOREIGN KEY (branch_id) REFERENCES branches(id);
+
+
+--
+-- Name: requests fk_requests_on_commit_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_requests_on_commit_id FOREIGN KEY (commit_id) REFERENCES commits(id);
+
+
+--
+-- Name: requests fk_requests_on_config_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_requests_on_config_id FOREIGN KEY (config_id) REFERENCES request_configs(id);
+
+
+--
+-- Name: requests fk_requests_on_pull_request_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_requests_on_pull_request_id FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id);
+
+
+--
+-- Name: requests fk_requests_on_tag_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY requests
+    ADD CONSTRAINT fk_requests_on_tag_id FOREIGN KEY (tag_id) REFERENCES tags(id);
+
+
+--
+-- Name: ssl_keys fk_ssl_keys_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY ssl_keys
+    ADD CONSTRAINT fk_ssl_keys_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
+
+
+--
+-- Name: stages fk_stages_on_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stages
+    ADD CONSTRAINT fk_stages_on_build_id FOREIGN KEY (build_id) REFERENCES builds(id);
+
+
+--
+-- Name: tags fk_tags_on_last_build_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tags
+    ADD CONSTRAINT fk_tags_on_last_build_id FOREIGN KEY (last_build_id) REFERENCES builds(id) ON DELETE SET NULL;
+
+
+--
+-- Name: tags fk_tags_on_repository_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tags
+    ADD CONSTRAINT fk_tags_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id);
 
 
 --
@@ -4438,6 +4686,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181002115307'),
 ('20181018000000'),
 ('20181029120000'),
+('20181116800000'),
+('20181116800001'),
 ('20181126080000');
 
 
