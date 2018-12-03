@@ -1,0 +1,20 @@
+#!/bin/bash
+
+name=$1
+
+timestamp="$(date +%Y%m%d%H%M%S)"
+filename="${timestamp}_${name}.rb"
+path="db/main/migrate/$filename"
+
+ar_version=$(cat Gemfile.lock | grep activerecord -ah -m1 | sed -r 's/[^\(]+\(([[:digit:]]\.[[:digit:]]).*/\1/')
+
+class_name="$(echo "$name" | sed -r 's/(^|_)(\w)/\U\2/g')"
+contents=$(cat << EOF
+class $class_name < ActiveRecord::Migration[$ar_version]
+  def change
+  end
+end
+EOF
+)
+
+echo "$contents" > $path
