@@ -1458,7 +1458,7 @@ ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 --
 
 CREATE TABLE migration_requests (
-    id integer NOT NULL,
+    id integer DEFAULT nextval('migration_requests_id_seq'::regclass) NOT NULL,
     owner_name character varying NOT NULL,
     owner_type character varying NOT NULL,
     accepted_at date,
