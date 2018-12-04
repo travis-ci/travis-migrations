@@ -1,3 +1,4 @@
+DROP TRIGGER IF EXISTS set_unique_name_on_branches ON branches;
 DROP FUNCTION IF EXISTS set_unique_name();
 CREATE FUNCTION set_unique_name() RETURNS trigger AS $$
 BEGIN
@@ -8,7 +9,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS set_unique_name_on_branches ON branches;
 CREATE TRIGGER set_unique_name_on_branches
 BEFORE INSERT OR UPDATE ON branches
 FOR EACH ROW
