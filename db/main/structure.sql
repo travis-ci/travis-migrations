@@ -671,6 +671,22 @@ $_$;
 
 
 --
+-- Name: set_unique_name(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION set_unique_name() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+    NEW.unique_name := NEW.name;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+--
 -- Name: set_updated_at(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -786,7 +802,8 @@ CREATE TABLE branches (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     org_id integer,
-    com_id integer
+    com_id integer,
+    unique_name text
 );
 
 
@@ -2989,10 +3006,24 @@ CREATE INDEX index_branches_on_repository_id ON branches USING btree (repository
 
 
 --
+-- Name: index_branches_on_repository_id_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_branches_on_repository_id_and_name ON branches USING btree (repository_id, name);
+
+
+--
 -- Name: index_branches_on_repository_id_and_name_and_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_branches_on_repository_id_and_name_and_id ON branches USING btree (repository_id, name, id);
+
+
+--
+-- Name: index_branches_repository_id_unique_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_branches_repository_id_unique_name ON branches USING btree (repository_id, unique_name) WHERE (unique_name IS NOT NULL);
 
 
 --
@@ -3997,6 +4028,13 @@ CREATE INDEX user_preferences_build_emails_false ON users USING btree (id) WHERE
 
 
 --
+-- Name: branches set_unique_name_on_branches; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER set_unique_name_on_branches BEFORE INSERT OR UPDATE ON branches FOR EACH ROW EXECUTE PROCEDURE set_unique_name();
+
+
+--
 -- Name: builds set_updated_at_on_builds; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -4688,6 +4726,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181029120000'),
 ('20181116800000'),
 ('20181116800001'),
-('20181126080000');
+('20181126080000'),
+('20181128120000'),
+('20181203075819'),
+('20181203080356');
 
 
