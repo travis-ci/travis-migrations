@@ -6,6 +6,6 @@ class CreateIndexOnBranchesUniqueNameAndRepositoryId < ActiveRecord::Migration[5
   end
 
   def down
-    execute "DROP INDEX CONCURRENTLY index_branches_repository_id_unique_name"
+    execute "DROP INDEX CONCURRENTLY IF EXISTS index_branches_repository_id_unique_name"
   end
 end
