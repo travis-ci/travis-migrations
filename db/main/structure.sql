@@ -676,9 +676,20 @@ $_$;
 CREATE FUNCTION public.set_unique_name() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+DECLARE
+  disable boolean;
 BEGIN
   IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
-    NEW.unique_name := NEW.name;
+    BEGIN
+       disable := current_setting('set_unique_name_on_branches.disable');
+    EXCEPTION
+    WHEN others THEN
+      set set_unique_name_on_branches.disable = 'f';
+    END;
+
+    IF NOT disable THEN
+      NEW.unique_name := NEW.name;
+    END IF;
   END IF;
   RETURN NEW;
 END;
