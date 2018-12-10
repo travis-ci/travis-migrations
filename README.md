@@ -26,6 +26,21 @@ Please make sure your migrations are production safe as per this guide: [Safe Op
 You can run `script/dump-schema-docker.sh` to generate the schema file
 using a consistent version of postgres (running in a docker container).
 
+Using Docker to run on PostgreSQL 9.6
+-------------------------------------
+
+We use PostgreSQL 9.6 on production, which is often different than the database
+installed on many operating systems by default. In order to make it easier to
+run against 9.6 you can use Docker with a supplied docker-compose.yml file.
+
+Run `docker-compose up` to start the container. Then you can either change
+settings in `config/database.yml` to use `postgres` as a user and `5431` as a
+port, or run with `DATABASE_URL` specified explicitly, for example:
+
+```bash
+DATABASE_URL=postgres://postgres@localhost:5431/travis_test bundle exec rake db:migrate
+```
+
 Running migrations locally
 --------------------------
 
