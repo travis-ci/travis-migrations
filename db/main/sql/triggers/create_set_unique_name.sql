@@ -4,6 +4,7 @@ CREATE FUNCTION set_unique_name() RETURNS trigger AS $$
 DECLARE
   disable boolean;
 BEGIN
+  disable := 'f';
   IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
     BEGIN
        disable := current_setting('set_unique_name_on_branches.disable');
