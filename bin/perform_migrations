@@ -36,7 +36,7 @@ case "$env" in
 "org-staging")
     heroku_app_name="travis-migrations-staging"
     ;;
-"org-prodution")
+"org-production")
     heroku_app_name="travis-migrations-production"
     ;;
 "com-staging")
