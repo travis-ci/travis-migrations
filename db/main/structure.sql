@@ -3017,6 +3017,13 @@ CREATE INDEX index_branches_on_repository_id ON public.branches USING btree (rep
 
 
 --
+-- Name: index_branches_on_repository_id_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_branches_on_repository_id_and_name ON public.branches USING btree (repository_id, name);
+
+
+--
 -- Name: index_branches_on_repository_id_and_name_and_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4731,6 +4738,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181116800000'),
 ('20181116800001'),
 ('20181126080000'),
+('20181128120000'),
 ('20181203075818'),
 ('20181203075819'),
 ('20181203080356');
