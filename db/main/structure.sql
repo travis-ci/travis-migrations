@@ -1501,7 +1501,8 @@ CREATE TABLE public.organizations (
     org_id integer,
     com_id integer,
     migrating boolean,
-    migrated_at timestamp without time zone
+    migrated_at timestamp without time zone,
+    preferences jsonb
 );
 
 
@@ -4741,6 +4742,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181128120000'),
 ('20181203075818'),
 ('20181203075819'),
-('20181203080356');
+('20181203080356'),
+('20190102000000');
 
 
