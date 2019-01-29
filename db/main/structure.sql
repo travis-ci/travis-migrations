@@ -1715,7 +1715,8 @@ CREATE TABLE public.repositories (
     migrated_at timestamp without time zone,
     active_on_org boolean,
     managed_by_installation_at timestamp without time zone,
-    migration_status character varying
+    migration_status character varying,
+    legacy_service_hook boolean
 );
 
 
@@ -3266,7 +3267,7 @@ CREATE INDEX index_commits_on_tag_id ON public.commits USING btree (tag_id);
 -- Name: index_crons_on_branch_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_crons_on_branch_id ON public.crons USING btree (branch_id);
+CREATE UNIQUE INDEX index_crons_on_branch_id ON public.crons USING btree (branch_id);
 
 
 --
@@ -4743,7 +4744,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181203075818'),
 ('20181203075819'),
 ('20181203080356'),
+('20181205152712'),
 ('20190102000000'),
-('20190102000001');
+('20190102000001'),
+('20190129000000');
 
 
