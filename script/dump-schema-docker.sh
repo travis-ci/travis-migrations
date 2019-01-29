@@ -4,7 +4,7 @@ set -e
 
 docker kill travis-migrations || true
 docker rm travis-migrations || true
-docker run --name travis-migrations -v `pwd`:/travis-migrations -d travisci/travis-migrations:0.1
+docker run --name travis-migrations -v `pwd`:/travis-migrations -d travisci/travis-migrations:0.3
 
 sleep 5
 
