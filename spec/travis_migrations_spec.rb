@@ -10,6 +10,7 @@ describe 'Rake tasks' do
     %w(
       abuses
       beta_features
+      beta_migration_requests
       branches
       broadcasts
       build_configs
