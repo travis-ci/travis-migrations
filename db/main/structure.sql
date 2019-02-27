@@ -2075,8 +2075,8 @@ CREATE TABLE public.subscriptions (
     id integer NOT NULL,
     cc_token character varying,
     valid_to timestamp without time zone,
-    owner_type character varying,
-    owner_id integer,
+    owner_type character varying NOT NULL,
+    owner_id integer NOT NULL,
     first_name character varying,
     last_name character varying,
     company character varying,
@@ -4803,6 +4803,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190102000000'),
 ('20190102000001'),
 ('20190109000000'),
-('20190118000000');
+('20190118000000'),
+('20190204000000');
 
 
