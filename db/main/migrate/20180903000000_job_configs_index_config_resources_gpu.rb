@@ -1,4 +1,5 @@
 class JobConfigsIndexConfigResourcesGpu < ActiveRecord::Migration[4.2]
+  include Travis::PostgresVersion
   disable_ddl_transaction!
 
   def up
@@ -14,7 +15,7 @@ class JobConfigsIndexConfigResourcesGpu < ActiveRecord::Migration[4.2]
     sql
 
     execute <<~sql
-      CREATE INDEX CONCURRENTLY index_job_configs_on_config_resources_gpu ON job_configs (((config ->> 'resources')::jsonb ->> 'gpu')) WHERE is_json((config ->> 'resources')::text) AND ((config ->> 'resources')::jsonb ->> 'gpu') IS NOT NULL;
+      CREATE INDEX CONCURRENTLY index_job_configs_on_config_resources_gpu ON job_configs (((config ->> 'resources')::#{json_type.to_s} ->> 'gpu')) WHERE is_json((config ->> 'resources')::text) AND ((config ->> 'resources')::#{json_type.to_s} ->> 'gpu') IS NOT NULL;
     sql
   end
 

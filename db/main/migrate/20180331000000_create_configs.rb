@@ -1,21 +1,23 @@
 class CreateConfigs < ActiveRecord::Migration[4.2]
+  include Travis::PostgresVersion
+
   def up
     create_table :request_configs do |t|
       t.integer :repository_id, null: false
       t.string :key, size: 32, null: false
-      t.jsonb :config
+      t.column :config, json_type
     end
 
     create_table :build_configs do |t|
       t.integer :repository_id, null: false
       t.string :key, size: 32, null: false
-      t.jsonb :config
+      t.column :config, json_type
     end
 
     create_table :job_configs do |t|
       t.integer :repository_id, null: false
       t.string :key, size: 32, null: false
-      t.jsonb :config
+      t.column :config, json_type
     end
 
     add_index :request_configs, [:repository_id, :key]
