@@ -38,6 +38,8 @@ describe 'Rake tasks' do
       request_configs
       request_payloads
       request_yaml_configs
+      request_raw_configs
+      request_raw_configurations
       requests
       ssl_keys
       stages
