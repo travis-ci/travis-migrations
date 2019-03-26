@@ -1,8 +1,8 @@
-class AddPreferences < ActiveRecord::Migration[4.2]
+class AddOrganizationPreferences < ActiveRecord::Migration[5.2]
   include Travis::PostgresVersion
 
   def change
-    change_table :users do |t|
+    change_table :organizations do |t|
       t.column :preferences, json_type
     end
   end

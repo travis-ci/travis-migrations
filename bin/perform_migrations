@@ -1,0 +1,52 @@
+#!/bin/bash
+
+direction=$1
+shift
+
+for arg in $@; do
+  if [ "$arg" == "--help" ] || [ "$arg" == '-h' ] || [ "$arg" == "-help" ]; then
+    help=1
+  fi
+done
+
+if [ "$1" != "org-staging" ] && [ "$1" != "org-production" ] && [ "$1" != "com-staging" ] && [ "$1" != "com-production" ]; then
+  invalid_env=1
+fi
+
+if [ "$#" -lt 2 ] || [ "$help" == 1 ] || [ "$invalid_env" == 1 ]; then
+  cat <<FOO
+Usage:
+    migrate_$direction ENV [MIGRATION_TIMESTAMP]...
+
+Perform rake db:migrate:direction on multiple migrations, where:
+    ENV - environemnt, valid values are org-staging, org-production,
+          com-staging, com-production
+
+Example:
+    migrate_$direction com-production 2101801010000 2101801010000
+FOO
+
+  exit
+fi
+
+env=$1
+shift
+
+case "$env" in
+"org-staging")
+    heroku_app_name="travis-migrations-staging"
+    ;;
+"org-production")
+    heroku_app_name="travis-migrations-production"
+    ;;
+"com-staging")
+    heroku_app_name="travis-pro-migrations-staging"
+    ;;
+"com-production")
+    heroku_app_name="travis-pro-migrations-prod"
+    ;;
+esac
+
+for version in $@; do
+  heroku run bundle exec rake db:migrate:$direction VERSION=$version -a $heroku_app_name
+done

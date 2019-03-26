@@ -1,4 +1,6 @@
 class CreateInstallations < ActiveRecord::Migration[4.2]
+  include Travis::PostgresVersion
+
   def change
     create_table    :installations do |t|
       t.integer     :github_id
@@ -14,14 +16,5 @@ class CreateInstallations < ActiveRecord::Migration[4.2]
       t.boolean     :active_on_org
       t.timestamp   :managed_by_installation_at
     end
-  end
-
-  def json_type
-    postgres_version == '9.3' ? :json : :jsonb
-  end
-
-  def postgres_version
-    full = ActiveRecord::Base.connection.select_value('SELECT version()')
-    full[/^PostgreSQL (\d+\.\d+)/, 1]
   end
 end
