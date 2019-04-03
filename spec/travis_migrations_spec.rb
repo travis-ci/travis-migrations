@@ -21,6 +21,7 @@ describe 'Rake tasks' do
       crons
       email_unsubscribes
       emails
+      gatekeeper_workers
       installations
       invoices
       job_configs
