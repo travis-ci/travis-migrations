@@ -4292,7 +4292,7 @@ CREATE TRIGGER set_unique_name_on_branches BEFORE INSERT OR UPDATE ON public.bra
 -- Name: builds set_unique_number_on_builds; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER set_unique_number_on_builds BEFORE INSERT OR UPDATE ON public.builds FOR EACH ROW EXECUTE PROCEDURE public.set_unique_number();
+CREATE TRIGGER set_unique_number_on_builds BEFORE INSERT ON public.builds FOR EACH ROW EXECUTE PROCEDURE public.set_unique_number();
 
 
 --
@@ -5003,6 +5003,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190329093854'),
 ('20190409133118'),
 ('20190409133320'),
-('20190409133444');
+('20190409133444'),
+('20190410121039');
 
 
