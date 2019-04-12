@@ -19,6 +19,20 @@ describe 'Rake tasks' do
       commits
       coupons
       crons
+      deleted_builds
+      deleted_branches
+      deleted_stages
+      deleted_jobs
+      deleted_requests
+      deleted_commits
+      deleted_pull_requests
+      deleted_crons
+      deleted_job_configs
+      deleted_build_configs
+      deleted_ssl_keys
+      deleted_tags
+      deleted_request_configs
+      deleted_request_payloads
       email_unsubscribes
       emails
       gatekeeper_workers
@@ -63,7 +77,7 @@ describe 'Rake tasks' do
   after { ActiveRecord::Base.remove_connection }
 
   def run(cmd)
-    system "RAILS_ENV=test bundle exec #{cmd}"
+    system "RAILS_ENV=test bundle exec #{cmd}  > migration.log"
     expect($?.exitstatus).to eq 0
   end
 

@@ -15,7 +15,7 @@ describe 'Repo counts' do
   after { ActiveRecord::Base.remove_connection }
 
   def run(cmd)
-    system "RAILS_ENV=test bundle exec #{cmd}"
+    system "RAILS_ENV=test bundle exec #{cmd} > migration.log "
     expect($?.exitstatus).to eq 0
   end
 

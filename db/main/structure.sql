@@ -5,22 +5,9 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 
 --
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
@@ -716,6 +703,69 @@ CREATE FUNCTION public.set_updated_at() RETURNS trigger
       $$;
 
 
+--
+-- Name: soft_delete_repo_data(bigint); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.soft_delete_repo_data(r_id bigint) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  -- don't check constraints until the end fo the transaction
+  SET CONSTRAINTS ALL DEFERRED;
+
+  WITH deleted_records AS (
+    DELETE FROM crons WHERE branch_id IN (SELECT id FROM branches WHERE repository_id = r_id)
+    RETURNING crons.*
+  ) INSERT INTO deleted_crons SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM jobs WHERE repository_id = r_id RETURNING jobs.*
+  ) INSERT INTO deleted_jobs SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM stages WHERE build_id IN (SELECT id FROM builds WHERE repository_id = r_id)
+    RETURNING stages.*
+  ) INSERT INTO deleted_stages SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM request_payloads WHERE request_id IN (SELECT id FROM requests WHERE repository_id = r_id)
+    RETURNING request_payloads.*
+  ) INSERT INTO deleted_request_payloads SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM requests WHERE repository_id = r_id RETURNING requests.*
+  ) INSERT INTO deleted_requests SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM commits WHERE repository_id = r_id RETURNING commits.*
+  ) INSERT INTO deleted_commits SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM pull_requests WHERE repository_id = r_id RETURNING pull_requests.*
+  ) INSERT INTO deleted_pull_requests SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM builds WHERE repository_id = r_id RETURNING builds.*
+  ) INSERT INTO deleted_builds SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM branches WHERE repository_id = r_id RETURNING branches.*
+  ) INSERT INTO deleted_branches SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM job_configs WHERE repository_id = r_id RETURNING job_configs.*
+  ) INSERT INTO deleted_job_configs SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM build_configs WHERE repository_id = r_id RETURNING build_configs.*
+  ) INSERT INTO deleted_build_configs SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM ssl_keys WHERE repository_id = r_id RETURNING ssl_keys.*
+  ) INSERT INTO deleted_ssl_keys SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM branches WHERE repository_id = r_id RETURNING branches.*
+  ) INSERT INTO deleted_branches SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM tags WHERE repository_id = r_id RETURNING tags.*
+  ) INSERT INTO deleted_tags SELECT * FROM deleted_records;
+  WITH deleted_records AS (
+    DELETE FROM request_configs WHERE repository_id = r_id RETURNING request_configs.*
+  ) INSERT INTO deleted_request_configs SELECT * FROM deleted_records;
+END;
+$$;
+
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -1174,6 +1224,316 @@ CREATE SEQUENCE public.crons_id_seq
 --
 
 ALTER SEQUENCE public.crons_id_seq OWNED BY public.crons.id;
+
+
+--
+-- Name: deleted_branches; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_branches (
+    id integer NOT NULL,
+    repository_id integer NOT NULL,
+    last_build_id integer,
+    name character varying NOT NULL,
+    exists_on_github boolean NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    org_id integer,
+    com_id integer
+);
+
+
+--
+-- Name: deleted_build_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_build_configs (
+    id integer NOT NULL,
+    repository_id integer NOT NULL,
+    key character varying NOT NULL,
+    config jsonb
+);
+
+
+--
+-- Name: deleted_builds; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_builds (
+    id bigint NOT NULL,
+    repository_id integer,
+    number character varying,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    log text,
+    message text,
+    committed_at timestamp without time zone,
+    committer_name character varying,
+    committer_email character varying,
+    author_name character varying,
+    author_email character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    ref character varying,
+    branch character varying,
+    github_payload text,
+    compare_url character varying,
+    token character varying,
+    commit_id integer,
+    request_id integer,
+    state character varying,
+    duration integer,
+    owner_type character varying,
+    owner_id integer,
+    event_type character varying,
+    previous_state character varying,
+    pull_request_title text,
+    pull_request_number integer,
+    canceled_at timestamp without time zone,
+    cached_matrix_ids integer[],
+    received_at timestamp without time zone,
+    private boolean,
+    pull_request_id integer,
+    branch_id integer,
+    tag_id integer,
+    sender_type character varying,
+    sender_id integer,
+    org_id integer,
+    com_id integer,
+    config_id integer,
+    restarted_at timestamp without time zone,
+    unique_number integer
+);
+
+
+--
+-- Name: deleted_commits; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_commits (
+    id integer NOT NULL,
+    repository_id integer,
+    commit character varying,
+    ref character varying,
+    branch character varying,
+    message text,
+    compare_url character varying,
+    committed_at timestamp without time zone,
+    committer_name character varying,
+    committer_email character varying,
+    author_name character varying,
+    author_email character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    branch_id integer,
+    tag_id integer,
+    org_id integer,
+    com_id integer
+);
+
+
+--
+-- Name: deleted_crons; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_crons (
+    id integer NOT NULL,
+    branch_id integer,
+    "interval" character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    next_run timestamp without time zone,
+    last_run timestamp without time zone,
+    dont_run_if_recent_build_exists boolean,
+    org_id integer,
+    com_id integer,
+    active boolean
+);
+
+
+--
+-- Name: deleted_job_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_job_configs (
+    id integer NOT NULL,
+    repository_id integer NOT NULL,
+    key character varying NOT NULL,
+    config jsonb
+);
+
+
+--
+-- Name: deleted_jobs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_jobs (
+    id bigint NOT NULL,
+    repository_id integer,
+    commit_id integer,
+    source_type character varying,
+    source_id integer,
+    queue character varying,
+    type character varying,
+    state character varying,
+    number character varying,
+    log text,
+    worker character varying,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    tags text,
+    allow_failure boolean,
+    owner_type character varying,
+    owner_id integer,
+    result integer,
+    queued_at timestamp without time zone,
+    canceled_at timestamp without time zone,
+    received_at timestamp without time zone,
+    debug_options text,
+    private boolean,
+    stage_number character varying,
+    stage_id integer,
+    org_id integer,
+    com_id integer,
+    config_id integer,
+    restarted_at timestamp without time zone
+);
+
+
+--
+-- Name: deleted_pull_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_pull_requests (
+    id integer NOT NULL,
+    repository_id integer,
+    number integer,
+    title character varying,
+    state character varying,
+    head_repo_github_id integer,
+    head_repo_slug character varying,
+    head_ref character varying,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    org_id integer,
+    com_id integer,
+    mergeable_state character varying
+);
+
+
+--
+-- Name: deleted_request_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_request_configs (
+    id integer NOT NULL,
+    repository_id integer NOT NULL,
+    key character varying NOT NULL,
+    config jsonb
+);
+
+
+--
+-- Name: deleted_request_payloads; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_request_payloads (
+    id integer NOT NULL,
+    request_id integer NOT NULL,
+    payload text,
+    archived boolean,
+    created_at timestamp without time zone
+);
+
+
+--
+-- Name: deleted_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_requests (
+    id integer NOT NULL,
+    repository_id integer,
+    commit_id integer,
+    state character varying,
+    source character varying,
+    token character varying,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    event_type character varying,
+    comments_url character varying,
+    base_commit character varying,
+    head_commit character varying,
+    owner_type character varying,
+    owner_id integer,
+    result character varying,
+    message character varying,
+    private boolean,
+    pull_request_id integer,
+    branch_id integer,
+    tag_id integer,
+    sender_type character varying,
+    sender_id integer,
+    org_id integer,
+    com_id integer,
+    config_id integer,
+    yaml_config_id integer,
+    github_guid text,
+    pull_request_mergeable character varying
+);
+
+
+--
+-- Name: deleted_ssl_keys; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_ssl_keys (
+    id integer NOT NULL,
+    repository_id integer,
+    public_key text,
+    private_key text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    org_id integer,
+    com_id integer
+);
+
+
+--
+-- Name: deleted_stages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_stages (
+    id integer NOT NULL,
+    build_id integer,
+    number integer,
+    name character varying,
+    state character varying,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    org_id integer,
+    com_id integer
+);
+
+
+--
+-- Name: deleted_tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_tags (
+    id integer NOT NULL,
+    repository_id integer,
+    name character varying,
+    last_build_id integer,
+    exists_on_github boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    org_id integer,
+    com_id integer
+);
 
 
 --
@@ -4994,6 +5354,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190502175059'),
 ('20190510121000'),
 ('20190605121000'),
-('20190605155459');
+('20190605155459'),
+('2019061312000000');
 
 
