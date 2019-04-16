@@ -14,7 +14,9 @@ BEGIN
     END;
 
     IF NOT disable THEN
-      NEW.unique_number := NEW.number;
+      IF NEW.unique_number IS NULL OR NEW.unique_number > 0 THEN
+        NEW.unique_number := NEW.number;
+      END IF;
     END IF;
   END IF;
   RETURN NEW;

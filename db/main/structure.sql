@@ -656,34 +656,6 @@ $_$;
 
 
 --
--- Name: set_unique_name(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.set_unique_name() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-  disable boolean;
-BEGIN
-  disable := 'f';
-  IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
-    BEGIN
-       disable := current_setting('set_unique_name_on_branches.disable');
-    EXCEPTION
-    WHEN others THEN
-      set set_unique_name_on_branches.disable = 'f';
-    END;
-
-    IF NOT disable THEN
-      NEW.unique_name := NEW.name;
-    END IF;
-  END IF;
-  RETURN NEW;
-END;
-$$;
-
-
---
 -- Name: set_unique_number(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -703,7 +675,9 @@ BEGIN
     END;
 
     IF NOT disable THEN
-      NEW.unique_number := NEW.number;
+      IF NEW.unique_number IS NULL OR NEW.unique_number > 0 THEN
+        NEW.unique_number := NEW.number;
+      END IF;
     END IF;
   END IF;
   RETURN NEW;
@@ -860,8 +834,7 @@ CREATE TABLE public.branches (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     org_id integer,
-    com_id integer,
-    unique_name text
+    com_id integer
 );
 
 
@@ -3239,13 +3212,6 @@ CREATE INDEX index_branches_on_repository_id_and_name_and_id ON public.branches 
 
 
 --
--- Name: index_branches_repository_id_unique_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_branches_repository_id_unique_name ON public.branches USING btree (repository_id, unique_name) WHERE (unique_name IS NOT NULL);
-
-
---
 -- Name: index_broadcasts_on_recipient_id_and_recipient_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3417,7 +3383,7 @@ CREATE INDEX index_builds_on_updated_at ON public.builds USING btree (updated_at
 -- Name: index_builds_repository_id_unique_number; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_builds_repository_id_unique_number ON public.builds USING btree (repository_id, unique_number) WHERE (unique_number IS NOT NULL);
+CREATE UNIQUE INDEX index_builds_repository_id_unique_number ON public.builds USING btree (repository_id, unique_number) WHERE ((unique_number IS NOT NULL) AND (unique_number > 0));
 
 
 --
@@ -4282,17 +4248,10 @@ CREATE INDEX user_preferences_build_emails_false ON public.users USING btree (id
 
 
 --
--- Name: branches set_unique_name_on_branches; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER set_unique_name_on_branches BEFORE INSERT OR UPDATE ON public.branches FOR EACH ROW EXECUTE PROCEDURE public.set_unique_name();
-
-
---
 -- Name: builds set_unique_number_on_builds; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER set_unique_number_on_builds BEFORE INSERT ON public.builds FOR EACH ROW EXECUTE PROCEDURE public.set_unique_number();
+CREATE TRIGGER set_unique_number_on_builds BEFORE INSERT OR UPDATE ON public.builds FOR EACH ROW EXECUTE PROCEDURE public.set_unique_number();
 
 
 --
@@ -5004,6 +4963,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190409133118'),
 ('20190409133320'),
 ('20190409133444'),
-('20190410121039');
+('20190410121039'),
+('20190416071629'),
+('20190417072423'),
+('20190417072838');
 
 
