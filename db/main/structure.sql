@@ -1659,7 +1659,8 @@ CREATE TABLE public.pull_requests (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     org_id integer,
-    com_id integer
+    com_id integer,
+    mergeable_state character varying
 );
 
 
@@ -4966,6 +4967,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190410121039'),
 ('20190416071629'),
 ('20190417072423'),
-('20190417072838');
+('20190417072838'),
+('20190502175059');
 
 
