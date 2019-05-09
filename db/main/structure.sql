@@ -9,6 +9,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -3835,6 +3849,20 @@ CREATE INDEX index_repositories_on_lower_name ON public.repositories USING btree
 
 
 --
+-- Name: index_repositories_on_lower_owner_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_lower_owner_name ON public.repositories USING btree (lower((owner_name)::text));
+
+
+--
+-- Name: index_repositories_on_lower_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_lower_slug ON public.repositories USING gin ((((lower((owner_name)::text) || '/'::text) || lower((name)::text))) public.gin_trgm_ops);
+
+
+--
 -- Name: index_repositories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4966,6 +4994,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190410121039'),
 ('20190416071629'),
 ('20190417072423'),
-('20190417072838');
+('20190417072838'),
+('20190509120000');
 
 
