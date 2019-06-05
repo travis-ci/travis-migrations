@@ -9,6 +9,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -1978,7 +1992,8 @@ CREATE TABLE public.requests (
     com_id integer,
     config_id integer,
     yaml_config_id integer,
-    github_guid text
+    github_guid text,
+    pull_request_mergeable_state character varying
 );
 
 
@@ -4968,6 +4983,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190416071629'),
 ('20190417072423'),
 ('20190417072838'),
-('20190502175059');
+('20190502175059'),
+('20190605155459');
 
 
