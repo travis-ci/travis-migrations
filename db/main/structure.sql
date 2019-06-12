@@ -1994,7 +1994,7 @@ CREATE TABLE public.requests (
     config_id integer,
     yaml_config_id integer,
     github_guid text,
-    pull_request_mergeable_state character varying
+    pull_request_mergeable character varying
 );
 
 
