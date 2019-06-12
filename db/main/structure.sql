@@ -1780,7 +1780,8 @@ CREATE TABLE public.repositories (
     migrated_at timestamp without time zone,
     active_on_org boolean,
     managed_by_installation_at timestamp without time zone,
-    migration_status character varying
+    migration_status character varying,
+    history_migration_status character varying
 );
 
 
@@ -3851,6 +3852,13 @@ CREATE INDEX index_repositories_on_lower_name ON public.repositories USING btree
 
 
 --
+-- Name: index_repositories_on_lower_owner_name_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_lower_owner_name_and_name ON public.repositories USING btree (lower((owner_name)::text), lower((name)::text)) WHERE (invalidated_at IS NULL);
+
+
+--
 -- Name: index_repositories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4984,6 +4992,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190417072423'),
 ('20190417072838'),
 ('20190502175059'),
+('20190510121000'),
+('20190605121000'),
 ('20190605155459');
 
 
