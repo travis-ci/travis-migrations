@@ -715,10 +715,6 @@ BEGIN
   SET CONSTRAINTS ALL DEFERRED;
 
   WITH deleted_records AS (
-    DELETE FROM crons WHERE branch_id IN (SELECT id FROM branches WHERE repository_id = r_id)
-    RETURNING crons.*
-  ) INSERT INTO deleted_crons SELECT * FROM deleted_records;
-  WITH deleted_records AS (
     DELETE FROM jobs WHERE repository_id = r_id RETURNING jobs.*
   ) INSERT INTO deleted_jobs SELECT * FROM deleted_records;
   WITH deleted_records AS (
@@ -742,9 +738,6 @@ BEGIN
     DELETE FROM builds WHERE repository_id = r_id RETURNING builds.*
   ) INSERT INTO deleted_builds SELECT * FROM deleted_records;
   WITH deleted_records AS (
-    DELETE FROM branches WHERE repository_id = r_id RETURNING branches.*
-  ) INSERT INTO deleted_branches SELECT * FROM deleted_records;
-  WITH deleted_records AS (
     DELETE FROM job_configs WHERE repository_id = r_id RETURNING job_configs.*
   ) INSERT INTO deleted_job_configs SELECT * FROM deleted_records;
   WITH deleted_records AS (
@@ -753,9 +746,6 @@ BEGIN
   WITH deleted_records AS (
     DELETE FROM ssl_keys WHERE repository_id = r_id RETURNING ssl_keys.*
   ) INSERT INTO deleted_ssl_keys SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM branches WHERE repository_id = r_id RETURNING branches.*
-  ) INSERT INTO deleted_branches SELECT * FROM deleted_records;
   WITH deleted_records AS (
     DELETE FROM tags WHERE repository_id = r_id RETURNING tags.*
   ) INSERT INTO deleted_tags SELECT * FROM deleted_records;
@@ -1227,23 +1217,6 @@ ALTER SEQUENCE public.crons_id_seq OWNED BY public.crons.id;
 
 
 --
--- Name: deleted_branches; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.deleted_branches (
-    id integer NOT NULL,
-    repository_id integer NOT NULL,
-    last_build_id integer,
-    name character varying NOT NULL,
-    exists_on_github boolean NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    org_id integer,
-    com_id integer
-);
-
-
---
 -- Name: deleted_build_configs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1329,25 +1302,6 @@ CREATE TABLE public.deleted_commits (
     tag_id integer,
     org_id integer,
     com_id integer
-);
-
-
---
--- Name: deleted_crons; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.deleted_crons (
-    id integer NOT NULL,
-    branch_id integer,
-    "interval" character varying NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    next_run timestamp without time zone,
-    last_run timestamp without time zone,
-    dont_run_if_recent_build_exists boolean,
-    org_id integer,
-    com_id integer,
-    active boolean
 );
 
 

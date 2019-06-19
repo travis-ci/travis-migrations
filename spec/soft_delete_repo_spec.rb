@@ -77,9 +77,8 @@ describe 'soft delete repo' do
   end
 
   specify 'ensure that soft delete tables have the same fields that the originals' do
-    tables = %w(builds branches stages jobs requests commits pull_requests
-                crons job_configs build_configs request_configs
-                request_payloads ssl_keys tags)
+    tables = %w(builds stages jobs requests commits pull_requests job_configs
+                build_configs request_configs request_payloads ssl_keys tags)
 
     tables.each do |table_name|
       table = fetch_table(table_name)
@@ -99,7 +98,6 @@ describe 'soft delete repo' do
     e "INSERT INTO jobs (source_id, repository_id, number, stage_id, created_at, updated_at) VALUES (1, 1, '1.2', 1, now(), now());"
     e "INSERT INTO branches (id, repository_id, last_build_id, name, created_at, updated_at)
          VALUES (1, 1, 1, 'master', now(), now());"
-    e "INSERT INTO crons (id, branch_id, interval, created_at, updated_at) VALUES (1, 1, '', now(), now());"
     e "INSERT INTO tags (id, repository_id, name, created_at, updated_at) VALUES (1, 1, 'foo', now(), now());"
 
     result = e "SELECT
@@ -109,8 +107,6 @@ describe 'soft delete repo' do
       (SELECT count(*) FROM builds) as builds_count,
       (SELECT count(*) FROM stages) as stages_count,
       (SELECT count(*) FROM jobs) as jobs_count,
-      (SELECT count(*) FROM branches) as branches_count,
-      (SELECT count(*) FROM crons) as crons_count,
       (SELECT count(*) FROM tags) as tags_count;
     "
 
@@ -122,8 +118,6 @@ describe 'soft delete repo' do
     counts["builds_count"].should == 1
     counts["stages_count"].should == 1
     counts["jobs_count"].should == 2
-    counts["branches_count"].should == 1
-    counts["crons_count"].should == 1
     counts["tags_count"].should == 1
 
     e "SELECT soft_delete_repo_data(1);"
@@ -135,8 +129,6 @@ describe 'soft delete repo' do
       (SELECT count(*) FROM builds) as builds_count,
       (SELECT count(*) FROM stages) as stages_count,
       (SELECT count(*) FROM jobs) as jobs_count,
-      (SELECT count(*) FROM branches) as branches_count,
-      (SELECT count(*) FROM crons) as crons_count,
       (SELECT count(*) FROM tags) as tags_count;
     "
 
@@ -148,8 +140,6 @@ describe 'soft delete repo' do
     counts["builds_count"].should == 0
     counts["stages_count"].should == 0
     counts["jobs_count"].should == 0
-    counts["branches_count"].should == 0
-    counts["crons_count"].should == 0
     counts["tags_count"].should == 0
 
     result = e "SELECT
@@ -158,8 +148,6 @@ describe 'soft delete repo' do
       (SELECT count(*) FROM deleted_builds) as builds_count,
       (SELECT count(*) FROM deleted_stages) as stages_count,
       (SELECT count(*) FROM deleted_jobs) as jobs_count,
-      (SELECT count(*) FROM deleted_branches) as branches_count,
-      (SELECT count(*) FROM deleted_crons) as crons_count,
       (SELECT count(*) FROM deleted_tags) as tags_count;
     "
 
@@ -170,8 +158,6 @@ describe 'soft delete repo' do
     counts["builds_count"].should == 1
     counts["stages_count"].should == 1
     counts["jobs_count"].should == 2
-    counts["branches_count"].should == 1
-    counts["crons_count"].should == 1
     counts["tags_count"].should == 1
 
   end

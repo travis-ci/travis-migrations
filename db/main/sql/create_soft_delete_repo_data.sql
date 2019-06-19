@@ -5,10 +5,6 @@ BEGIN
   SET CONSTRAINTS ALL DEFERRED;
 
   WITH deleted_records AS (
-    DELETE FROM crons WHERE branch_id IN (SELECT id FROM branches WHERE repository_id = r_id)
-    RETURNING crons.*
-  ) INSERT INTO deleted_crons SELECT * FROM deleted_records;
-  WITH deleted_records AS (
     DELETE FROM jobs WHERE repository_id = r_id RETURNING jobs.*
   ) INSERT INTO deleted_jobs SELECT * FROM deleted_records;
   WITH deleted_records AS (
@@ -32,9 +28,6 @@ BEGIN
     DELETE FROM builds WHERE repository_id = r_id RETURNING builds.*
   ) INSERT INTO deleted_builds SELECT * FROM deleted_records;
   WITH deleted_records AS (
-    DELETE FROM branches WHERE repository_id = r_id RETURNING branches.*
-  ) INSERT INTO deleted_branches SELECT * FROM deleted_records;
-  WITH deleted_records AS (
     DELETE FROM job_configs WHERE repository_id = r_id RETURNING job_configs.*
   ) INSERT INTO deleted_job_configs SELECT * FROM deleted_records;
   WITH deleted_records AS (
@@ -43,9 +36,6 @@ BEGIN
   WITH deleted_records AS (
     DELETE FROM ssl_keys WHERE repository_id = r_id RETURNING ssl_keys.*
   ) INSERT INTO deleted_ssl_keys SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM branches WHERE repository_id = r_id RETURNING branches.*
-  ) INSERT INTO deleted_branches SELECT * FROM deleted_records;
   WITH deleted_records AS (
     DELETE FROM tags WHERE repository_id = r_id RETURNING tags.*
   ) INSERT INTO deleted_tags SELECT * FROM deleted_records;
