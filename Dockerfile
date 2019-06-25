@@ -14,10 +14,13 @@ RUN cd ruby-install-0.6.1/ && make install
 RUN rm -r ruby-install-0.6.1/
 
 # ruby
-COPY .ruby-version .
+COPY . .
 RUN ruby-install --system --no-install-deps ruby `cat .ruby-version`
 RUN which ruby
 
 # gem setup
-RUN apt-get install libpq-dev
-RUN gem install bundler
+RUN apt-get install -y libpq-dev
+RUN gem install bundler -v '1.16.6'
+RUN bundle install
+
+CMD /bin/bash

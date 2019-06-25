@@ -26,3 +26,10 @@ before_script:
 
 after_success:
   - script/upload_structure.rb
+
+jobs:
+  include:
+  - stage: "Ship to Quay.io"
+    language: bash
+    script: ./script/docker-build-and-push
+
