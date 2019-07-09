@@ -6,7 +6,7 @@ class AddVcsTypeToOrganization < ActiveRecord::Migration[5.2]
       add_column :organizations, :vcs_type, :string
     end
 
-    last_id = select_value('SELECT id FROM organizations ORDER BY id DESC LIMIT 1')
+    last_id = select_value('SELECT id FROM organizations ORDER BY id DESC LIMIT 1') || 0
     batch_size = 5000
     (0..last_id).step(batch_size).each do |from_id|
       to_id = from_id + batch_size
