@@ -92,7 +92,7 @@ describe 'soft delete repo' do
     e "INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())"
     e "INSERT INTO commits (id, repository_id, created_at, updated_at) VALUES (1, 1, now(), now());"
     e "INSERT INTO requests (id, repository_id, commit_id, created_at, updated_at) VALUES (1, 1, 1, now(), now());"
-    e "INSERT INTO builds (id, repository_id, number, created_at, updated_at) VALUES (1, 1, '1', now(), now());"
+    e "INSERT INTO builds (id, repository_id, request_id, number, created_at, updated_at) VALUES (1, 1, 1, '1', now(), now());"
     e "INSERT INTO stages (id, build_id) VALUES (1, 1);"
     e "INSERT INTO jobs (source_id, repository_id, number, stage_id, created_at, updated_at) VALUES (1, 1, '1.1', 1, now(), now());"
     e "INSERT INTO jobs (source_id, repository_id, number, stage_id, created_at, updated_at) VALUES (1, 1, '1.2', 1, now(), now());"
