@@ -4,7 +4,7 @@ class AddVcsTypeToUser < ActiveRecord::Migration[5.2]
   def up
     ActiveRecord::Base.transaction do
       add_column :users, :vcs_type, :string, default: nil
-      execute(%Q[ALTER TABLE users ALTER COLUMN vcs_type SET DEFAULT 'GithubUsers'])
+      execute(%Q[ALTER TABLE users ALTER COLUMN vcs_type SET DEFAULT 'GithubUser'])
     end
 
     last_id = select_value('SELECT id FROM users ORDER BY id DESC LIMIT 1') || 0
