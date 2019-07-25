@@ -3,7 +3,8 @@ class AddVcsTypeToRepository < ActiveRecord::Migration[5.2]
 
   def up
     ActiveRecord::Base.transaction do
-      add_column :repositories, :vcs_type, :string
+      add_column :repositories, :vcs_type, :string, default: nil
+      execute(%Q[ALTER TABLE repositories ALTER COLUMN vcs_type SET DEFAULT 'GithubRepository'])
     end
 
     last_id = select_value('SELECT id FROM repositories ORDER BY id DESC LIMIT 1') || 0

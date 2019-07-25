@@ -3,7 +3,8 @@ class AddVcsTypeToOrganization < ActiveRecord::Migration[5.2]
 
   def up
     ActiveRecord::Base.transaction do
-      add_column :organizations, :vcs_type, :string
+      add_column :organizations, :vcs_type, :string, default: nil
+      execute(%Q[ALTER TABLE organizations ALTER COLUMN vcs_type SET DEFAULT 'GithubOrganization'])
     end
 
     last_id = select_value('SELECT id FROM organizations ORDER BY id DESC LIMIT 1') || 0

@@ -1894,7 +1894,7 @@ CREATE TABLE public.organizations (
     migrated_at timestamp without time zone,
     preferences jsonb DEFAULT '{}'::jsonb,
     beta_migration_request_id integer,
-    vcs_type character varying
+    vcs_type character varying DEFAULT 'GithubOrganization'::character varying
 );
 
 
@@ -2110,7 +2110,7 @@ CREATE TABLE public.repositories (
     managed_by_installation_at timestamp without time zone,
     migration_status character varying,
     history_migration_status character varying,
-    vcs_type character varying
+    vcs_type character varying DEFAULT 'GithubRepository'::character varying
 );
 
 
@@ -2781,7 +2781,7 @@ CREATE TABLE public.users (
     migrated_at timestamp without time zone,
     redacted_at timestamp without time zone,
     preferences jsonb DEFAULT '{}'::jsonb,
-    vcs_type character varying
+    vcs_type character varying DEFAULT 'GithubUsers'::character varying
 );
 
 
