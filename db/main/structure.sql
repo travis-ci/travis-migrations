@@ -723,48 +723,62 @@ CREATE FUNCTION public.set_updated_at() RETURNS trigger
 CREATE FUNCTION public.soft_delete_repo_data(r_id bigint) RETURNS void
     LANGUAGE plpgsql
     AS $$
+DECLARE
+  request_yaml_config_ids bigint[];
+  request_config_ids bigint[];
+  tag_ids bigint[];
+  ssl_key_ids bigint[];
+  build_config_ids bigint[];
+  job_config_ids bigint[];
+  build_ids bigint[];
+  pull_request_ids bigint[];
+  commit_ids bigint[];
+  request_ids bigint[];
+  request_payload_ids bigint[];
+  stage_ids bigint[];
+  job_ids bigint[];
 BEGIN
-  -- don't check constraints until the end fo the transaction
-  SET CONSTRAINTS ALL DEFERRED;
+  SELECT INTO job_ids array_agg(id) FROM jobs WHERE repository_id = r_id;
+  SELECT INTO stage_ids array_agg(id) FROM stages WHERE build_id IN (SELECT id FROM builds WHERE repository_id = r_id);
+  SELECT INTO request_payload_ids array_agg(id) FROM request_payloads WHERE request_id IN (SELECT id FROM requests WHERE repository_id = r_id);
+  SELECT INTO request_ids array_agg(id) FROM requests WHERE repository_id = r_id;
+  SELECT INTO commit_ids array_agg(id) FROM commits WHERE repository_id = r_id;
+  SELECT INTO pull_request_ids array_agg(id) FROM pull_requests WHERE repository_id = r_id;
+  SELECT INTO build_ids array_agg(id) FROM builds WHERE repository_id = r_id;
+  SELECT INTO job_config_ids array_agg(id) FROM job_configs WHERE repository_id = r_id;
+  SELECT INTO build_config_ids array_agg(id) FROM build_configs WHERE repository_id = r_id;
+  SELECT INTO ssl_key_ids array_agg(id) FROM ssl_keys WHERE repository_id = r_id;
+  SELECT INTO tag_ids array_agg(id) FROM tags WHERE repository_id = r_id;
+  SELECT INTO request_config_ids array_agg(id) FROM request_configs WHERE repository_id = r_id;
+  SELECT INTO request_yaml_config_ids array_agg(id) FROM request_yaml_configs WHERE repository_id = r_id;
 
-  WITH deleted_records AS (
-    DELETE FROM jobs WHERE repository_id = r_id RETURNING jobs.*
-  ) INSERT INTO deleted_jobs SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM stages WHERE build_id IN (SELECT id FROM builds WHERE repository_id = r_id)
-    RETURNING stages.*
-  ) INSERT INTO deleted_stages SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM request_payloads WHERE request_id IN (SELECT id FROM requests WHERE repository_id = r_id)
-    RETURNING request_payloads.*
-  ) INSERT INTO deleted_request_payloads SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM requests WHERE repository_id = r_id RETURNING requests.*
-  ) INSERT INTO deleted_requests SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM commits WHERE repository_id = r_id RETURNING commits.*
-  ) INSERT INTO deleted_commits SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM pull_requests WHERE repository_id = r_id RETURNING pull_requests.*
-  ) INSERT INTO deleted_pull_requests SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM builds WHERE repository_id = r_id RETURNING builds.*
-  ) INSERT INTO deleted_builds SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM job_configs WHERE repository_id = r_id RETURNING job_configs.*
-  ) INSERT INTO deleted_job_configs SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM build_configs WHERE repository_id = r_id RETURNING build_configs.*
-  ) INSERT INTO deleted_build_configs SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM ssl_keys WHERE repository_id = r_id RETURNING ssl_keys.*
-  ) INSERT INTO deleted_ssl_keys SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM tags WHERE repository_id = r_id RETURNING tags.*
-  ) INSERT INTO deleted_tags SELECT * FROM deleted_records;
-  WITH deleted_records AS (
-    DELETE FROM request_configs WHERE repository_id = r_id RETURNING request_configs.*
-  ) INSERT INTO deleted_request_configs SELECT * FROM deleted_records;
+  INSERT INTO deleted_jobs SELECT * FROM jobs WHERE id = ANY(job_ids);
+  INSERT INTO deleted_stages SELECT * FROM stages WHERE id = ANY(stage_ids);
+  INSERT INTO deleted_request_payloads SELECT * FROM request_payloads WHERE id = ANY(request_payload_ids);
+  INSERT INTO deleted_requests SELECT * FROM requests WHERE id = ANY(request_ids);
+  INSERT INTO deleted_commits SELECT * FROM commits WHERE id = ANY(commit_ids);
+  INSERT INTO deleted_pull_requests SELECT * FROM pull_requests WHERE id = ANY(pull_request_ids);
+  INSERT INTO deleted_builds SELECT * FROM builds WHERE id = ANY(build_ids);
+  INSERT INTO deleted_job_configs SELECT * FROM job_configs WHERE id = ANY(job_config_ids);
+  INSERT INTO deleted_build_configs SELECT * FROM build_configs WHERE id = ANY(build_config_ids);
+  INSERT INTO deleted_ssl_keys SELECT * FROM ssl_keys WHERE id = ANY(ssl_key_ids);
+  INSERT INTO deleted_tags SELECT * FROM tags WHERE id = ANY(tag_ids);
+  INSERT INTO deleted_request_configs SELECT * FROM request_configs WHERE id = ANY(request_config_ids);
+  INSERT INTO deleted_request_yaml_configs SELECT * FROM request_yaml_configs WHERE id = ANY(request_yaml_config_ids);
+
+  DELETE FROM jobs WHERE id = ANY(job_ids);
+  DELETE FROM stages WHERE id = ANY(stage_ids);
+  DELETE FROM request_payloads WHERE id = ANY(request_payload_ids);
+  DELETE FROM requests WHERE id = ANY(request_ids);
+  DELETE FROM commits WHERE id = ANY(commit_ids);
+  DELETE FROM pull_requests WHERE id = ANY(pull_request_ids);
+  DELETE FROM builds WHERE id = ANY(build_ids);
+  DELETE FROM job_configs WHERE id = ANY(job_config_ids);
+  DELETE FROM build_configs WHERE id = ANY(build_config_ids);
+  DELETE FROM ssl_keys WHERE id = ANY(ssl_key_ids);
+  DELETE FROM tags WHERE id = ANY(tag_ids);
+  DELETE FROM request_configs WHERE id = ANY(request_config_ids);
+  DELETE FROM request_yaml_configs WHERE id = ANY(request_yaml_config_ids);
 END;
 $$;
 
@@ -968,7 +982,8 @@ CREATE TABLE public.build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -1237,7 +1252,8 @@ CREATE TABLE public.deleted_build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -1326,7 +1342,8 @@ CREATE TABLE public.deleted_job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -1398,7 +1415,8 @@ CREATE TABLE public.deleted_request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -1411,7 +1429,21 @@ CREATE TABLE public.deleted_request_payloads (
     request_id integer NOT NULL,
     payload text,
     archived boolean,
-    created_at timestamp without time zone
+    created_at timestamp without time zone,
+    org_id bigint
+);
+
+
+--
+-- Name: deleted_request_yaml_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_request_yaml_configs (
+    id integer NOT NULL,
+    yaml text,
+    repository_id integer,
+    key character varying NOT NULL,
+    org_id bigint
 );
 
 
@@ -1675,7 +1707,8 @@ CREATE TABLE public.job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -2141,7 +2174,8 @@ CREATE TABLE public.request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -2173,7 +2207,8 @@ CREATE TABLE public.request_payloads (
     request_id integer NOT NULL,
     payload text,
     archived boolean DEFAULT false,
-    created_at timestamp without time zone
+    created_at timestamp without time zone,
+    org_id bigint
 );
 
 
@@ -2266,7 +2301,8 @@ CREATE TABLE public.request_yaml_configs (
     id integer NOT NULL,
     yaml text,
     repository_id integer,
-    key character varying NOT NULL
+    key character varying NOT NULL,
+    org_id bigint
 );
 
 
@@ -3566,6 +3602,13 @@ CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON public.broad
 
 
 --
+-- Name: index_build_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_build_configs_on_org_id ON public.build_configs USING btree (org_id);
+
+
+--
 -- Name: index_build_configs_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3871,6 +3914,13 @@ CREATE INDEX index_invoices_on_stripe_id ON public.invoices USING btree (stripe_
 --
 
 CREATE INDEX index_job_configs_on_config_resources_gpu ON public.job_configs USING btree (((((config ->> 'resources'::text))::jsonb ->> 'gpu'::text))) WHERE (public.is_json((config ->> 'resources'::text)) AND ((((config ->> 'resources'::text))::jsonb ->> 'gpu'::text) IS NOT NULL));
+
+
+--
+-- Name: index_job_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_job_configs_on_org_id ON public.job_configs USING btree (org_id);
 
 
 --
@@ -4238,6 +4288,13 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 
 
 --
+-- Name: index_request_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_configs_on_org_id ON public.request_configs USING btree (org_id);
+
+
+--
 -- Name: index_request_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4249,6 +4306,13 @@ CREATE INDEX index_request_configs_on_repository_id_and_key ON public.request_co
 --
 
 CREATE INDEX index_request_payloads_on_created_at_and_archived ON public.request_payloads USING btree (created_at, archived);
+
+
+--
+-- Name: index_request_payloads_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_payloads_on_org_id ON public.request_payloads USING btree (org_id);
 
 
 --
@@ -4277,6 +4341,13 @@ CREATE INDEX index_request_raw_configurations_on_request_id ON public.request_ra
 --
 
 CREATE INDEX index_request_raw_configurations_on_request_raw_config_id ON public.request_raw_configurations USING btree (request_raw_config_id);
+
+
+--
+-- Name: index_request_yaml_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_yaml_configs_on_org_id ON public.request_yaml_configs USING btree (org_id);
 
 
 --
@@ -4733,7 +4804,7 @@ ALTER TABLE ONLY public.branches
 --
 
 ALTER TABLE ONLY public.branches
-    ADD CONSTRAINT fk_branches_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_branches_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -4741,7 +4812,7 @@ ALTER TABLE ONLY public.branches
 --
 
 ALTER TABLE ONLY public.build_configs
-    ADD CONSTRAINT fk_build_configs_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_build_configs_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -4749,7 +4820,7 @@ ALTER TABLE ONLY public.build_configs
 --
 
 ALTER TABLE ONLY public.builds
-    ADD CONSTRAINT fk_builds_on_branch_id FOREIGN KEY (branch_id) REFERENCES public.branches(id);
+    ADD CONSTRAINT fk_builds_on_branch_id FOREIGN KEY (branch_id) REFERENCES public.branches(id) ON DELETE CASCADE;
 
 
 --
@@ -4757,7 +4828,7 @@ ALTER TABLE ONLY public.builds
 --
 
 ALTER TABLE ONLY public.builds
-    ADD CONSTRAINT fk_builds_on_commit_id FOREIGN KEY (commit_id) REFERENCES public.commits(id);
+    ADD CONSTRAINT fk_builds_on_commit_id FOREIGN KEY (commit_id) REFERENCES public.commits(id) ON DELETE CASCADE;
 
 
 --
@@ -4765,7 +4836,7 @@ ALTER TABLE ONLY public.builds
 --
 
 ALTER TABLE ONLY public.builds
-    ADD CONSTRAINT fk_builds_on_config_id FOREIGN KEY (config_id) REFERENCES public.build_configs(id);
+    ADD CONSTRAINT fk_builds_on_config_id FOREIGN KEY (config_id) REFERENCES public.build_configs(id) ON DELETE CASCADE;
 
 
 --
@@ -4773,7 +4844,7 @@ ALTER TABLE ONLY public.builds
 --
 
 ALTER TABLE ONLY public.builds
-    ADD CONSTRAINT fk_builds_on_pull_request_id FOREIGN KEY (pull_request_id) REFERENCES public.pull_requests(id);
+    ADD CONSTRAINT fk_builds_on_pull_request_id FOREIGN KEY (pull_request_id) REFERENCES public.pull_requests(id) ON DELETE CASCADE;
 
 
 --
@@ -4781,7 +4852,7 @@ ALTER TABLE ONLY public.builds
 --
 
 ALTER TABLE ONLY public.builds
-    ADD CONSTRAINT fk_builds_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_builds_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -4789,7 +4860,7 @@ ALTER TABLE ONLY public.builds
 --
 
 ALTER TABLE ONLY public.builds
-    ADD CONSTRAINT fk_builds_on_request_id FOREIGN KEY (request_id) REFERENCES public.requests(id);
+    ADD CONSTRAINT fk_builds_on_request_id FOREIGN KEY (request_id) REFERENCES public.requests(id) ON DELETE CASCADE;
 
 
 --
@@ -4797,7 +4868,7 @@ ALTER TABLE ONLY public.builds
 --
 
 ALTER TABLE ONLY public.builds
-    ADD CONSTRAINT fk_builds_on_tag_id FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+    ADD CONSTRAINT fk_builds_on_tag_id FOREIGN KEY (tag_id) REFERENCES public.tags(id) ON DELETE CASCADE;
 
 
 --
@@ -4805,7 +4876,7 @@ ALTER TABLE ONLY public.builds
 --
 
 ALTER TABLE ONLY public.commits
-    ADD CONSTRAINT fk_commits_on_branch_id FOREIGN KEY (branch_id) REFERENCES public.branches(id);
+    ADD CONSTRAINT fk_commits_on_branch_id FOREIGN KEY (branch_id) REFERENCES public.branches(id) ON DELETE CASCADE;
 
 
 --
@@ -4813,7 +4884,7 @@ ALTER TABLE ONLY public.commits
 --
 
 ALTER TABLE ONLY public.commits
-    ADD CONSTRAINT fk_commits_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_commits_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -4821,7 +4892,7 @@ ALTER TABLE ONLY public.commits
 --
 
 ALTER TABLE ONLY public.commits
-    ADD CONSTRAINT fk_commits_on_tag_id FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+    ADD CONSTRAINT fk_commits_on_tag_id FOREIGN KEY (tag_id) REFERENCES public.tags(id) ON DELETE CASCADE;
 
 
 --
@@ -4829,7 +4900,7 @@ ALTER TABLE ONLY public.commits
 --
 
 ALTER TABLE ONLY public.crons
-    ADD CONSTRAINT fk_crons_on_branch_id FOREIGN KEY (branch_id) REFERENCES public.branches(id);
+    ADD CONSTRAINT fk_crons_on_branch_id FOREIGN KEY (branch_id) REFERENCES public.branches(id) ON DELETE CASCADE;
 
 
 --
@@ -4837,7 +4908,7 @@ ALTER TABLE ONLY public.crons
 --
 
 ALTER TABLE ONLY public.job_configs
-    ADD CONSTRAINT fk_job_configs_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_job_configs_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -4845,7 +4916,7 @@ ALTER TABLE ONLY public.job_configs
 --
 
 ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT fk_jobs_on_commit_id FOREIGN KEY (commit_id) REFERENCES public.commits(id);
+    ADD CONSTRAINT fk_jobs_on_commit_id FOREIGN KEY (commit_id) REFERENCES public.commits(id) ON DELETE CASCADE;
 
 
 --
@@ -4853,7 +4924,7 @@ ALTER TABLE ONLY public.jobs
 --
 
 ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT fk_jobs_on_config_id FOREIGN KEY (config_id) REFERENCES public.job_configs(id);
+    ADD CONSTRAINT fk_jobs_on_config_id FOREIGN KEY (config_id) REFERENCES public.job_configs(id) ON DELETE CASCADE;
 
 
 --
@@ -4861,7 +4932,7 @@ ALTER TABLE ONLY public.jobs
 --
 
 ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT fk_jobs_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_jobs_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -4869,7 +4940,7 @@ ALTER TABLE ONLY public.jobs
 --
 
 ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT fk_jobs_on_stage_id FOREIGN KEY (stage_id) REFERENCES public.stages(id);
+    ADD CONSTRAINT fk_jobs_on_stage_id FOREIGN KEY (stage_id) REFERENCES public.stages(id) ON DELETE CASCADE;
 
 
 --
@@ -4877,7 +4948,7 @@ ALTER TABLE ONLY public.jobs
 --
 
 ALTER TABLE ONLY public.pull_requests
-    ADD CONSTRAINT fk_pull_requests_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_pull_requests_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -4917,7 +4988,7 @@ ALTER TABLE ONLY public.repositories
 --
 
 ALTER TABLE ONLY public.requests
-    ADD CONSTRAINT fk_requests_on_branch_id FOREIGN KEY (branch_id) REFERENCES public.branches(id);
+    ADD CONSTRAINT fk_requests_on_branch_id FOREIGN KEY (branch_id) REFERENCES public.branches(id) ON DELETE CASCADE;
 
 
 --
@@ -4925,7 +4996,7 @@ ALTER TABLE ONLY public.requests
 --
 
 ALTER TABLE ONLY public.requests
-    ADD CONSTRAINT fk_requests_on_commit_id FOREIGN KEY (commit_id) REFERENCES public.commits(id);
+    ADD CONSTRAINT fk_requests_on_commit_id FOREIGN KEY (commit_id) REFERENCES public.commits(id) ON DELETE CASCADE;
 
 
 --
@@ -4933,7 +5004,7 @@ ALTER TABLE ONLY public.requests
 --
 
 ALTER TABLE ONLY public.requests
-    ADD CONSTRAINT fk_requests_on_config_id FOREIGN KEY (config_id) REFERENCES public.request_configs(id);
+    ADD CONSTRAINT fk_requests_on_config_id FOREIGN KEY (config_id) REFERENCES public.request_configs(id) ON DELETE CASCADE;
 
 
 --
@@ -4941,7 +5012,7 @@ ALTER TABLE ONLY public.requests
 --
 
 ALTER TABLE ONLY public.requests
-    ADD CONSTRAINT fk_requests_on_pull_request_id FOREIGN KEY (pull_request_id) REFERENCES public.pull_requests(id);
+    ADD CONSTRAINT fk_requests_on_pull_request_id FOREIGN KEY (pull_request_id) REFERENCES public.pull_requests(id) ON DELETE CASCADE;
 
 
 --
@@ -4949,7 +5020,7 @@ ALTER TABLE ONLY public.requests
 --
 
 ALTER TABLE ONLY public.requests
-    ADD CONSTRAINT fk_requests_on_tag_id FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+    ADD CONSTRAINT fk_requests_on_tag_id FOREIGN KEY (tag_id) REFERENCES public.tags(id) ON DELETE CASCADE;
 
 
 --
@@ -4957,7 +5028,7 @@ ALTER TABLE ONLY public.requests
 --
 
 ALTER TABLE ONLY public.ssl_keys
-    ADD CONSTRAINT fk_ssl_keys_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_ssl_keys_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -4965,7 +5036,7 @@ ALTER TABLE ONLY public.ssl_keys
 --
 
 ALTER TABLE ONLY public.stages
-    ADD CONSTRAINT fk_stages_on_build_id FOREIGN KEY (build_id) REFERENCES public.builds(id);
+    ADD CONSTRAINT fk_stages_on_build_id FOREIGN KEY (build_id) REFERENCES public.builds(id) ON DELETE CASCADE;
 
 
 --
@@ -4981,7 +5052,7 @@ ALTER TABLE ONLY public.tags
 --
 
 ALTER TABLE ONLY public.tags
-    ADD CONSTRAINT fk_tags_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id);
+    ADD CONSTRAINT fk_tags_on_repository_id FOREIGN KEY (repository_id) REFERENCES public.repositories(id) ON DELETE CASCADE;
 
 
 --
@@ -5325,9 +5396,13 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190510121000'),
 ('20190605121000'),
 ('20190605155459'),
-('2019061312000000'),
+('20190613120000'),
 ('20190618082559'),
 ('20190701082559'),
-('20190704082559');
+('20190704082559'),
+('20190718092750'),
+('20190718100426'),
+('20190725103113'),
+('20190725105934');
 
 
