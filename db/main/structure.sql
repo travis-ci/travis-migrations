@@ -711,6 +711,7 @@ CREATE FUNCTION public.soft_delete_repo_data(r_id bigint) RETURNS void
     LANGUAGE plpgsql
     AS $$
 DECLARE
+  request_yaml_config_ids bigint[];
   request_config_ids bigint[];
   tag_ids bigint[];
   ssl_key_ids bigint[];
@@ -736,6 +737,7 @@ BEGIN
   SELECT INTO ssl_key_ids array_agg(id) FROM ssl_keys WHERE repository_id = r_id;
   SELECT INTO tag_ids array_agg(id) FROM tags WHERE repository_id = r_id;
   SELECT INTO request_config_ids array_agg(id) FROM request_configs WHERE repository_id = r_id;
+  SELECT INTO request_yaml_config_ids array_agg(id) FROM request_yaml_configs WHERE repository_id = r_id;
 
   INSERT INTO deleted_jobs SELECT * FROM jobs WHERE id = ANY(job_ids);
   INSERT INTO deleted_stages SELECT * FROM stages WHERE id = ANY(stage_ids);
@@ -749,6 +751,7 @@ BEGIN
   INSERT INTO deleted_ssl_keys SELECT * FROM ssl_keys WHERE id = ANY(ssl_key_ids);
   INSERT INTO deleted_tags SELECT * FROM tags WHERE id = ANY(tag_ids);
   INSERT INTO deleted_request_configs SELECT * FROM request_configs WHERE id = ANY(request_config_ids);
+  INSERT INTO deleted_request_yaml_configs SELECT * FROM request_yaml_configs WHERE id = ANY(request_yaml_config_ids);
 
   DELETE FROM jobs WHERE id = ANY(job_ids);
   DELETE FROM stages WHERE id = ANY(stage_ids);
@@ -762,6 +765,7 @@ BEGIN
   DELETE FROM ssl_keys WHERE id = ANY(ssl_key_ids);
   DELETE FROM tags WHERE id = ANY(tag_ids);
   DELETE FROM request_configs WHERE id = ANY(request_config_ids);
+  DELETE FROM request_yaml_configs WHERE id = ANY(request_yaml_config_ids);
 END;
 $$;
 
@@ -965,7 +969,8 @@ CREATE TABLE public.build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -1234,7 +1239,8 @@ CREATE TABLE public.deleted_build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -1323,7 +1329,8 @@ CREATE TABLE public.deleted_job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -1395,7 +1402,8 @@ CREATE TABLE public.deleted_request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -1408,7 +1416,21 @@ CREATE TABLE public.deleted_request_payloads (
     request_id integer NOT NULL,
     payload text,
     archived boolean,
-    created_at timestamp without time zone
+    created_at timestamp without time zone,
+    org_id bigint
+);
+
+
+--
+-- Name: deleted_request_yaml_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_request_yaml_configs (
+    id integer NOT NULL,
+    yaml text,
+    repository_id integer,
+    key character varying NOT NULL,
+    org_id bigint
 );
 
 
@@ -1672,7 +1694,8 @@ CREATE TABLE public.job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -2136,7 +2159,8 @@ CREATE TABLE public.request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb
+    config jsonb,
+    org_id bigint
 );
 
 
@@ -2168,7 +2192,8 @@ CREATE TABLE public.request_payloads (
     request_id integer NOT NULL,
     payload text,
     archived boolean DEFAULT false,
-    created_at timestamp without time zone
+    created_at timestamp without time zone,
+    org_id bigint
 );
 
 
@@ -2261,7 +2286,8 @@ CREATE TABLE public.request_yaml_configs (
     id integer NOT NULL,
     yaml text,
     repository_id integer,
-    key character varying NOT NULL
+    key character varying NOT NULL,
+    org_id bigint
 );
 
 
@@ -3560,6 +3586,13 @@ CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON public.broad
 
 
 --
+-- Name: index_build_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_build_configs_on_org_id ON public.build_configs USING btree (org_id);
+
+
+--
 -- Name: index_build_configs_on_repository_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3865,6 +3898,13 @@ CREATE INDEX index_invoices_on_stripe_id ON public.invoices USING btree (stripe_
 --
 
 CREATE INDEX index_job_configs_on_config_resources_gpu ON public.job_configs USING btree (((((config ->> 'resources'::text))::jsonb ->> 'gpu'::text))) WHERE (public.is_json((config ->> 'resources'::text)) AND ((((config ->> 'resources'::text))::jsonb ->> 'gpu'::text) IS NOT NULL));
+
+
+--
+-- Name: index_job_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_job_configs_on_org_id ON public.job_configs USING btree (org_id);
 
 
 --
@@ -4232,6 +4272,13 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 
 
 --
+-- Name: index_request_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_configs_on_org_id ON public.request_configs USING btree (org_id);
+
+
+--
 -- Name: index_request_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4243,6 +4290,13 @@ CREATE INDEX index_request_configs_on_repository_id_and_key ON public.request_co
 --
 
 CREATE INDEX index_request_payloads_on_created_at_and_archived ON public.request_payloads USING btree (created_at, archived);
+
+
+--
+-- Name: index_request_payloads_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_payloads_on_org_id ON public.request_payloads USING btree (org_id);
 
 
 --
@@ -4271,6 +4325,13 @@ CREATE INDEX index_request_raw_configurations_on_request_id ON public.request_ra
 --
 
 CREATE INDEX index_request_raw_configurations_on_request_raw_config_id ON public.request_raw_configurations USING btree (request_raw_config_id);
+
+
+--
+-- Name: index_request_yaml_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_yaml_configs_on_org_id ON public.request_yaml_configs USING btree (org_id);
 
 
 --
@@ -5319,8 +5380,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190510121000'),
 ('20190605121000'),
 ('20190605155459'),
-('2019061312000000'),
+('20190613120000'),
 ('20190718092750'),
-('20190718100426');
+('20190718100426'),
+('20190725103113'),
+('20190725105934');
 
 
