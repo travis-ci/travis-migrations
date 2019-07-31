@@ -2257,7 +2257,8 @@ CREATE TABLE public.request_raw_configs (
     id integer NOT NULL,
     config text,
     repository_id integer,
-    key character varying NOT NULL
+    key character varying NOT NULL,
+    org_id bigint
 );
 
 
@@ -2288,7 +2289,8 @@ CREATE TABLE public.request_raw_configurations (
     id integer NOT NULL,
     request_id integer,
     request_raw_config_id integer,
-    source character varying
+    source character varying,
+    org_id bigint
 );
 
 
@@ -4355,10 +4357,24 @@ CREATE INDEX index_request_payloads_on_request_id ON public.request_payloads USI
 
 
 --
+-- Name: index_request_raw_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_raw_configs_on_org_id ON public.request_raw_configs USING btree (org_id);
+
+
+--
 -- Name: index_request_raw_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_request_raw_configs_on_repository_id_and_key ON public.request_raw_configs USING btree (repository_id, key);
+
+
+--
+-- Name: index_request_raw_configurations_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_raw_configurations_on_org_id ON public.request_raw_configurations USING btree (org_id);
 
 
 --
@@ -5432,6 +5448,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190718092750'),
 ('20190718100426'),
 ('20190725103113'),
-('20190725105934');
+('20190725105934'),
+('20190729105934');
 
 
