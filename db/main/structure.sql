@@ -1892,6 +1892,39 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
+-- Name: migration_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.migration_requests (
+    id integer NOT NULL,
+    owner_name character varying NOT NULL,
+    owner_type character varying NOT NULL,
+    accepted_at date,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: migration_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.migration_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: migration_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.migration_requests_id_seq OWNED BY public.migration_requests.id;
+
+
+--
 -- Name: organizations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2224,7 +2257,8 @@ CREATE TABLE public.request_raw_configs (
     id integer NOT NULL,
     config text,
     repository_id integer,
-    key character varying NOT NULL
+    key character varying NOT NULL,
+    org_id bigint
 );
 
 
@@ -2255,7 +2289,8 @@ CREATE TABLE public.request_raw_configurations (
     id integer NOT NULL,
     request_id integer,
     request_raw_config_id integer,
-    source character varying
+    source character varying,
+    org_id bigint
 );
 
 
@@ -2958,6 +2993,13 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 
 --
+-- Name: migration_requests id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.migration_requests ALTER COLUMN id SET DEFAULT nextval('public.migration_requests_id_seq'::regclass);
+
+
+--
 -- Name: organizations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3299,6 +3341,14 @@ ALTER TABLE ONLY public.memberships
 
 ALTER TABLE ONLY public.messages
     ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: migration_requests migration_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.migration_requests
+    ADD CONSTRAINT migration_requests_pkey PRIMARY KEY (id);
 
 
 --
@@ -4307,10 +4357,24 @@ CREATE INDEX index_request_payloads_on_request_id ON public.request_payloads USI
 
 
 --
+-- Name: index_request_raw_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_raw_configs_on_org_id ON public.request_raw_configs USING btree (org_id);
+
+
+--
 -- Name: index_request_raw_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_request_raw_configs_on_repository_id_and_key ON public.request_raw_configs USING btree (repository_id, key);
+
+
+--
+-- Name: index_request_raw_configurations_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_raw_configurations_on_org_id ON public.request_raw_configurations USING btree (org_id);
 
 
 --
@@ -5384,6 +5448,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190718092750'),
 ('20190718100426'),
 ('20190725103113'),
-('20190725105934');
+('20190725105934'),
+('20190729105934');
 
 
