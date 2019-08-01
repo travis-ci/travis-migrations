@@ -32,6 +32,8 @@ describe 'Rake tasks' do
       deleted_request_configs
       deleted_request_payloads
       deleted_request_yaml_configs
+      deleted_request_raw_configurations
+      deleted_request_raw_configs
       email_unsubscribes
       emails
       gatekeeper_workers
