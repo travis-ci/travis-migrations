@@ -1411,7 +1411,8 @@ CREATE TABLE public.deleted_request_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -1464,7 +1465,8 @@ CREATE TABLE public.deleted_request_yaml_configs (
     yaml text,
     repository_id integer,
     key character varying NOT NULL,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -2194,7 +2196,8 @@ CREATE TABLE public.request_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -2323,7 +2326,8 @@ CREATE TABLE public.request_yaml_configs (
     yaml text,
     repository_id integer,
     key character varying NOT NULL,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -4308,6 +4312,13 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 
 
 --
+-- Name: index_request_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_configs_on_com_id ON public.request_configs USING btree (com_id);
+
+
+--
 -- Name: index_request_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4375,6 +4386,13 @@ CREATE INDEX index_request_raw_configurations_on_request_id ON public.request_ra
 --
 
 CREATE INDEX index_request_raw_configurations_on_request_raw_config_id ON public.request_raw_configurations USING btree (request_raw_config_id);
+
+
+--
+-- Name: index_request_yaml_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_yaml_configs_on_com_id ON public.request_yaml_configs USING btree (com_id);
 
 
 --
@@ -5436,6 +5454,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190725103113'),
 ('20190725105934'),
 ('20190729105934'),
-('20190801120510');
+('20190801120510'),
+('20190815152336');
 
 
