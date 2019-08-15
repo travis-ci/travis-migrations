@@ -1340,7 +1340,8 @@ CREATE TABLE public.deleted_job_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -1733,7 +1734,8 @@ CREATE TABLE public.job_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -3943,6 +3945,13 @@ CREATE INDEX index_invoices_on_stripe_id ON public.invoices USING btree (stripe_
 
 
 --
+-- Name: index_job_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_job_configs_on_com_id ON public.job_configs USING btree (com_id);
+
+
+--
 -- Name: index_job_configs_on_config_resources_gpu; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5465,6 +5474,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190729105934'),
 ('20190801120510'),
 ('20190815152336'),
-('20190815164320');
+('20190815164320'),
+('20190815172205');
 
 
