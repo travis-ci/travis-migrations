@@ -3,3 +3,8 @@
 log
 *.gem
 vendor
+.env
+.env.*
+
+#IDEs
+.idea

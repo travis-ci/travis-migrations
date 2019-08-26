@@ -30,6 +30,4 @@ after_success:
 jobs:
   include:
   - stage: "Ship to Quay.io"
-    language: bash
-    script: ./script/docker-build-and-push
-
+    script: make ship
