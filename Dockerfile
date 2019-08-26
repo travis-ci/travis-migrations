@@ -20,7 +20,7 @@ RUN which ruby
 
 # gem setup
 RUN apt-get install -y libpq-dev
-RUN gem install bundler
+RUN gem install bundler -v 1.17.3
 RUN bundle install
 
 CMD /bin/bash
