@@ -1,4 +1,4 @@
-FROM postgres:9.6
+FROM postgres:10
 
 RUN mkdir /travis-migrations
 WORKDIR /travis-migrations
