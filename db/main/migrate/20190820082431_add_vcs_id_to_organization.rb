@@ -4,7 +4,7 @@ class AddVcsIdToOrganization < ActiveRecord::Migration[5.2]
   def up
     add_column :organizations, :vcs_id, :string, default: nil
 
-    add_index :organizations, %i[vcs_id vcs_type], unique: true
+    execute "CREATE INDEX CONCURRENTLY index_organizations_on_vcs_id_and_vcs_type ON organizations (vcs_id, vcs_type);"
   end
 
   def down

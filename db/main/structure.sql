@@ -2986,7 +2986,7 @@ ALTER TABLE ONLY public.organizations ALTER COLUMN id SET DEFAULT nextval('publi
 -- Name: index_organizations_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
+CREATE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
 
 --
 -- Name: owner_groups id; Type: DEFAULT; Schema: public; Owner: -
@@ -4306,7 +4306,7 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 -- Name: index_repositories_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
+CREATE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
 
 
 --
@@ -4670,7 +4670,7 @@ CREATE INDEX index_users_on_updated_at ON public.users USING btree (updated_at);
 -- Name: index_users_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_users_on_vcs_id_and_vcs_type ON public.users USING btree (vcs_id, vcs_type);
+CREATE INDEX index_users_on_vcs_id_and_vcs_type ON public.users USING btree (vcs_id, vcs_type);
 
 
 --
