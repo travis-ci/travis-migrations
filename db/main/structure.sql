@@ -724,6 +724,8 @@ CREATE FUNCTION public.soft_delete_repo_data(r_id bigint) RETURNS void
     LANGUAGE plpgsql
     AS $$
 DECLARE
+  request_raw_config_ids bigint[];
+  request_raw_configuration_ids bigint[];
   request_yaml_config_ids bigint[];
   request_config_ids bigint[];
   tag_ids bigint[];
@@ -751,6 +753,8 @@ BEGIN
   SELECT INTO tag_ids array_agg(id) FROM tags WHERE repository_id = r_id;
   SELECT INTO request_config_ids array_agg(id) FROM request_configs WHERE repository_id = r_id;
   SELECT INTO request_yaml_config_ids array_agg(id) FROM request_yaml_configs WHERE repository_id = r_id;
+  SELECT INTO request_raw_configuration_ids array_agg(id) FROM request_raw_configurations WHERE request_id = ANY(request_ids);
+  SELECT INTO request_raw_config_ids array_agg(id) FROM request_raw_configs WHERE id IN (SELECT request_raw_config_id FROM request_raw_configurations WHERE request_id = ANY(request_ids));
 
   INSERT INTO deleted_jobs SELECT * FROM jobs WHERE id = ANY(job_ids);
   INSERT INTO deleted_stages SELECT * FROM stages WHERE id = ANY(stage_ids);
@@ -765,6 +769,8 @@ BEGIN
   INSERT INTO deleted_tags SELECT * FROM tags WHERE id = ANY(tag_ids);
   INSERT INTO deleted_request_configs SELECT * FROM request_configs WHERE id = ANY(request_config_ids);
   INSERT INTO deleted_request_yaml_configs SELECT * FROM request_yaml_configs WHERE id = ANY(request_yaml_config_ids);
+  INSERT INTO deleted_request_raw_configurations SELECT * FROM request_raw_configurations WHERE id = ANY(request_raw_configuration_ids);
+  INSERT INTO deleted_request_raw_configs SELECT * FROM request_raw_configs WHERE id = ANY(request_raw_config_ids);
 
   DELETE FROM jobs WHERE id = ANY(job_ids);
   DELETE FROM stages WHERE id = ANY(stage_ids);
@@ -779,6 +785,8 @@ BEGIN
   DELETE FROM tags WHERE id = ANY(tag_ids);
   DELETE FROM request_configs WHERE id = ANY(request_config_ids);
   DELETE FROM request_yaml_configs WHERE id = ANY(request_yaml_config_ids);
+  DELETE FROM request_raw_configurations WHERE id = ANY(request_raw_configuration_ids);
+  DELETE FROM request_raw_configs WHERE id = ANY(request_raw_config_ids);
 END;
 $$;
 
@@ -983,7 +991,8 @@ CREATE TABLE public.build_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -1253,7 +1262,8 @@ CREATE TABLE public.deleted_build_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -1343,7 +1353,8 @@ CREATE TABLE public.deleted_job_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -1416,7 +1427,8 @@ CREATE TABLE public.deleted_request_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -1435,6 +1447,32 @@ CREATE TABLE public.deleted_request_payloads (
 
 
 --
+-- Name: deleted_request_raw_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_request_raw_configs (
+    id integer NOT NULL,
+    config text,
+    repository_id integer,
+    key character varying NOT NULL,
+    org_id bigint
+);
+
+
+--
+-- Name: deleted_request_raw_configurations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_request_raw_configurations (
+    id integer NOT NULL,
+    request_id integer,
+    request_raw_config_id integer,
+    source character varying,
+    org_id bigint
+);
+
+
+--
 -- Name: deleted_request_yaml_configs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1443,7 +1481,8 @@ CREATE TABLE public.deleted_request_yaml_configs (
     yaml text,
     repository_id integer,
     key character varying NOT NULL,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -1708,7 +1747,8 @@ CREATE TABLE public.job_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -2177,7 +2217,8 @@ CREATE TABLE public.request_configs (
     repository_id integer NOT NULL,
     key character varying NOT NULL,
     config jsonb,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -2241,7 +2282,8 @@ CREATE TABLE public.request_raw_configs (
     id integer NOT NULL,
     config text,
     repository_id integer,
-    key character varying NOT NULL
+    key character varying NOT NULL,
+    org_id bigint
 );
 
 
@@ -2272,7 +2314,8 @@ CREATE TABLE public.request_raw_configurations (
     id integer NOT NULL,
     request_id integer,
     request_raw_config_id integer,
-    source character varying
+    source character varying,
+    org_id bigint
 );
 
 
@@ -2304,7 +2347,8 @@ CREATE TABLE public.request_yaml_configs (
     yaml text,
     repository_id integer,
     key character varying NOT NULL,
-    org_id bigint
+    org_id bigint,
+    com_id bigint
 );
 
 
@@ -3610,6 +3654,13 @@ CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON public.broad
 
 
 --
+-- Name: index_build_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_build_configs_on_com_id ON public.build_configs USING btree (com_id);
+
+
+--
 -- Name: index_build_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3915,6 +3966,13 @@ CREATE INDEX index_installations_on_owner_type_and_owner_id ON public.installati
 --
 
 CREATE INDEX index_invoices_on_stripe_id ON public.invoices USING btree (stripe_id);
+
+
+--
+-- Name: index_job_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_job_configs_on_com_id ON public.job_configs USING btree (com_id);
 
 
 --
@@ -4307,6 +4365,12 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 --
 
 CREATE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
+                                                                                                                                           
+--                                                                                                                                           
+-- Name: index_request_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_configs_on_com_id ON public.request_configs USING btree (com_id);
 
 
 --
@@ -4345,10 +4409,24 @@ CREATE INDEX index_request_payloads_on_request_id ON public.request_payloads USI
 
 
 --
+-- Name: index_request_raw_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_raw_configs_on_org_id ON public.request_raw_configs USING btree (org_id);
+
+
+--
 -- Name: index_request_raw_configs_on_repository_id_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_request_raw_configs_on_repository_id_and_key ON public.request_raw_configs USING btree (repository_id, key);
+
+
+--
+-- Name: index_request_raw_configurations_on_org_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_raw_configurations_on_org_id ON public.request_raw_configurations USING btree (org_id);
 
 
 --
@@ -4363,6 +4441,13 @@ CREATE INDEX index_request_raw_configurations_on_request_id ON public.request_ra
 --
 
 CREATE INDEX index_request_raw_configurations_on_request_raw_config_id ON public.request_raw_configurations USING btree (request_raw_config_id);
+
+
+--
+-- Name: index_request_yaml_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_request_yaml_configs_on_com_id ON public.request_yaml_configs USING btree (com_id);
 
 
 --
@@ -5433,7 +5518,11 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190718100426'),
 ('20190725103113'),
 ('20190725105934'),
+('20190729105934'),
+('20190801120510'),
+('20190815152336'),
+('20190815164320'),
+('20190815172205'),
 ('20190819082558'),
 ('20190819082559'),
 ('20190820082431');
-

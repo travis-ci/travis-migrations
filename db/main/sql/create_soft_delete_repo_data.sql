@@ -1,6 +1,8 @@
 DROP FUNCTION IF EXISTS soft_delete_repo_data(bigint);
 CREATE FUNCTION soft_delete_repo_data(r_id bigint) RETURNS void AS $$
 DECLARE
+  request_raw_config_ids bigint[];
+  request_raw_configuration_ids bigint[];
   request_yaml_config_ids bigint[];
   request_config_ids bigint[];
   tag_ids bigint[];
@@ -28,6 +30,8 @@ BEGIN
   SELECT INTO tag_ids array_agg(id) FROM tags WHERE repository_id = r_id;
   SELECT INTO request_config_ids array_agg(id) FROM request_configs WHERE repository_id = r_id;
   SELECT INTO request_yaml_config_ids array_agg(id) FROM request_yaml_configs WHERE repository_id = r_id;
+  SELECT INTO request_raw_configuration_ids array_agg(id) FROM request_raw_configurations WHERE request_id = ANY(request_ids);
+  SELECT INTO request_raw_config_ids array_agg(id) FROM request_raw_configs WHERE id IN (SELECT request_raw_config_id FROM request_raw_configurations WHERE request_id = ANY(request_ids));
 
   INSERT INTO deleted_jobs SELECT * FROM jobs WHERE id = ANY(job_ids);
   INSERT INTO deleted_stages SELECT * FROM stages WHERE id = ANY(stage_ids);
@@ -42,6 +46,8 @@ BEGIN
   INSERT INTO deleted_tags SELECT * FROM tags WHERE id = ANY(tag_ids);
   INSERT INTO deleted_request_configs SELECT * FROM request_configs WHERE id = ANY(request_config_ids);
   INSERT INTO deleted_request_yaml_configs SELECT * FROM request_yaml_configs WHERE id = ANY(request_yaml_config_ids);
+  INSERT INTO deleted_request_raw_configurations SELECT * FROM request_raw_configurations WHERE id = ANY(request_raw_configuration_ids);
+  INSERT INTO deleted_request_raw_configs SELECT * FROM request_raw_configs WHERE id = ANY(request_raw_config_ids);
 
   DELETE FROM jobs WHERE id = ANY(job_ids);
   DELETE FROM stages WHERE id = ANY(stage_ids);
@@ -56,5 +62,7 @@ BEGIN
   DELETE FROM tags WHERE id = ANY(tag_ids);
   DELETE FROM request_configs WHERE id = ANY(request_config_ids);
   DELETE FROM request_yaml_configs WHERE id = ANY(request_yaml_config_ids);
+  DELETE FROM request_raw_configurations WHERE id = ANY(request_raw_configuration_ids);
+  DELETE FROM request_raw_configs WHERE id = ANY(request_raw_config_ids);
 END;
 $$ LANGUAGE plpgsql;
