@@ -5,9 +5,22 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
 
 --
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
@@ -1953,7 +1966,9 @@ CREATE TABLE public.organizations (
     migrating boolean,
     migrated_at timestamp without time zone,
     preferences jsonb DEFAULT '{}'::jsonb,
-    beta_migration_request_id integer
+    beta_migration_request_id integer,
+    vcs_type character varying DEFAULT 'GithubOrganization'::character varying,
+    vcs_id character varying
 );
 
 
@@ -2168,7 +2183,9 @@ CREATE TABLE public.repositories (
     active_on_org boolean,
     managed_by_installation_at timestamp without time zone,
     migration_status character varying,
-    history_migration_status character varying
+    history_migration_status character varying,
+    vcs_type character varying DEFAULT 'GithubRepository'::character varying,
+    vcs_id character varying
 );
 
 
@@ -2845,7 +2862,9 @@ CREATE TABLE public.users (
     migrating boolean,
     migrated_at timestamp without time zone,
     redacted_at timestamp without time zone,
-    preferences jsonb DEFAULT '{}'::jsonb
+    preferences jsonb DEFAULT '{}'::jsonb,
+    vcs_type character varying DEFAULT 'GithubUser'::character varying,
+    vcs_id character varying
 );
 
 
@@ -3007,6 +3026,11 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 ALTER TABLE ONLY public.organizations ALTER COLUMN id SET DEFAULT nextval('public.organizations_id_seq'::regclass);
 
+--
+-- Name: index_organizations_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
 
 --
 -- Name: owner_groups id; Type: DEFAULT; Schema: public; Owner: -
@@ -4141,6 +4165,13 @@ CREATE INDEX index_organizations_on_updated_at ON public.organizations USING btr
 
 
 --
+-- Name: index_organizations_on_vcs_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_organizations_on_vcs_id ON public.organizations USING btree (vcs_id);
+
+
+--
 -- Name: index_owner_groups_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4330,6 +4361,12 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 
 
 --
+-- Name: index_repositories_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
+                                                                                                                                           
+--                                                                                                                                           
 -- Name: index_request_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4712,6 +4749,13 @@ CREATE UNIQUE INDEX index_users_on_org_id ON public.users USING btree (org_id);
 --
 
 CREATE INDEX index_users_on_updated_at ON public.users USING btree (updated_at);
+
+
+--
+-- Name: index_users_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_vcs_id_and_vcs_type ON public.users USING btree (vcs_id, vcs_type);
 
 
 --
@@ -5467,6 +5511,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190605121000'),
 ('20190605155459'),
 ('20190613120000'),
+('20190618082559'),
+('20190701082559'),
+('20190704082559'),
 ('20190718092750'),
 ('20190718100426'),
 ('20190725103113'),
@@ -5475,6 +5522,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190801120510'),
 ('20190815152336'),
 ('20190815164320'),
-('20190815172205');
-
-
+('20190815172205'),
+('20190819082558'),
+('20190819082559'),
+('20190820082431');
