@@ -4365,8 +4365,8 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 --
 
 CREATE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
-                                                                                                                                           
---                                                                                                                                           
+
+--
 -- Name: index_request_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5525,4 +5525,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190815172205'),
 ('20190819082558'),
 ('20190819082559'),
-('20190820082431');
+('20190820082431'),
+('20190913092543'),
+('20190913092554'),
+('20190913092565');
