@@ -1921,7 +1921,10 @@ CREATE TABLE public.messages (
     code character varying,
     args json,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    type character varying,
+    src character varying,
+    line integer
 );
 
 
@@ -3026,11 +3029,6 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 ALTER TABLE ONLY public.organizations ALTER COLUMN id SET DEFAULT nextval('public.organizations_id_seq'::regclass);
 
---
--- Name: index_organizations_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
 
 --
 -- Name: owner_groups id; Type: DEFAULT; Schema: public; Owner: -
@@ -4165,10 +4163,10 @@ CREATE INDEX index_organizations_on_updated_at ON public.organizations USING btr
 
 
 --
--- Name: index_organizations_on_vcs_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_organizations_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_organizations_on_vcs_id ON public.organizations USING btree (vcs_id);
+CREATE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
 
 
 --
@@ -4365,6 +4363,7 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 --
 
 CREATE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
+
 
 --
 -- Name: index_request_configs_on_com_id; Type: INDEX; Schema: public; Owner: -
@@ -5528,4 +5527,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190820082431'),
 ('20190913092543'),
 ('20190913092554'),
-('20190913092565');
+('20190913092565'),
+('20190920160300');
+
+
