@@ -1,5 +1,7 @@
 FROM postgres:9.6
 
+LABEL maintainer Travis CI GmbH <support+travis-migrations-docker-images@travis-ci.com>
+
 RUN mkdir /travis-migrations
 WORKDIR /travis-migrations
 

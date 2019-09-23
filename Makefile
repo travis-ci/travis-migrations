@@ -27,11 +27,15 @@ docker-push:
 	$(DOCKER) login -u=$(QUAY_ROBOT_HANDLE) -p=$(QUAY_ROBOT_TOKEN) $(QUAY)
 	$(DOCKER) tag $(DOCKER_DEST) $(QUAY_IMAGE):$(VERSION_VALUE)
 	$(DOCKER) push $(QUAY_IMAGE):$(VERSION_VALUE)
-ifeq ($(TRAVIS_BRANCH), master)
-    $(DOCKER) tag $(DOCKER_DEST) $(QUAY_IMAGE):latest
-    $(DOCKER) push $(QUAY_IMAGE):latest
-endif
+
+.PHONY: docker-latest
+docker-latest:
+	$(DOCKER) tag $(DOCKER_DEST) $(QUAY_IMAGE):latest
+	$(DOCKER) push $(QUAY_IMAGE):latest
 
 .PHONY: ship
 ship: docker-build docker-push
 
+ifeq ($(shell [[ $(TRAVIS_BRANCH) == master && $(TRAVIS_PULL_REQUEST) == false ]] ),true)
+ship: docker-latest
+endif
