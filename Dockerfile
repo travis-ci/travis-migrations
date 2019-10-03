@@ -21,7 +21,7 @@ RUN ruby-install --system --no-install-deps ruby `cat .ruby-version`
 RUN which ruby
 
 # gem setup
-RUN apt-get install -y libpq-dev
+RUN apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
 RUN gem install bundler -v 1.17.3
 RUN bundle install
 
