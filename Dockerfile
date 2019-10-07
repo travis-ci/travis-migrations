@@ -1,5 +1,7 @@
 FROM postgres:9.6
 
+LABEL maintainer Travis CI GmbH <support+travis-migrations-docker-images@travis-ci.com>
+
 RUN mkdir /travis-migrations
 WORKDIR /travis-migrations
 
@@ -14,10 +16,13 @@ RUN cd ruby-install-0.6.1/ && make install
 RUN rm -r ruby-install-0.6.1/
 
 # ruby
-COPY .ruby-version .
+COPY . .
 RUN ruby-install --system --no-install-deps ruby `cat .ruby-version`
 RUN which ruby
 
 # gem setup
-RUN apt-get install libpq-dev
-RUN gem install bundler
+RUN apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+RUN gem install bundler -v 1.17.3
+RUN bundle install
+
+CMD /bin/bash

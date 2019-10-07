@@ -16,13 +16,20 @@ rvm: "2.5.3"
 env:
   - RAILS_ENV=test
 
-script:
-  - bundle exec rspec spec
-  - script/validate_structure_file.rb db/main/structure-original.sql
-
 before_script:
   - cp db/main/structure.sql db/main/structure-original.sql
   - cp config/database.yml.travis config/database.yml
 
 after_success:
   - script/upload_structure.rb
+
+jobs:
+  include:
+    - stage: "Testing time"
+      script:
+        - bundle exec rspec spec
+        - script/validate_structure_file.rb db/main/structure-original.sql
+    - stage: "Ship to Quay.io"
+      before_script: echo skip
+      after_success: echo skip
+      script: make ship
