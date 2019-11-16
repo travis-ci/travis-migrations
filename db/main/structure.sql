@@ -2188,7 +2188,8 @@ CREATE TABLE public.repositories (
     migration_status character varying,
     history_migration_status character varying,
     vcs_type character varying DEFAULT 'GithubRepository'::character varying,
-    vcs_id character varying
+    vcs_id character varying,
+    fork boolean
 );
 
 
@@ -5543,7 +5544,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190913092554'),
 ('20190913092565'),
 ('20190920160300'),
+('20191112000000'),
 ('20191112172015'),
 ('20191112172332');
-
-
