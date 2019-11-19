@@ -33,3 +33,4 @@ jobs:
       before_script: echo skip
       after_success: echo skip
       script: make ship
+      if: type = cron OR commit_message =~ /ship:docker/ OR env(SHIP_DOCKER) = true
