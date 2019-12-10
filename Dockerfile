@@ -1,4 +1,4 @@
-FROM postgres:9.6
+FROM postgres:11.6
 
 LABEL maintainer Travis CI GmbH <support+travis-migrations-docker-images@travis-ci.com>
 
