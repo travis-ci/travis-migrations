@@ -1408,6 +1408,7 @@ CREATE TABLE public.deleted_pull_requests (
     title character varying,
     state character varying,
     head_repo_github_id integer,
+    head_repo_vcs_id character varying,
     head_repo_slug character varying,
     head_ref character varying,
     created_at timestamp without time zone,
@@ -2073,6 +2074,7 @@ CREATE TABLE public.pull_requests (
     title character varying,
     state character varying,
     head_repo_github_id integer,
+    head_repo_vcs_id character varying,
     head_repo_slug character varying,
     head_ref character varying,
     created_at timestamp without time zone,
@@ -3727,6 +3729,20 @@ CREATE UNIQUE INDEX index_builds_on_org_id ON public.builds USING btree (org_id)
 --
 
 CREATE INDEX index_builds_on_pull_request_id ON public.builds USING btree (pull_request_id);
+
+
+--
+-- Name: index_pull_requests_on_head_repo_vcs_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_pull_requests_on_head_repo_vcs_id ON public.pull_requests USING btree (head_repo_vcs_id);
+
+
+--
+-- Name: index_deleted_pull_requests_on_head_repo_vcs_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_deleted_pull_requests_on_head_repo_vcs_id ON public.deleted_pull_requests USING btree (head_repo_vcs_id);
 
 
 --
@@ -5546,4 +5562,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190920160300'),
 ('20191112000000'),
 ('20191112172015'),
-('20191112172332');
+('20191112172332'),
+('20191219091443'),
+('20191219091444');
