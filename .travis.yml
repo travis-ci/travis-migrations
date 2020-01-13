@@ -1,9 +1,11 @@
 language: ruby
-
 sudo: false
 
 services:
   - postgresql
+
+addons:
+  postgresql: "9.6"
 
 cache:
   directories:
@@ -14,18 +16,21 @@ rvm: "2.3.4"
 env:
   - RAILS_ENV=test
 
-matrix:
-include:
-  - addons:
-      postgresql: "9.3"
-  - addons:
-      postgresql: "9.6"
-fast_finish: true
-
-install:
-  - travis_retry gem install bundler -v '<2' # Ruby 2.2 depend on bundler 1.x.
-  - bundler -v
-  - travis_retry bundle install
-
 before_script:
+  - cp db/main/structure.sql db/main/structure-original.sql
   - cp config/database.yml.travis config/database.yml
+
+after_success:
+  - script/upload_structure.rb
+
+jobs:
+  include:
+    - stage: "Testing time"
+      script:
+        - bundle exec rspec spec
+        - script/validate_structure_file.rb db/main/structure-original.sql
+    - stage: "Ship to Quay.io"
+      before_script: echo skip
+      after_success: echo skip
+      script: make ship
+      if: type = cron OR commit_message =~ /ship:docker/ OR env(SHIP_DOCKER) = true
