@@ -22,11 +22,10 @@ include:
       postgresql: "9.6"
 fast_finish: true
 
-before_install:
-  - gem install bundler -v 1.16.1
-
 install:
-  - bundle _1.16.4_ install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}
+  - travis_retry gem install bundler -v '<2' # Ruby 2.2 depend on bundler 1.x.
+  - bundler -v
+  - travis_retry bundle install
 
 before_script:
   - cp config/database.yml.travis config/database.yml
