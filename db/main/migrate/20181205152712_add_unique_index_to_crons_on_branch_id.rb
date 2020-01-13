@@ -1,4 +1,4 @@
-class AddUniqueIndexToCronsOnBranchId < ActiveRecord::Migration[4.2]
+class AddUniqueIndexToCronsOnBranchId < ActiveRecord::Migration
     self.disable_ddl_transaction!
   
     def up
