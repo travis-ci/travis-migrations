@@ -16,6 +16,10 @@ rvm: "2.3.4"
 env:
   - RAILS_ENV=test
 
+install:
+  - travis_retry gem install bundler -v '<2' # Ruby 2.2 depend on bundler 1.x.
+  - bundler -v
+  - travis_retry bundle install
 before_script:
   - cp db/main/structure.sql db/main/structure-original.sql
   - cp config/database.yml.travis config/database.yml
