@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'active_record'
+require 'erb'
+require 'yaml'
+
+STDOUT.sync = true
+
+config = YAML.load(ERB.new(File.read('config/database.yml')).result)
+ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
+conn = ActiveRecord::Base.connection
+
+SQL = <<~sql
+    DELETE FROM crons
+    WHERE ctid IN (SELECT ctid
+                FROM   (SELECT ctid,
+                                ROW_NUMBER() OVER (
+                                    PARTITION BY branch_id, interval, next_run, last_run, dont_run_if_recent_build_exists
+                                    ORDER BY id) AS rn
+                        FROM   crons) t
+                WHERE  rn > 1);
+sql
+
+print "Deleting duplicate cron entries"
+sql = SQL
+cnt = conn.exec_query(SQL).first.to_i
+puts "#{cnt} requests with duplicate cron entries"
