@@ -992,7 +992,8 @@ CREATE TABLE public.build_configs (
     key character varying NOT NULL,
     config jsonb,
     org_id bigint,
-    com_id bigint
+    com_id bigint,
+    config_json json
 );
 
 
@@ -1263,7 +1264,8 @@ CREATE TABLE public.deleted_build_configs (
     key character varying NOT NULL,
     config jsonb,
     org_id bigint,
-    com_id bigint
+    com_id bigint,
+    config_json json
 );
 
 
@@ -1354,7 +1356,8 @@ CREATE TABLE public.deleted_job_configs (
     key character varying NOT NULL,
     config jsonb,
     org_id bigint,
-    com_id bigint
+    com_id bigint,
+    config_json json
 );
 
 
@@ -1408,14 +1411,14 @@ CREATE TABLE public.deleted_pull_requests (
     title character varying,
     state character varying,
     head_repo_github_id integer,
-    head_repo_vcs_id character varying,
     head_repo_slug character varying,
     head_ref character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     org_id integer,
     com_id integer,
-    mergeable_state character varying
+    mergeable_state character varying,
+    head_repo_vcs_id character varying
 );
 
 
@@ -1429,7 +1432,8 @@ CREATE TABLE public.deleted_request_configs (
     key character varying NOT NULL,
     config jsonb,
     org_id bigint,
-    com_id bigint
+    com_id bigint,
+    config_json json
 );
 
 
@@ -1749,7 +1753,8 @@ CREATE TABLE public.job_configs (
     key character varying NOT NULL,
     config jsonb,
     org_id bigint,
-    com_id bigint
+    com_id bigint,
+    config_json json
 );
 
 
@@ -2074,14 +2079,14 @@ CREATE TABLE public.pull_requests (
     title character varying,
     state character varying,
     head_repo_github_id integer,
-    head_repo_vcs_id character varying,
     head_repo_slug character varying,
     head_ref character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     org_id integer,
     com_id integer,
-    mergeable_state character varying
+    mergeable_state character varying,
+    head_repo_vcs_id character varying
 );
 
 
@@ -2224,7 +2229,8 @@ CREATE TABLE public.request_configs (
     key character varying NOT NULL,
     config jsonb,
     org_id bigint,
-    com_id bigint
+    com_id bigint,
+    config_json json
 );
 
 
@@ -3732,20 +3738,6 @@ CREATE INDEX index_builds_on_pull_request_id ON public.builds USING btree (pull_
 
 
 --
--- Name: index_pull_requests_on_head_repo_vcs_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_pull_requests_on_head_repo_vcs_id ON public.pull_requests USING btree (head_repo_vcs_id);
-
-
---
--- Name: index_deleted_pull_requests_on_head_repo_vcs_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_deleted_pull_requests_on_head_repo_vcs_id ON public.deleted_pull_requests USING btree (head_repo_vcs_id);
-
-
---
 -- Name: index_builds_on_repo_branch_event_type_and_private; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3932,6 +3924,13 @@ CREATE INDEX index_crons_on_next_run ON public.crons USING btree (next_run) WHER
 --
 
 CREATE UNIQUE INDEX index_crons_on_org_id ON public.crons USING btree (org_id);
+
+
+--
+-- Name: index_deleted_pull_requests_on_head_repo_vcs_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_deleted_pull_requests_on_head_repo_vcs_id ON public.deleted_pull_requests USING btree (head_repo_vcs_id);
 
 
 --
@@ -4240,6 +4239,13 @@ CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON public.per
 --
 
 CREATE UNIQUE INDEX index_pull_requests_on_com_id ON public.pull_requests USING btree (com_id);
+
+
+--
+-- Name: index_pull_requests_on_head_repo_vcs_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_pull_requests_on_head_repo_vcs_id ON public.pull_requests USING btree (head_repo_vcs_id);
 
 
 --
@@ -5564,4 +5570,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191112172015'),
 ('20191112172332'),
 ('20191219091445'),
-('20191219091446');
+('20191219091446'),
+('20200122000000');
+
+
