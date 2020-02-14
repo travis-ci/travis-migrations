@@ -43,6 +43,7 @@ describe 'Rake tasks' do
       job_versions
       jobs
       memberships
+      migration_requests
       messages
       organizations
       owner_groups
