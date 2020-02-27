@@ -2197,7 +2197,7 @@ CREATE TABLE public.repositories (
     vcs_type character varying DEFAULT 'GithubRepository'::character varying,
     vcs_id character varying,
     fork boolean,
-    vcs_slug character varying
+    vcs_slug character varying,
     vcs_source_host character varying
 );
 
