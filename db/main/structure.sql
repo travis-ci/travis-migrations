@@ -2198,6 +2198,7 @@ CREATE TABLE public.repositories (
     vcs_id character varying,
     fork boolean,
     vcs_slug character varying
+    vcs_source_host character varying
 );
 
 
@@ -5576,7 +5577,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200127000000'),
 ('20200127000001'),
 ('20200214144655'),
-('20200225085734');
+('20200225085734'),
+('20200227085734');
 
 
 
