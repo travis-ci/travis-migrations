@@ -4083,6 +4083,12 @@ CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USIN
 
 
 --
+-- Name: index_jobs_on_state_gin; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_state_gin ON public.jobs USING gin (state public.gin_trgm_ops);
+
+--
 -- Name: index_jobs_on_source_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5578,7 +5584,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200127000001'),
 ('20200214144655'),
 ('20200225085734'),
-('20200227085734');
+('20200227085734'),
+('20200227085735');
 
 
 
