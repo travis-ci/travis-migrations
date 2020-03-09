@@ -4335,6 +4335,13 @@ CREATE INDEX index_repositories_on_lower_owner_name_and_name ON public.repositor
 
 
 --
+-- Name: index_repositories_on_lower_slug_or_on_lower_owner_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_lower_slug_or_on_lower_owner_name ON public.repositories USING btree (lower((vcs_slug)::text), lower((owner_name)::text), lower((name)::text), lower((vcs_type)::text)) WHERE (invalidated_at IS NULL);
+
+
+--
 -- Name: index_repositories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5578,7 +5585,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200127000001'),
 ('20200214144655'),
 ('20200225085734'),
-('20200227085734');
+('20200227085734'),
+('20200227085736');
 
 
 
