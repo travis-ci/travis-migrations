@@ -2878,7 +2878,8 @@ CREATE TABLE public.users (
     redacted_at timestamp without time zone,
     preferences jsonb DEFAULT '{}'::jsonb,
     vcs_type character varying DEFAULT 'GithubUser'::character varying,
-    vcs_id character varying
+    vcs_id character varying,
+    utm_params character varying
 );
 
 
