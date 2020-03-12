@@ -68,6 +68,7 @@ describe 'Rake tasks' do
       trials
       urls
       user_beta_features
+      user_utm_params
       users
       ar_internal_metadata
       schema_migrations

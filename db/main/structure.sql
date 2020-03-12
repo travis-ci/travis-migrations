@@ -2848,6 +2848,38 @@ ALTER SEQUENCE public.user_beta_features_id_seq OWNED BY public.user_beta_featur
 
 
 --
+-- Name: user_utm_params; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_utm_params (
+    id bigint NOT NULL,
+    utm_data jsonb,
+    user_id bigint,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: user_utm_params_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_utm_params_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_utm_params_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.user_utm_params_id_seq OWNED BY public.user_utm_params.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3193,6 +3225,13 @@ ALTER TABLE ONLY public.urls ALTER COLUMN id SET DEFAULT nextval('public.urls_id
 --
 
 ALTER TABLE ONLY public.user_beta_features ALTER COLUMN id SET DEFAULT nextval('public.user_beta_features_id_seq'::regclass);
+
+
+--
+-- Name: user_utm_params id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_utm_params ALTER COLUMN id SET DEFAULT nextval('public.user_utm_params_id_seq'::regclass);
 
 
 --
@@ -3568,6 +3607,14 @@ ALTER TABLE ONLY public.urls
 
 ALTER TABLE ONLY public.user_beta_features
     ADD CONSTRAINT user_beta_features_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_utm_params user_utm_params_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_utm_params
+    ADD CONSTRAINT user_utm_params_pkey PRIMARY KEY (id);
 
 
 --
@@ -4748,6 +4795,13 @@ CREATE INDEX index_user_beta_features_on_user_id_and_beta_feature_id ON public.u
 
 
 --
+-- Name: index_user_utm_params_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_utm_params_on_user_id ON public.user_utm_params USING btree (user_id);
+
+
+--
 -- Name: index_users_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5594,9 +5648,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200225085734'),
 ('20200227085734'),
 ('20200227085736'),
-('20200227085737');
-
-
-
+('20200227085737'),
+('20200312184018');
 
 
