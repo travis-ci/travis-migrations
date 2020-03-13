@@ -1418,7 +1418,10 @@ CREATE TABLE public.deleted_pull_requests (
     org_id integer,
     com_id integer,
     mergeable_state character varying,
-    head_repo_vcs_id character varying
+    head_repo_vcs_id character varying,
+    base_repo_slug character varying,
+    base_repo_vcs_id character varying,
+    base_ref character varying
 );
 
 
@@ -2086,7 +2089,10 @@ CREATE TABLE public.pull_requests (
     org_id integer,
     com_id integer,
     mergeable_state character varying,
-    head_repo_vcs_id character varying
+    head_repo_vcs_id character varying,
+    base_repo_slug character varying,
+    base_repo_vcs_id character varying,
+    base_ref character varying
 );
 
 
@@ -5594,7 +5600,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200225085734'),
 ('20200227085734'),
 ('20200227085736'),
-('20200227085737');
+('20200227085737'),
+('20200227085742');
 
 
 
