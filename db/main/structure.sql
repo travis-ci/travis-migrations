@@ -4348,6 +4348,19 @@ CREATE INDEX index_repositories_on_lower_slug_or_on_lower_owner_name ON public.r
 
 
 --
+-- Name: index_repositories_on_lower_vcs_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_lower_vcs_slug ON public.repositories USING btree (lower((vcs_slug)::text));
+
+
+--
+-- Name: index_repositories_on_lower_vcs_slug_valid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_lower_vcs_slug_valid ON public.repositories USING btree (lower((vcs_slug)::text)) WHERE (invalidated_at IS NULL);
+
+--
 -- Name: index_repositories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5601,6 +5614,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200227085734'),
 ('20200227085736'),
 ('20200227085737'),
+('20200316085738'),
 ('20200227085742');
 
 
