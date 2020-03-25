@@ -670,6 +670,28 @@ $_$;
 
 
 --
+-- Name: most_recent_non_queued_job_ids_for_user_repositories(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.most_recent_non_queued_job_ids_for_user_repositories(uid integer, lim integer DEFAULT 100) RETURNS TABLE(id bigint)
+    LANGUAGE plpgsql
+    AS $$
+      DECLARE
+      rid record;
+      BEGIN
+        for rid in
+          SELECT repository_id
+          FROM permissions
+          WHERE user_id = uid
+          LOOP
+            RETURN QUERY EXECUTE
+            'SELECT id from jobs where repository_id = ' || rid || ' and state = any (''{passed,started,errored,failed,canceled}''::varchar[]) order by id desc limit ' || lim;
+          END LOOP;
+      END
+      $$;
+
+
+--
 -- Name: set_unique_number(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -4129,6 +4151,13 @@ CREATE INDEX index_jobs_on_repository_id ON public.jobs USING btree (repository_
 
 
 --
+-- Name: index_jobs_on_repository_id_non_queued_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_repository_id_non_queued_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = ANY (('{passed,started,errored,failed,canceled}'::character varying[])::text[]));
+
+
+--
 -- Name: index_jobs_on_repository_id_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5670,6 +5699,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200227085737'),
 ('20200312184018'),
 ('20200227085742'),
-('20200316085738');
+('20200312184018'),
+('20200316085738'),
+('20200325115329'),
+('20200325130013');
 
 
