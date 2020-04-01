@@ -670,6 +670,24 @@ $_$;
 
 
 --
+-- Name: most_recent_job_ids_for_repository_by_state(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.most_recent_job_ids_for_repository_by_state(repository_id integer, states character varying) RETURNS TABLE(id integer)
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+    BEGIN
+      RETURN QUERY EXECUTE format(
+        'SELECT j.id from jobs j where repository_id = %s and state = any(''{%s}'') order by id desc limit 100',
+        repository_id,
+        states
+      );
+    END
+    $$;
+
+
+--
 -- Name: most_recent_non_queued_job_ids_for_user_repositories(integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -5701,6 +5719,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200312184018'),
 ('20200316085738'),
 ('20200325115329'),
-('20200325130013');
+('20200325130013'),
+('20200330110527');
 
 
