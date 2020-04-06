@@ -2,7 +2,7 @@ class AddFunctionMostRecentJobIdsForUserRepositoriesByStates < ActiveRecord::Mig
   def up
     execute """
     CREATE OR REPLACE FUNCTION
-      most_recent_job_ids_for_user_repositories_by_states(uid int, states varchar default '') RETURNS table (id int) AS
+      most_recent_job_ids_for_user_repositories_by_states(uid int, states varchar default '') RETURNS table (id bigint) AS
       $BODY$
     DECLARE
     rid int;
