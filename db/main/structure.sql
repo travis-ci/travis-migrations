@@ -673,40 +673,53 @@ $_$;
 -- Name: most_recent_job_ids_for_repository_by_state(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.most_recent_job_ids_for_repository_by_state(repository_id integer, states character varying) RETURNS TABLE(id integer)
+CREATE FUNCTION public.most_recent_job_ids_for_repository_by_state(rid integer, st character varying) RETURNS TABLE(job_id integer, repository_id integer)
     LANGUAGE plpgsql
     AS $$
     DECLARE
     BEGIN
-      RETURN QUERY EXECUTE format(
-        'SELECT j.id from jobs j where repository_id = %s and state = any(''{%s}'') order by id desc limit 100',
-        repository_id,
-        states
-      );
+      RETURN QUERY select j.id, j.repository_id from jobs j where j.repository_id = rid and j.state = st order by j.id desc limit 100;
     END
     $$;
 
 
 --
--- Name: most_recent_non_queued_job_ids_for_user_repositories(integer, integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: most_recent_job_ids_for_user_repositories_by_states(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.most_recent_non_queued_job_ids_for_user_repositories(uid integer, lim integer DEFAULT 100) RETURNS TABLE(id bigint)
+CREATE FUNCTION public.most_recent_job_ids_for_user_repositories_by_states(uid integer, states character varying DEFAULT ''::character varying) RETURNS TABLE(id integer)
     LANGUAGE plpgsql
     AS $$
-      DECLARE
-      rid record;
-      BEGIN
+    DECLARE
+    rid int;
+    BEGIN
+      IF states <> '' THEN
+        RETURN QUERY WITH matrix AS (
+          SELECT repository_id, replace(replace(job_state::varchar, '(', ''), ')', '') as job_state
+          FROM permissions p
+          CROSS JOIN (
+            SELECT unnest(regexp_split_to_array(states, ','))
+          ) AS job_state
+          WHERE p.user_id = uid
+        )
+        SELECT recent.id
+        FROM matrix m
+        CROSS JOIN LATERAL (
+          SELECT job_id AS id, repository_id
+          FROM most_recent_job_ids_for_repository_by_state(m.repository_id, m.job_state::varchar)
+        ) AS recent
+        ORDER BY id desc;
+      ELSE
         for rid in
           SELECT repository_id
           FROM permissions
           WHERE user_id = uid
           LOOP
-            RETURN QUERY EXECUTE
-            'SELECT id from jobs where repository_id = ' || rid || ' and state = any (''{passed,started,errored,failed,canceled}''::varchar[]) order by id desc limit ' || lim;
+            RETURN QUERY select j.id from jobs j where repository_id = rid order by j.id desc limit 100;
           END LOOP;
-      END
-      $$;
+      END IF;
+    END
+    $$;
 
 
 --
@@ -3707,6 +3720,13 @@ CREATE INDEX index_beta_migration_requests_on_owner_type_and_owner_id ON public.
 
 
 --
+-- Name: index_booting_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_booting_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'booting'::text);
+
+
+--
 -- Name: index_branches_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3938,6 +3958,13 @@ CREATE UNIQUE INDEX index_builds_repository_id_unique_number ON public.builds US
 
 
 --
+-- Name: index_canceled_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_canceled_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'canceled'::text);
+
+
+--
 -- Name: index_cancellations_on_subscription_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3991,6 +4018,13 @@ CREATE INDEX index_commits_on_repository_id ON public.commits USING btree (repos
 --
 
 CREATE INDEX index_commits_on_tag_id ON public.commits USING btree (tag_id);
+
+
+--
+-- Name: index_created_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_created_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'created'::text);
 
 
 --
@@ -4061,6 +4095,20 @@ CREATE INDEX index_emails_on_email ON public.emails USING btree (email);
 --
 
 CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
+
+
+--
+-- Name: index_errored_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_errored_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'errored'::text);
+
+
+--
+-- Name: index_failed_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_failed_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'failed'::text);
 
 
 --
@@ -4302,6 +4350,13 @@ CREATE INDEX index_owner_groups_on_uuid ON public.owner_groups USING btree (uuid
 
 
 --
+-- Name: index_passed_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_passed_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'passed'::text);
+
+
+--
 -- Name: index_permissions_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4376,6 +4431,20 @@ CREATE UNIQUE INDEX index_pull_requests_on_repository_id_and_number ON public.pu
 --
 
 CREATE INDEX index_queueable_jobs_on_job_id ON public.queueable_jobs USING btree (job_id);
+
+
+--
+-- Name: index_queued_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_queued_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'queued'::text);
+
+
+--
+-- Name: index_received_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_received_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'received'::text);
 
 
 --
@@ -4760,6 +4829,13 @@ CREATE INDEX index_stars_on_user_id ON public.stars USING btree (user_id);
 --
 
 CREATE UNIQUE INDEX index_stars_on_user_id_and_repository_id ON public.stars USING btree (user_id, repository_id);
+
+
+--
+-- Name: index_started_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_started_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'started'::text);
 
 
 --
