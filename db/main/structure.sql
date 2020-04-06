@@ -4217,7 +4217,7 @@ CREATE INDEX index_jobs_on_repository_id ON public.jobs USING btree (repository_
 
 
 --
--- Name: index_jobs_on_repository_id_non_queued_order_by_newest; Type: INDEX; Schema: public; Owner: -
+-- Name: index_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_jobs_on_repository_id_non_queued_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = ANY (('{passed,started,errored,failed,canceled}'::character varying[])::text[]));
@@ -5796,6 +5796,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200316085738'),
 ('20200325115329'),
 ('20200325130013'),
-('20200330110527');
+('20200330110527'),
+('20200406121218');
 
 
