@@ -2,7 +2,7 @@ class AddFunctionMostRecentJobIdsForRepositoryByState < ActiveRecord::Migration[
   def up
     execute """
     CREATE OR REPLACE FUNCTION
-      most_recent_job_ids_for_repository_by_state(rid int, st varchar) RETURNS table (job_id int, repository_id int) AS
+      most_recent_job_ids_for_repository_by_state(rid int, st varchar) RETURNS table (job_id bigint, repository_id int) AS
       $BODY$
     DECLARE
     BEGIN

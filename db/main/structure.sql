@@ -673,7 +673,7 @@ $_$;
 -- Name: most_recent_job_ids_for_repository_by_state(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.most_recent_job_ids_for_repository_by_state(rid integer, st character varying) RETURNS TABLE(job_id integer, repository_id integer)
+CREATE FUNCTION public.most_recent_job_ids_for_repository_by_state(rid integer, st character varying) RETURNS TABLE(job_id bigint, repository_id integer)
     LANGUAGE plpgsql
     AS $$
     DECLARE
