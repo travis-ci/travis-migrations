@@ -1,36 +1,11 @@
-language: ruby
-sudo: false
+language: minimal
 
-services:
-  - postgresql
+before_script: docker pull postgres:9.6
 
-addons:
-  postgresql: "9.6"
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce docker-ce-cli
 
-cache:
-  directories:
-    - vendor/bundle
-
-rvm: "2.5.3"
-
-env:
-  - RAILS_ENV=test
-
-before_script:
-  - cp db/main/structure.sql db/main/structure-original.sql
-  - cp config/database.yml.travis config/database.yml
-
-after_success:
-  - script/upload_structure.rb
-
-jobs:
-  include:
-    - stage: "Testing time"
-      script:
-        - bundle exec rspec spec
-        - script/validate_structure_file.rb db/main/structure-original.sql
-    - stage: "Ship to Quay.io"
-      before_script: echo skip
-      after_success: echo skip
-      script: make ship
-      if: type = cron OR commit_message =~ /ship:docker/ OR env(SHIP_DOCKER) = true
+script: make ship
