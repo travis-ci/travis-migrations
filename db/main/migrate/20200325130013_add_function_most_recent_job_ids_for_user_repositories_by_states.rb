@@ -7,6 +7,7 @@ class AddFunctionMostRecentJobIdsForUserRepositoriesByStates < ActiveRecord::Mig
     DECLARE
     rid int;
     BEGIN
+      SET LOCAL work_mem = '16MB';
       IF states <> '' THEN
         RETURN QUERY WITH matrix AS (
           SELECT repository_id, replace(replace(job_state::varchar, '(', ''), ')', '') as job_state
