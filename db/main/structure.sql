@@ -670,6 +670,60 @@ $_$;
 
 
 --
+-- Name: most_recent_job_ids_for_repository_by_state(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.most_recent_job_ids_for_repository_by_state(rid integer, st character varying) RETURNS TABLE(job_id bigint, repository_id integer)
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+    BEGIN
+      RETURN QUERY select j.id, j.repository_id from jobs j where j.repository_id = rid and j.state = st order by j.id desc limit 100;
+    END
+    $$;
+
+
+--
+-- Name: most_recent_job_ids_for_user_repositories_by_states(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.most_recent_job_ids_for_user_repositories_by_states(uid integer, states character varying DEFAULT ''::character varying) RETURNS TABLE(id bigint)
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+    rid int;
+    BEGIN
+      SET LOCAL work_mem = '16MB';
+      IF states <> '' THEN
+        RETURN QUERY WITH matrix AS (
+          SELECT repository_id, replace(replace(job_state::varchar, '(', ''), ')', '') as job_state
+          FROM permissions p
+          CROSS JOIN (
+            SELECT unnest(regexp_split_to_array(states, ','))
+          ) AS job_state
+          WHERE p.user_id = uid
+        )
+        SELECT recent.id
+        FROM matrix m
+        CROSS JOIN LATERAL (
+          SELECT job_id AS id, repository_id
+          FROM most_recent_job_ids_for_repository_by_state(m.repository_id, m.job_state::varchar)
+        ) AS recent
+        ORDER BY id desc;
+      ELSE
+        for rid in
+          SELECT repository_id
+          FROM permissions
+          WHERE user_id = uid
+          LOOP
+            RETURN QUERY select j.id from jobs j where repository_id = rid order by j.id desc limit 100;
+          END LOOP;
+      END IF;
+    END
+    $$;
+
+
+--
 -- Name: set_unique_number(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -990,10 +1044,9 @@ CREATE TABLE public.build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb,
     org_id bigint,
     com_id bigint,
-    config_json json
+    config json
 );
 
 
@@ -1262,10 +1315,9 @@ CREATE TABLE public.deleted_build_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb,
     org_id bigint,
     com_id bigint,
-    config_json json
+    config json
 );
 
 
@@ -1354,10 +1406,9 @@ CREATE TABLE public.deleted_job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb,
     org_id bigint,
     com_id bigint,
-    config_json json
+    config json
 );
 
 
@@ -1433,10 +1484,9 @@ CREATE TABLE public.deleted_request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb,
     org_id bigint,
     com_id bigint,
-    config_json json
+    config json
 );
 
 
@@ -1476,7 +1526,8 @@ CREATE TABLE public.deleted_request_raw_configurations (
     request_id integer,
     request_raw_config_id integer,
     source character varying,
-    org_id bigint
+    org_id bigint,
+    merge_mode character varying
 );
 
 
@@ -1754,22 +1805,10 @@ CREATE TABLE public.job_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb,
     org_id bigint,
     com_id bigint,
-    config_json json
+    config json
 );
-
-
---
--- Name: job_configs_gpu; Type: MATERIALIZED VIEW; Schema: public; Owner: -
---
-
-CREATE MATERIALIZED VIEW public.job_configs_gpu AS
- SELECT job_configs.id
-   FROM public.job_configs
-  WHERE (public.is_json((job_configs.config ->> 'resources'::text)) AND ((((job_configs.config ->> 'resources'::text))::jsonb ->> 'gpu'::text) IS NOT NULL))
-  WITH NO DATA;
 
 
 --
@@ -2235,10 +2274,9 @@ CREATE TABLE public.request_configs (
     id integer NOT NULL,
     repository_id integer NOT NULL,
     key character varying NOT NULL,
-    config jsonb,
     org_id bigint,
     com_id bigint,
-    config_json json
+    config json
 );
 
 
@@ -2335,7 +2373,8 @@ CREATE TABLE public.request_raw_configurations (
     request_id integer,
     request_raw_config_id integer,
     source character varying,
-    org_id bigint
+    org_id bigint,
+    merge_mode character varying
 );
 
 
@@ -3667,6 +3706,13 @@ CREATE INDEX index_beta_migration_requests_on_owner_type_and_owner_id ON public.
 
 
 --
+-- Name: index_booting_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_booting_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'booting'::text);
+
+
+--
 -- Name: index_branches_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3898,6 +3944,13 @@ CREATE UNIQUE INDEX index_builds_repository_id_unique_number ON public.builds US
 
 
 --
+-- Name: index_canceled_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_canceled_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'canceled'::text);
+
+
+--
 -- Name: index_cancellations_on_subscription_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3951,6 +4004,13 @@ CREATE INDEX index_commits_on_repository_id ON public.commits USING btree (repos
 --
 
 CREATE INDEX index_commits_on_tag_id ON public.commits USING btree (tag_id);
+
+
+--
+-- Name: index_created_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_created_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'created'::text);
 
 
 --
@@ -4024,6 +4084,20 @@ CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
 
 
 --
+-- Name: index_errored_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_errored_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'errored'::text);
+
+
+--
+-- Name: index_failed_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_failed_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'failed'::text);
+
+
+--
 -- Name: index_installations_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4045,13 +4119,6 @@ CREATE UNIQUE INDEX index_job_configs_on_com_id ON public.job_configs USING btre
 
 
 --
--- Name: index_job_configs_on_config_resources_gpu; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_job_configs_on_config_resources_gpu ON public.job_configs USING btree (((((config ->> 'resources'::text))::jsonb ->> 'gpu'::text))) WHERE (public.is_json((config ->> 'resources'::text)) AND ((((config ->> 'resources'::text))::jsonb ->> 'gpu'::text) IS NOT NULL));
-
-
---
 -- Name: index_job_configs_on_org_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4070,6 +4137,13 @@ CREATE INDEX index_job_configs_on_repository_id ON public.job_configs USING btre
 --
 
 CREATE INDEX index_job_configs_on_repository_id_and_key ON public.job_configs USING btree (repository_id, key);
+
+
+--
+-- Name: index_job_versions_on_job_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_job_versions_on_job_id ON public.job_versions USING btree (job_id);
 
 
 --
@@ -4126,6 +4200,13 @@ CREATE INDEX index_jobs_on_owner_where_state_running ON public.jobs USING btree 
 --
 
 CREATE INDEX index_jobs_on_repository_id ON public.jobs USING btree (repository_id);
+
+
+--
+-- Name: index_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC);
 
 
 --
@@ -4255,6 +4336,13 @@ CREATE INDEX index_owner_groups_on_uuid ON public.owner_groups USING btree (uuid
 
 
 --
+-- Name: index_passed_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_passed_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'passed'::text);
+
+
+--
 -- Name: index_permissions_on_com_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4329,6 +4417,20 @@ CREATE UNIQUE INDEX index_pull_requests_on_repository_id_and_number ON public.pu
 --
 
 CREATE INDEX index_queueable_jobs_on_job_id ON public.queueable_jobs USING btree (job_id);
+
+
+--
+-- Name: index_queued_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_queued_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'queued'::text);
+
+
+--
+-- Name: index_received_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_received_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'received'::text);
 
 
 --
@@ -4407,6 +4509,7 @@ CREATE INDEX index_repositories_on_lower_vcs_slug ON public.repositories USING b
 
 CREATE INDEX index_repositories_on_lower_vcs_slug_valid ON public.repositories USING btree (lower((vcs_slug)::text)) WHERE (invalidated_at IS NULL);
 
+
 --
 -- Name: index_repositories_on_name; Type: INDEX; Schema: public; Owner: -
 --
@@ -4443,17 +4546,17 @@ CREATE INDEX index_repositories_on_owner_name_and_name ON public.repositories US
 
 
 --
--- Name: index_repositories_on_slug_or_names; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_repositories_on_slug_or_names ON public.repositories USING btree (vcs_slug, owner_name, name) WHERE (invalidated_at IS NULL);
-
-
---
 -- Name: index_repositories_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_repositories_on_slug ON public.repositories USING gin (((((owner_name)::text || '/'::text) || (name)::text)) public.gin_trgm_ops);
+
+
+--
+-- Name: index_repositories_on_slug_or_names; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_slug_or_names ON public.repositories USING btree (vcs_slug, owner_name, name) WHERE (invalidated_at IS NULL);
 
 
 --
@@ -4713,6 +4816,13 @@ CREATE INDEX index_stars_on_user_id ON public.stars USING btree (user_id);
 --
 
 CREATE UNIQUE INDEX index_stars_on_user_id_and_repository_id ON public.stars USING btree (user_id, repository_id);
+
+
+--
+-- Name: index_started_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_started_jobs_on_repository_id_order_by_newest ON public.jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'started'::text);
 
 
 --
@@ -5668,8 +5778,13 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200227085734'),
 ('20200227085736'),
 ('20200227085737'),
-('20200312184018'),
 ('20200227085742'),
-('20200316085738');
+('20200312184018'),
+('20200316085738'),
+('20200325115329'),
+('20200325130013'),
+('20200330110527'),
+('20200406121218'),
+('20200424000000');
 
 
