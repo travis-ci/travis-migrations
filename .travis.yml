@@ -5,9 +5,9 @@ services:
   - postgresql
 
 addons:
-  snaps:
-  - name: docker
-    channel: latest/beta
+  - snaps:
+    - name: docker
+      channel: latest/beta
   - postgresql: "9.6"
 
 cache:
