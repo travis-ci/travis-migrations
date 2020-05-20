@@ -5,7 +5,10 @@ services:
   - postgresql
 
 addons:
-  postgresql: "9.6"
+  snaps:
+  - name: docker
+    channel: latest/beta
+  - postgresql: "9.6"
 
 cache:
   directories:
@@ -15,6 +18,8 @@ rvm: "2.5.3"
 
 env:
   - RAILS_ENV=test
+  - global:
+    - PATH=/snap/bin:$PATH
 
 before_script:
   - cp db/main/structure.sql db/main/structure-original.sql
