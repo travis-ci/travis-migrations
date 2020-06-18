@@ -23,7 +23,7 @@ include:
 fast_finish: true
 
 install:
-  - travis_retry gem install bundler -v '<2' # Ruby 2.2 depend on bundler 1.x.
+  - travis_retry gem install bundler
   - bundler -v
   - travis_retry bundle install
 
