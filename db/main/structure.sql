@@ -1,3 +1,10 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.7
+-- Dumped by pg_dump version 9.6.7
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -158,11 +165,9 @@ ALTER SEQUENCE annotation_providers_id_seq OWNED BY annotation_providers.id;
 
 CREATE TABLE annotations (
     id integer NOT NULL,
-    owner_type character varying,
-    owner_id integer,
-    request_id integer,
-    level integer NOT NULL,
-    reason character varying NOT NULL,
+    job_id integer NOT NULL,
+    url character varying,
+    description text NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     annotation_provider_id integer NOT NULL,
@@ -174,8 +179,7 @@ CREATE TABLE annotations (
 -- Name: annotations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.abuses_id_seq
-    AS integer
+CREATE SEQUENCE annotations_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -188,18 +192,6 @@ CREATE SEQUENCE public.abuses_id_seq
 --
 
 ALTER SEQUENCE annotations_id_seq OWNED BY annotations.id;
-
-
---
--- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.ar_internal_metadata (
-    key character varying NOT NULL,
-    value character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
 
 
 --
@@ -222,8 +214,7 @@ CREATE TABLE beta_features (
 -- Name: beta_features_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.beta_features_id_seq
-    AS integer
+CREATE SEQUENCE beta_features_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -257,8 +248,7 @@ CREATE TABLE branches (
 -- Name: branches_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.branches_id_seq
-    AS integer
+CREATE SEQUENCE branches_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -279,8 +269,8 @@ ALTER SEQUENCE branches_id_seq OWNED BY branches.id;
 
 CREATE TABLE broadcasts (
     id integer NOT NULL,
-    recipient_type character varying,
     recipient_id integer,
+    recipient_type character varying,
     kind character varying,
     message character varying,
     expired boolean,
@@ -294,8 +284,7 @@ CREATE TABLE broadcasts (
 -- Name: broadcasts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.broadcasts_id_seq
-    AS integer
+CREATE SEQUENCE broadcasts_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -307,39 +296,7 @@ CREATE SEQUENCE public.broadcasts_id_seq
 -- Name: broadcasts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.broadcasts_id_seq OWNED BY public.broadcasts.id;
-
-
---
--- Name: build_configs; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.build_configs (
-    id integer NOT NULL,
-    repository_id integer NOT NULL,
-    key character varying NOT NULL,
-    config jsonb
-);
-
-
---
--- Name: build_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.build_configs_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: build_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.build_configs_id_seq OWNED BY public.build_configs.id;
+ALTER SEQUENCE broadcasts_id_seq OWNED BY broadcasts.id;
 
 
 --
@@ -364,31 +321,20 @@ CREATE TABLE builds (
     number character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
-    log text DEFAULT ''::text,
-    message text,
-    committed_at timestamp without time zone,
-    committer_name character varying,
-    committer_email character varying,
-    author_name character varying,
-    author_email character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     config text,
-    ref character varying,
-    branch character varying,
-    github_payload text,
-    compare_url character varying,
-    token character varying,
     commit_id integer,
     request_id integer,
     state character varying,
     duration integer,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     event_type character varying,
     previous_state character varying,
     pull_request_title text,
     pull_request_number integer,
+    branch character varying,
     canceled_at timestamp without time zone,
     cached_matrix_ids integer[],
     received_at timestamp without time zone,
@@ -396,11 +342,8 @@ CREATE TABLE builds (
     pull_request_id integer,
     branch_id integer,
     tag_id integer,
-    sender_type character varying,
     sender_id integer,
-    org_id integer,
-    com_id integer,
-    config_id integer
+    sender_type character varying
 );
 
 
@@ -408,8 +351,7 @@ CREATE TABLE builds (
 -- Name: builds_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.builds_id_seq
-    AS integer
+CREATE SEQUENCE builds_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -452,8 +394,7 @@ CREATE TABLE commits (
 -- Name: commits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.commits_id_seq
-    AS integer
+CREATE SEQUENCE commits_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -489,8 +430,7 @@ CREATE TABLE coupons (
 -- Name: coupons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.coupons_id_seq
-    AS integer
+CREATE SEQUENCE coupons_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -525,8 +465,7 @@ CREATE TABLE crons (
 -- Name: crons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.crons_id_seq
-    AS integer
+CREATE SEQUENCE crons_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -558,8 +497,7 @@ CREATE TABLE emails (
 -- Name: emails_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.emails_id_seq
-    AS integer
+CREATE SEQUENCE emails_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -571,44 +509,7 @@ CREATE SEQUENCE public.emails_id_seq
 -- Name: emails_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.emails_id_seq OWNED BY public.emails.id;
-
-
---
--- Name: installations; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.installations (
-    id integer NOT NULL,
-    github_id integer,
-    permissions jsonb,
-    owner_type character varying,
-    owner_id integer,
-    added_by_id integer,
-    removed_by_id integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-
---
--- Name: installations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.installations_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: installations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.installations_id_seq OWNED BY public.installations.id;
+ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
 
 
 --
@@ -631,8 +532,7 @@ CREATE TABLE invoices (
 -- Name: invoices_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.invoices_id_seq
-    AS integer
+CREATE SEQUENCE invoices_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -651,50 +551,17 @@ ALTER SEQUENCE invoices_id_seq OWNED BY invoices.id;
 -- Name: jobs; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.job_configs (
-    id integer NOT NULL,
-    repository_id integer NOT NULL,
-    key character varying NOT NULL,
-    config jsonb
-);
-
-
---
--- Name: job_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.job_configs_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: job_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.job_configs_id_seq OWNED BY public.job_configs.id;
-
-
---
--- Name: jobs; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.jobs (
-    id bigint DEFAULT nextval('public.shared_builds_tasks_seq'::regclass) NOT NULL,
+CREATE TABLE jobs (
+    id bigint DEFAULT nextval('shared_builds_tasks_seq'::regclass) NOT NULL,
     repository_id integer,
     commit_id integer,
-    source_type character varying,
     source_id integer,
+    source_type character varying,
     queue character varying,
     type character varying,
     state character varying,
     number character varying,
     config text,
-    log text DEFAULT ''::text,
     worker character varying,
     started_at timestamp without time zone,
     finished_at timestamp without time zone,
@@ -702,8 +569,8 @@ CREATE TABLE public.jobs (
     updated_at timestamp without time zone NOT NULL,
     tags text,
     allow_failure boolean DEFAULT false,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     result integer,
     queued_at timestamp without time zone,
     canceled_at timestamp without time zone,
@@ -719,8 +586,7 @@ CREATE TABLE public.jobs (
 -- Name: jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.jobs_id_seq
-    AS integer
+CREATE SEQUENCE jobs_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -751,8 +617,7 @@ CREATE TABLE memberships (
 -- Name: memberships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.memberships_id_seq
-    AS integer
+CREATE SEQUENCE memberships_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -788,8 +653,7 @@ CREATE TABLE messages (
 -- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.messages_id_seq
-    AS integer
+CREATE SEQUENCE messages_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -828,8 +692,7 @@ CREATE TABLE organizations (
 -- Name: organizations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.organizations_id_seq
-    AS integer
+CREATE SEQUENCE organizations_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -851,8 +714,8 @@ ALTER SEQUENCE organizations_id_seq OWNED BY organizations.id;
 CREATE TABLE owner_groups (
     id integer NOT NULL,
     uuid character varying,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -862,8 +725,7 @@ CREATE TABLE owner_groups (
 -- Name: owner_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.owner_groups_id_seq
-    AS integer
+CREATE SEQUENCE owner_groups_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -896,8 +758,7 @@ CREATE TABLE permissions (
 -- Name: permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.permissions_id_seq
-    AS integer
+CREATE SEQUENCE permissions_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -934,8 +795,7 @@ CREATE TABLE pull_requests (
 -- Name: pull_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.pull_requests_id_seq
-    AS integer
+CREATE SEQUENCE pull_requests_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -964,8 +824,7 @@ CREATE TABLE queueable_jobs (
 -- Name: queueable_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.queueable_jobs_id_seq
-    AS integer
+CREATE SEQUENCE queueable_jobs_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -999,8 +858,8 @@ CREATE TABLE repositories (
     active boolean,
     description text,
     last_build_duration integer,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     private boolean DEFAULT false,
     last_build_state character varying,
     github_id integer,
@@ -1017,8 +876,7 @@ CREATE TABLE repositories (
 -- Name: repositories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.repositories_id_seq
-    AS integer
+CREATE SEQUENCE repositories_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1030,72 +888,7 @@ CREATE SEQUENCE public.repositories_id_seq
 -- Name: repositories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.repositories_id_seq OWNED BY public.repositories.id;
-
-
---
--- Name: request_configs; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.request_configs (
-    id integer NOT NULL,
-    repository_id integer NOT NULL,
-    key character varying NOT NULL,
-    config jsonb
-);
-
-
---
--- Name: request_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.request_configs_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: request_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.request_configs_id_seq OWNED BY public.request_configs.id;
-
-
---
--- Name: request_payloads; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.request_payloads (
-    id integer NOT NULL,
-    request_id integer NOT NULL,
-    payload text,
-    archived boolean DEFAULT false,
-    created_at timestamp without time zone
-);
-
-
---
--- Name: request_payloads_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.request_payloads_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: request_payloads_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.request_payloads_id_seq OWNED BY public.request_payloads.id;
+ALTER SEQUENCE repositories_id_seq OWNED BY repositories.id;
 
 
 --
@@ -1119,19 +912,16 @@ CREATE TABLE requests (
     comments_url character varying,
     base_commit character varying,
     head_commit character varying,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     result character varying,
     message character varying,
     private boolean,
     pull_request_id integer,
     branch_id integer,
     tag_id integer,
-    sender_type character varying,
     sender_id integer,
-    org_id integer,
-    com_id integer,
-    config_id integer
+    sender_type character varying
 );
 
 
@@ -1139,8 +929,7 @@ CREATE TABLE requests (
 -- Name: requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.requests_id_seq
-    AS integer
+CREATE SEQUENCE requests_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1182,8 +971,7 @@ CREATE TABLE ssl_keys (
 -- Name: ssl_keys_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.ssl_keys_id_seq
-    AS integer
+CREATE SEQUENCE ssl_keys_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1217,8 +1005,7 @@ CREATE TABLE stages (
 -- Name: stages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.stages_id_seq
-    AS integer
+CREATE SEQUENCE stages_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1250,8 +1037,7 @@ CREATE TABLE stars (
 -- Name: stars_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.stars_id_seq
-    AS integer
+CREATE SEQUENCE stars_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1285,8 +1071,7 @@ CREATE TABLE stripe_events (
 -- Name: stripe_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.stripe_events_id_seq
-    AS integer
+CREATE SEQUENCE stripe_events_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1309,8 +1094,8 @@ CREATE TABLE subscriptions (
     id integer NOT NULL,
     cc_token character varying,
     valid_to timestamp without time zone,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     first_name character varying,
     last_name character varying,
     company character varying,
@@ -1343,8 +1128,7 @@ CREATE TABLE subscriptions (
 -- Name: subscriptions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.subscriptions_id_seq
-    AS integer
+CREATE SEQUENCE subscriptions_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1378,8 +1162,7 @@ CREATE TABLE tags (
 -- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.tags_id_seq
-    AS integer
+CREATE SEQUENCE tags_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1411,8 +1194,7 @@ CREATE TABLE tokens (
 -- Name: tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.tokens_id_seq
-    AS integer
+CREATE SEQUENCE tokens_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1447,8 +1229,7 @@ CREATE TABLE trial_allowances (
 -- Name: trial_allowances_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.trial_allowances_id_seq
-    AS integer
+CREATE SEQUENCE trial_allowances_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1469,8 +1250,8 @@ ALTER SEQUENCE trial_allowances_id_seq OWNED BY trial_allowances.id;
 
 CREATE TABLE trials (
     id integer NOT NULL,
-    owner_type character varying,
     owner_id integer,
+    owner_type character varying,
     chartmogul_customer_uuids text[] DEFAULT '{}'::text[],
     status character varying DEFAULT 'new'::character varying,
     created_at timestamp without time zone NOT NULL,
@@ -1482,8 +1263,7 @@ CREATE TABLE trials (
 -- Name: trials_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.trials_id_seq
-    AS integer
+CREATE SEQUENCE trials_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1515,8 +1295,7 @@ CREATE TABLE urls (
 -- Name: urls_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.urls_id_seq
-    AS integer
+CREATE SEQUENCE urls_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1549,8 +1328,7 @@ CREATE TABLE user_beta_features (
 -- Name: user_beta_features_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.user_beta_features_id_seq
-    AS integer
+CREATE SEQUENCE user_beta_features_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1596,8 +1374,7 @@ CREATE TABLE users (
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.users_id_seq
-    AS integer
+CREATE SEQUENCE users_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1620,206 +1397,7 @@ ALTER TABLE ONLY abuses ALTER COLUMN id SET DEFAULT nextval('abuses_id_seq'::reg
 
 
 --
--- Name: stripe_events id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.stripe_events ALTER COLUMN id SET DEFAULT nextval('public.stripe_events_id_seq'::regclass);
-
-
---
--- Name: subscriptions id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.subscriptions ALTER COLUMN id SET DEFAULT nextval('public.subscriptions_id_seq'::regclass);
-
-
---
--- Name: tags id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id_seq'::regclass);
-
-
---
--- Name: tokens id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tokens ALTER COLUMN id SET DEFAULT nextval('public.tokens_id_seq'::regclass);
-
-
---
--- Name: trial_allowances id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.trial_allowances ALTER COLUMN id SET DEFAULT nextval('public.trial_allowances_id_seq'::regclass);
-
-
---
--- Name: trials id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.trials ALTER COLUMN id SET DEFAULT nextval('public.trials_id_seq'::regclass);
-
-
---
--- Name: urls id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.urls ALTER COLUMN id SET DEFAULT nextval('public.urls_id_seq'::regclass);
-
-
---
--- Name: user_beta_features id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_beta_features ALTER COLUMN id SET DEFAULT nextval('public.user_beta_features_id_seq'::regclass);
-
-
---
--- Name: users id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
-
-
---
--- Name: abuses abuses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.abuses
-    ADD CONSTRAINT abuses_pkey PRIMARY KEY (id);
-
-
---
--- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.ar_internal_metadata
-    ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
-
-
---
--- Name: beta_features beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.beta_features
-    ADD CONSTRAINT beta_features_pkey PRIMARY KEY (id);
-
-
---
--- Name: branches branches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.branches
-    ADD CONSTRAINT branches_pkey PRIMARY KEY (id);
-
-
---
--- Name: broadcasts broadcasts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.broadcasts
-    ADD CONSTRAINT broadcasts_pkey PRIMARY KEY (id);
-
-
---
--- Name: build_configs build_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.build_configs
-    ADD CONSTRAINT build_configs_pkey PRIMARY KEY (id);
-
-
---
--- Name: builds builds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.builds
-    ADD CONSTRAINT builds_pkey PRIMARY KEY (id);
-
-
---
--- Name: commits commits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.commits
-    ADD CONSTRAINT commits_pkey PRIMARY KEY (id);
-
-
---
--- Name: coupons coupons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.coupons
-    ADD CONSTRAINT coupons_pkey PRIMARY KEY (id);
-
-
---
--- Name: crons crons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.crons
-    ADD CONSTRAINT crons_pkey PRIMARY KEY (id);
-
-
---
--- Name: emails emails_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.emails
-    ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
-
-
---
--- Name: installations installations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.installations
-    ADD CONSTRAINT installations_pkey PRIMARY KEY (id);
-
-
---
--- Name: invoices invoices_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.invoices
-    ADD CONSTRAINT invoices_pkey PRIMARY KEY (id);
-
-
---
--- Name: job_configs job_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.job_configs
-    ADD CONSTRAINT job_configs_pkey PRIMARY KEY (id);
-
-
---
--- Name: jobs jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT jobs_pkey PRIMARY KEY (id);
-
-
---
--- Name: memberships memberships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.memberships
-    ADD CONSTRAINT memberships_pkey PRIMARY KEY (id);
-
-
---
--- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.messages
-    ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
-
-
---
--- Name: organizations organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: annotation_providers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY annotation_providers ALTER COLUMN id SET DEFAULT nextval('annotation_providers_id_seq'::regclass);
@@ -1833,71 +1411,7 @@ ALTER TABLE ONLY annotations ALTER COLUMN id SET DEFAULT nextval('annotations_id
 
 
 --
--- Name: permissions permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.permissions
-    ADD CONSTRAINT permissions_pkey PRIMARY KEY (id);
-
-
---
--- Name: pull_requests pull_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.pull_requests
-    ADD CONSTRAINT pull_requests_pkey PRIMARY KEY (id);
-
-
---
--- Name: queueable_jobs queueable_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.queueable_jobs
-    ADD CONSTRAINT queueable_jobs_pkey PRIMARY KEY (id);
-
-
---
--- Name: repositories repositories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.repositories
-    ADD CONSTRAINT repositories_pkey PRIMARY KEY (id);
-
-
---
--- Name: request_configs request_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.request_configs
-    ADD CONSTRAINT request_configs_pkey PRIMARY KEY (id);
-
-
---
--- Name: request_payloads request_payloads_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.request_payloads
-    ADD CONSTRAINT request_payloads_pkey PRIMARY KEY (id);
-
-
---
--- Name: requests requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.requests
-    ADD CONSTRAINT requests_pkey PRIMARY KEY (id);
-
-
---
--- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.schema_migrations
-    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
--- Name: ssl_keys ssl_keys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: beta_features id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY beta_features ALTER COLUMN id SET DEFAULT nextval('beta_features_id_seq'::regclass);
@@ -2743,7 +2257,14 @@ CREATE UNIQUE INDEX index_stars_on_user_id_and_repository_id ON stars USING btre
 
 
 --
--- Name: builds set_updated_at_on_builds; Type: TRIGGER; Schema: public; Owner: -
+-- Name: index_stripe_events_on_date; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_stripe_events_on_date ON stripe_events USING btree (date);
+
+
+--
+-- Name: index_stripe_events_on_event_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_stripe_events_on_event_id ON stripe_events USING btree (event_id);
@@ -2875,274 +2396,516 @@ ALTER TABLE ONLY repositories
 
 SET search_path TO "$user", public;
 
-INSERT INTO "schema_migrations" (version) VALUES
-('20101126174706'),
-('20101126174715'),
-('20110109130532'),
-('20110116155100'),
-('20110130102621'),
-('20110301071656'),
-('20110316174721'),
-('20110321075539'),
-('20110411171936'),
-('20110411171937'),
-('20110411172518'),
-('20110413101057'),
-('20110414131100'),
-('20110503150504'),
-('20110523012243'),
-('20110611203537'),
-('20110613210252'),
-('20110615152003'),
-('20110616211744'),
-('20110617114728'),
-('20110619100906'),
-('20110729094426'),
-('20110801161819'),
-('20110805030147'),
-('20110819232908'),
-('20110911204538'),
-('20111107134436'),
-('20111107134437'),
-('20111107134438'),
-('20111107134439'),
-('20111107134440'),
-('20111128235043'),
-('20111129014329'),
-('20111129022625'),
-('20111201113500'),
-('20111203002341'),
-('20111203221720'),
-('20111207093700'),
-('20111212103859'),
-('20111212112411'),
-('20111214173922'),
-('20120114125404'),
-('20120216133223'),
-('20120222082522'),
-('20120301131209'),
-('20120304000502'),
-('20120304000503'),
-('20120304000504'),
-('20120304000505'),
-('20120304000506'),
-('20120311234933'),
-('20120316123726'),
-('20120319170001'),
-('20120324104051'),
-('20120505165100'),
-('20120511171900'),
-('20120521174400'),
-('20120527235800'),
-('20120702111126'),
-('20120703114226'),
-('20120713140816'),
-('20120713153215'),
-('20120725005300'),
-('201207261749'),
-('20120727151900'),
-('20120731005301'),
-('20120731074000'),
-('20120802001001'),
-('20120803164000'),
-('20120803182300'),
-('20120804122700'),
-('20120806120400'),
-('20120820164000'),
-('20120905093300'),
-('20120905171300'),
-('20120911160000'),
-('20120911230000'),
-('20120911230001'),
-('20120913143800'),
-('20120915012000'),
-('20120915012001'),
-('20120915150000'),
-('20121015002500'),
-('20121015002501'),
-('20121017040100'),
-('20121017040200'),
-('20121018201301'),
-('20121018203728'),
-('20121018210156'),
-('20121125122700'),
-('20121125122701'),
-('20121222125200'),
-('20121222125300'),
-('20121222140200'),
-('20121223162300'),
-('20130107165057'),
-('20130115125836'),
-('20130115145728'),
-('20130125002600'),
-('20130125171100'),
-('20130129142703'),
-('20130208135800'),
-('20130208135801'),
-('20130306154311'),
-('20130311211101'),
-('20130327100801'),
-('20130418101437'),
-('20130418103306'),
-('20130505023259'),
-('20130521115725'),
-('20130521133050'),
-('20130521134224'),
-('20130521134800'),
-('20130521141357'),
-('20130618084205'),
-('20130629122945'),
-('20130629133531'),
-('20130629174449'),
-('20130701175200'),
-('20130702123456'),
-('20130702144325'),
-('20130705123456'),
-('20130707164854'),
-('20130709185200'),
-('20130709233500'),
-('20130710000745'),
-('20130726101124'),
-('20130901183019'),
-('20130909203321'),
-('20130910184823'),
-('20130916101056'),
-('20130920135744'),
-('20131104101056'),
-('20131109101056'),
-('20140120225125'),
-('20140121003026'),
-('20140204220926'),
-('20140210003014'),
-('20140210012509'),
-('20140612131826'),
-('20140827121945'),
-('20150121135400'),
-('20150121135401'),
-('20150204144312'),
-('20150210170900'),
-('20150223125700'),
-('20150311020321'),
-('20150316020321'),
-('20150316080321'),
-('20150316100321'),
-('20150317004600'),
-('20150317020321'),
-('20150317080321'),
-('20150414001337'),
-('20150528101600'),
-('20150528101601'),
-('20150528101602'),
-('20150528101603'),
-('20150528101604'),
-('20150528101605'),
-('20150528101607'),
-('20150528101608'),
-('20150528101609'),
-('20150528101610'),
-('20150528101611'),
-('20150609175200'),
-('20150610143500'),
-('20150610143501'),
-('20150610143502'),
-('20150610143503'),
-('20150610143504'),
-('20150610143505'),
-('20150610143506'),
-('20150610143507'),
-('20150610143508'),
-('20150610143509'),
-('20150610143510'),
-('20150615103059'),
-('20150629231300'),
-('20150923131400'),
-('20151112153500'),
-('20151113111400'),
-('20151127153500'),
-('20151127154200'),
-('20151127154600'),
-('20151202122200'),
-('20160107120927'),
-('20160303165750'),
-('20160412113020'),
-('20160412113070'),
-('20160412121405'),
-('20160412123900'),
-('20160414214442'),
-('20160422104300'),
-('20160422121400'),
-('20160510142700'),
-('20160510144200'),
-('20160510150300'),
-('20160510150400'),
-('20160513074300'),
-('20160609163600'),
-('20160623133900'),
-('20160623133901'),
-('20160712125400'),
-('20160819103700'),
-('20160920220400'),
-('20161028154600'),
-('20161101000000'),
-('20161101000001'),
-('20161201112200'),
-('20161201112600'),
-('20161202000000'),
-('20161206155800'),
-('20161221171300'),
-('20170211000000'),
-('20170211000001'),
-('20170211000002'),
-('20170211000003'),
-('20170213124000'),
-('20170316000000'),
-('20170316000001'),
-('20170318000000'),
-('20170318000001'),
-('20170318000002'),
-('20170322000000'),
-('20170331000000'),
-('20170401000000'),
-('20170401000001'),
-('20170401000002'),
-('20170405000000'),
-('20170405000001'),
-('20170405000002'),
-('20170405000003'),
-('20170408000000'),
-('20170408000001'),
-('20170410000000'),
-('20170411000000'),
-('20170419093249'),
-('20170531125700'),
-('20170601163700'),
-('20170601164400'),
-('20170609174400'),
-('20170613000000'),
-('20170620144500'),
-('20170621142300'),
-('20170713162000'),
-('20170822171600'),
-('20170831000000'),
-('20170911172800'),
-('20171017104500'),
-('20171024000000'),
-('20171025000000'),
-('20171103000000'),
-('20171211000000'),
-('20180212000000'),
-('20180213000000'),
-('20180222000000'),
-('20180222000001'),
-('20180222000002'),
-('20180222000003'),
-('20180222000009'),
-('20180222000012'),
-('20180222164100'),
-('20180305143800'),
-('20180321102400'),
-('20180330000000'),
-('20180331000000'),
-('20180404000001');
+INSERT INTO schema_migrations (version) VALUES ('20101126174706');
 
+INSERT INTO schema_migrations (version) VALUES ('20101126174715');
 
+INSERT INTO schema_migrations (version) VALUES ('20110109130532');
+
+INSERT INTO schema_migrations (version) VALUES ('20110116155100');
+
+INSERT INTO schema_migrations (version) VALUES ('20110130102621');
+
+INSERT INTO schema_migrations (version) VALUES ('20110301071656');
+
+INSERT INTO schema_migrations (version) VALUES ('20110316174721');
+
+INSERT INTO schema_migrations (version) VALUES ('20110321075539');
+
+INSERT INTO schema_migrations (version) VALUES ('20110411171936');
+
+INSERT INTO schema_migrations (version) VALUES ('20110411171937');
+
+INSERT INTO schema_migrations (version) VALUES ('20110411172518');
+
+INSERT INTO schema_migrations (version) VALUES ('20110413101057');
+
+INSERT INTO schema_migrations (version) VALUES ('20110414131100');
+
+INSERT INTO schema_migrations (version) VALUES ('20110503150504');
+
+INSERT INTO schema_migrations (version) VALUES ('20110523012243');
+
+INSERT INTO schema_migrations (version) VALUES ('20110611203537');
+
+INSERT INTO schema_migrations (version) VALUES ('20110613210252');
+
+INSERT INTO schema_migrations (version) VALUES ('20110615152003');
+
+INSERT INTO schema_migrations (version) VALUES ('20110616211744');
+
+INSERT INTO schema_migrations (version) VALUES ('20110617114728');
+
+INSERT INTO schema_migrations (version) VALUES ('20110619100906');
+
+INSERT INTO schema_migrations (version) VALUES ('20110729094426');
+
+INSERT INTO schema_migrations (version) VALUES ('20110801161819');
+
+INSERT INTO schema_migrations (version) VALUES ('20110805030147');
+
+INSERT INTO schema_migrations (version) VALUES ('20110819232908');
+
+INSERT INTO schema_migrations (version) VALUES ('20110911204538');
+
+INSERT INTO schema_migrations (version) VALUES ('20111107134436');
+
+INSERT INTO schema_migrations (version) VALUES ('20111107134437');
+
+INSERT INTO schema_migrations (version) VALUES ('20111107134438');
+
+INSERT INTO schema_migrations (version) VALUES ('20111107134439');
+
+INSERT INTO schema_migrations (version) VALUES ('20111107134440');
+
+INSERT INTO schema_migrations (version) VALUES ('20111128235043');
+
+INSERT INTO schema_migrations (version) VALUES ('20111129014329');
+
+INSERT INTO schema_migrations (version) VALUES ('20111129022625');
+
+INSERT INTO schema_migrations (version) VALUES ('20111201113500');
+
+INSERT INTO schema_migrations (version) VALUES ('20111203002341');
+
+INSERT INTO schema_migrations (version) VALUES ('20111203221720');
+
+INSERT INTO schema_migrations (version) VALUES ('20111207093700');
+
+INSERT INTO schema_migrations (version) VALUES ('20111212103859');
+
+INSERT INTO schema_migrations (version) VALUES ('20111212112411');
+
+INSERT INTO schema_migrations (version) VALUES ('20111214173922');
+
+INSERT INTO schema_migrations (version) VALUES ('20120114125404');
+
+INSERT INTO schema_migrations (version) VALUES ('20120216133223');
+
+INSERT INTO schema_migrations (version) VALUES ('20120222082522');
+
+INSERT INTO schema_migrations (version) VALUES ('20120301131209');
+
+INSERT INTO schema_migrations (version) VALUES ('20120304000502');
+
+INSERT INTO schema_migrations (version) VALUES ('20120304000503');
+
+INSERT INTO schema_migrations (version) VALUES ('20120304000504');
+
+INSERT INTO schema_migrations (version) VALUES ('20120304000505');
+
+INSERT INTO schema_migrations (version) VALUES ('20120304000506');
+
+INSERT INTO schema_migrations (version) VALUES ('20120311234933');
+
+INSERT INTO schema_migrations (version) VALUES ('20120316123726');
+
+INSERT INTO schema_migrations (version) VALUES ('20120319170001');
+
+INSERT INTO schema_migrations (version) VALUES ('20120324104051');
+
+INSERT INTO schema_migrations (version) VALUES ('20120505165100');
+
+INSERT INTO schema_migrations (version) VALUES ('20120511171900');
+
+INSERT INTO schema_migrations (version) VALUES ('20120521174400');
+
+INSERT INTO schema_migrations (version) VALUES ('20120527235800');
+
+INSERT INTO schema_migrations (version) VALUES ('20120702111126');
+
+INSERT INTO schema_migrations (version) VALUES ('20120703114226');
+
+INSERT INTO schema_migrations (version) VALUES ('20120713140816');
+
+INSERT INTO schema_migrations (version) VALUES ('20120713153215');
+
+INSERT INTO schema_migrations (version) VALUES ('20120725005300');
+
+INSERT INTO schema_migrations (version) VALUES ('201207261749');
+
+INSERT INTO schema_migrations (version) VALUES ('20120727151900');
+
+INSERT INTO schema_migrations (version) VALUES ('20120731005301');
+
+INSERT INTO schema_migrations (version) VALUES ('20120731074000');
+
+INSERT INTO schema_migrations (version) VALUES ('20120802001001');
+
+INSERT INTO schema_migrations (version) VALUES ('20120803164000');
+
+INSERT INTO schema_migrations (version) VALUES ('20120803182300');
+
+INSERT INTO schema_migrations (version) VALUES ('20120804122700');
+
+INSERT INTO schema_migrations (version) VALUES ('20120806120400');
+
+INSERT INTO schema_migrations (version) VALUES ('20120820164000');
+
+INSERT INTO schema_migrations (version) VALUES ('20120905093300');
+
+INSERT INTO schema_migrations (version) VALUES ('20120905171300');
+
+INSERT INTO schema_migrations (version) VALUES ('20120911160000');
+
+INSERT INTO schema_migrations (version) VALUES ('20120911230000');
+
+INSERT INTO schema_migrations (version) VALUES ('20120911230001');
+
+INSERT INTO schema_migrations (version) VALUES ('20120913143800');
+
+INSERT INTO schema_migrations (version) VALUES ('20120915012000');
+
+INSERT INTO schema_migrations (version) VALUES ('20120915012001');
+
+INSERT INTO schema_migrations (version) VALUES ('20120915150000');
+
+INSERT INTO schema_migrations (version) VALUES ('20121015002500');
+
+INSERT INTO schema_migrations (version) VALUES ('20121015002501');
+
+INSERT INTO schema_migrations (version) VALUES ('20121017040100');
+
+INSERT INTO schema_migrations (version) VALUES ('20121017040200');
+
+INSERT INTO schema_migrations (version) VALUES ('20121018201301');
+
+INSERT INTO schema_migrations (version) VALUES ('20121018203728');
+
+INSERT INTO schema_migrations (version) VALUES ('20121018210156');
+
+INSERT INTO schema_migrations (version) VALUES ('20121125122700');
+
+INSERT INTO schema_migrations (version) VALUES ('20121125122701');
+
+INSERT INTO schema_migrations (version) VALUES ('20121222125200');
+
+INSERT INTO schema_migrations (version) VALUES ('20121222125300');
+
+INSERT INTO schema_migrations (version) VALUES ('20121222140200');
+
+INSERT INTO schema_migrations (version) VALUES ('20121223162300');
+
+INSERT INTO schema_migrations (version) VALUES ('20130107165057');
+
+INSERT INTO schema_migrations (version) VALUES ('20130115125836');
+
+INSERT INTO schema_migrations (version) VALUES ('20130115145728');
+
+INSERT INTO schema_migrations (version) VALUES ('20130125002600');
+
+INSERT INTO schema_migrations (version) VALUES ('20130125171100');
+
+INSERT INTO schema_migrations (version) VALUES ('20130129142703');
+
+INSERT INTO schema_migrations (version) VALUES ('20130208135800');
+
+INSERT INTO schema_migrations (version) VALUES ('20130208135801');
+
+INSERT INTO schema_migrations (version) VALUES ('20130306154311');
+
+INSERT INTO schema_migrations (version) VALUES ('20130311211101');
+
+INSERT INTO schema_migrations (version) VALUES ('20130327100801');
+
+INSERT INTO schema_migrations (version) VALUES ('20130418101437');
+
+INSERT INTO schema_migrations (version) VALUES ('20130418103306');
+
+INSERT INTO schema_migrations (version) VALUES ('20130504230850');
+
+INSERT INTO schema_migrations (version) VALUES ('20130505023259');
+
+INSERT INTO schema_migrations (version) VALUES ('20130521115725');
+
+INSERT INTO schema_migrations (version) VALUES ('20130521133050');
+
+INSERT INTO schema_migrations (version) VALUES ('20130521134224');
+
+INSERT INTO schema_migrations (version) VALUES ('20130521134800');
+
+INSERT INTO schema_migrations (version) VALUES ('20130521141357');
+
+INSERT INTO schema_migrations (version) VALUES ('20130618084205');
+
+INSERT INTO schema_migrations (version) VALUES ('20130629122945');
+
+INSERT INTO schema_migrations (version) VALUES ('20130629133531');
+
+INSERT INTO schema_migrations (version) VALUES ('20130629174449');
+
+INSERT INTO schema_migrations (version) VALUES ('20130701175200');
+
+INSERT INTO schema_migrations (version) VALUES ('20130702123456');
+
+INSERT INTO schema_migrations (version) VALUES ('20130702144325');
+
+INSERT INTO schema_migrations (version) VALUES ('20130705123456');
+
+INSERT INTO schema_migrations (version) VALUES ('20130707164854');
+
+INSERT INTO schema_migrations (version) VALUES ('20130709185200');
+
+INSERT INTO schema_migrations (version) VALUES ('20130709233500');
+
+INSERT INTO schema_migrations (version) VALUES ('20130710000745');
+
+INSERT INTO schema_migrations (version) VALUES ('20130726101124');
+
+INSERT INTO schema_migrations (version) VALUES ('20130901183019');
+
+INSERT INTO schema_migrations (version) VALUES ('20130909203321');
+
+INSERT INTO schema_migrations (version) VALUES ('20130910184823');
+
+INSERT INTO schema_migrations (version) VALUES ('20130916101056');
+
+INSERT INTO schema_migrations (version) VALUES ('20130920135744');
+
+INSERT INTO schema_migrations (version) VALUES ('20131104101056');
+
+INSERT INTO schema_migrations (version) VALUES ('20131109101056');
+
+INSERT INTO schema_migrations (version) VALUES ('20140120225125');
+
+INSERT INTO schema_migrations (version) VALUES ('20140121003026');
+
+INSERT INTO schema_migrations (version) VALUES ('20140204220926');
+
+INSERT INTO schema_migrations (version) VALUES ('20140210003014');
+
+INSERT INTO schema_migrations (version) VALUES ('20140210012509');
+
+INSERT INTO schema_migrations (version) VALUES ('20140612131826');
+
+INSERT INTO schema_migrations (version) VALUES ('20140827121945');
+
+INSERT INTO schema_migrations (version) VALUES ('20150121135400');
+
+INSERT INTO schema_migrations (version) VALUES ('20150121135401');
+
+INSERT INTO schema_migrations (version) VALUES ('20150204144312');
+
+INSERT INTO schema_migrations (version) VALUES ('20150210170900');
+
+INSERT INTO schema_migrations (version) VALUES ('20150223125700');
+
+INSERT INTO schema_migrations (version) VALUES ('20150311020321');
+
+INSERT INTO schema_migrations (version) VALUES ('20150316020321');
+
+INSERT INTO schema_migrations (version) VALUES ('20150316080321');
+
+INSERT INTO schema_migrations (version) VALUES ('20150316100321');
+
+INSERT INTO schema_migrations (version) VALUES ('20150317004600');
+
+INSERT INTO schema_migrations (version) VALUES ('20150317020321');
+
+INSERT INTO schema_migrations (version) VALUES ('20150317080321');
+
+INSERT INTO schema_migrations (version) VALUES ('20150414001337');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101600');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101601');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101602');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101603');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101604');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101605');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101607');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101608');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101609');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101610');
+
+INSERT INTO schema_migrations (version) VALUES ('20150528101611');
+
+INSERT INTO schema_migrations (version) VALUES ('20150609175200');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143500');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143501');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143502');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143503');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143504');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143505');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143506');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143507');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143508');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143509');
+
+INSERT INTO schema_migrations (version) VALUES ('20150610143510');
+
+INSERT INTO schema_migrations (version) VALUES ('20150615103059');
+
+INSERT INTO schema_migrations (version) VALUES ('20150629231300');
+
+INSERT INTO schema_migrations (version) VALUES ('20150923131400');
+
+INSERT INTO schema_migrations (version) VALUES ('20151112153500');
+
+INSERT INTO schema_migrations (version) VALUES ('20151113111400');
+
+INSERT INTO schema_migrations (version) VALUES ('20151127153500');
+
+INSERT INTO schema_migrations (version) VALUES ('20151127154200');
+
+INSERT INTO schema_migrations (version) VALUES ('20151127154600');
+
+INSERT INTO schema_migrations (version) VALUES ('20151202122200');
+
+INSERT INTO schema_migrations (version) VALUES ('20160107120927');
+
+INSERT INTO schema_migrations (version) VALUES ('20160303165750');
+
+INSERT INTO schema_migrations (version) VALUES ('20160412113020');
+
+INSERT INTO schema_migrations (version) VALUES ('20160412113070');
+
+INSERT INTO schema_migrations (version) VALUES ('20160412121405');
+
+INSERT INTO schema_migrations (version) VALUES ('20160412123900');
+
+INSERT INTO schema_migrations (version) VALUES ('20160414214442');
+
+INSERT INTO schema_migrations (version) VALUES ('20160422104300');
+
+INSERT INTO schema_migrations (version) VALUES ('20160422121400');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510142700');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510144200');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510150300');
+
+INSERT INTO schema_migrations (version) VALUES ('20160510150400');
+
+INSERT INTO schema_migrations (version) VALUES ('20160513074300');
+
+INSERT INTO schema_migrations (version) VALUES ('20160609163600');
+
+INSERT INTO schema_migrations (version) VALUES ('20160623133900');
+
+INSERT INTO schema_migrations (version) VALUES ('20160623133901');
+
+INSERT INTO schema_migrations (version) VALUES ('20160712125400');
+
+INSERT INTO schema_migrations (version) VALUES ('20160819103700');
+
+INSERT INTO schema_migrations (version) VALUES ('20160920220400');
+
+INSERT INTO schema_migrations (version) VALUES ('20161028154600');
+
+INSERT INTO schema_migrations (version) VALUES ('20161101000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20161101000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20161201112200');
+
+INSERT INTO schema_migrations (version) VALUES ('20161201112600');
+
+INSERT INTO schema_migrations (version) VALUES ('20161202000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20161206155800');
+
+INSERT INTO schema_migrations (version) VALUES ('20161221171300');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170211000003');
+
+INSERT INTO schema_migrations (version) VALUES ('20170213124000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170316000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170316000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170318000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170318000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170318000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170322000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170331000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170401000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170401000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170401000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000002');
+
+INSERT INTO schema_migrations (version) VALUES ('20170405000003');
+
+INSERT INTO schema_migrations (version) VALUES ('20170408000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170408000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20170410000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170411000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170419093249');
+
+INSERT INTO schema_migrations (version) VALUES ('20170531125700');
+
+INSERT INTO schema_migrations (version) VALUES ('20170601163700');
+
+INSERT INTO schema_migrations (version) VALUES ('20170601164400');
+
+INSERT INTO schema_migrations (version) VALUES ('20170609174400');
+
+INSERT INTO schema_migrations (version) VALUES ('20170613000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170620144500');
+
+INSERT INTO schema_migrations (version) VALUES ('20170621142300');
+
+INSERT INTO schema_migrations (version) VALUES ('20170713162000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170822171600');
+
+INSERT INTO schema_migrations (version) VALUES ('20170831000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20170911172800');
+
+INSERT INTO schema_migrations (version) VALUES ('20171017104500');
+
+INSERT INTO schema_migrations (version) VALUES ('20171024000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20171025000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20171103000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20171211000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180212000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180213000000');
