@@ -1,7 +1,8 @@
 #!/usr/bin/env rake
 
 require "bundler/setup"
-require "micro_migrations"
+$:.unshift 'lib'
+require 'travis/migrations'
 
 ActiveRecord::Base.schema_format = :sql
 
