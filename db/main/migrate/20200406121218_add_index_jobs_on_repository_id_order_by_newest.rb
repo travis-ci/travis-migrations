@@ -1,4 +1,4 @@
-class AddIndexJobsOnRepositoryIdOrderByNewest < ActiveRecord::Migration[5.2]
+class AddIndexJobsOnRepositoryIdOrderByNewest < ActiveRecord::Migration
     disable_ddl_transaction!
   
     def up

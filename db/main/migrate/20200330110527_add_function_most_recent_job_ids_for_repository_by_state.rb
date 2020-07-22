@@ -1,4 +1,4 @@
-class AddFunctionMostRecentJobIdsForRepositoryByState < ActiveRecord::Migration[5.2]
+class AddFunctionMostRecentJobIdsForRepositoryByState < ActiveRecord::Migration
     def up
       execute """
       CREATE OR REPLACE FUNCTION
