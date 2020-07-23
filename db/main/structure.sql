@@ -86,6 +86,58 @@ CREATE FUNCTION set_updated_at() RETURNS trigger
       END;
       $$;
 
+--
+-- Name: most_recent_job_ids_for_repository_by_state(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION most_recent_job_ids_for_repository_by_state(rid integer, st character varying) RETURNS TABLE(job_id bigint, repository_id integer)
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+    BEGIN
+      RETURN QUERY select j.id, j.repository_id from jobs j where j.repository_id = rid and j.state = st order by j.id desc limit 100;
+    END
+    $$;
+
+
+--
+-- Name: most_recent_job_ids_for_user_repositories_by_states(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION most_recent_job_ids_for_user_repositories_by_states(uid integer, states character varying DEFAULT ''::character varying) RETURNS TABLE(id bigint)
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+    rid int;
+    BEGIN
+      IF states <> '' THEN
+        RETURN QUERY WITH matrix AS (
+          SELECT repository_id, replace(replace(job_state::varchar, '(', ''), ')', '') as job_state
+          FROM permissions p
+          CROSS JOIN (
+            SELECT unnest(regexp_split_to_array(states, ','))
+          ) AS job_state
+          WHERE p.user_id = uid
+        )
+        SELECT recent.id
+        FROM matrix m
+        CROSS JOIN LATERAL (
+          SELECT job_id AS id, repository_id
+          FROM most_recent_job_ids_for_repository_by_state(m.repository_id, m.job_state::varchar)
+        ) AS recent
+        ORDER BY id desc;
+      ELSE
+        for rid in
+          SELECT repository_id
+          FROM permissions
+          WHERE user_id = uid
+          LOOP
+            RETURN QUERY select j.id from jobs j where repository_id = rid order by j.id desc limit 100;
+          END LOOP;
+      END IF;
+    END
+    $$;
+
 
 SET default_tablespace = '';
 
@@ -2367,6 +2419,61 @@ CREATE UNIQUE INDEX subscriptions_owner ON subscriptions USING btree (owner_id, 
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
 
+--
+-- Name: index_booting_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_booting_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'booting'::text);
+
+--
+-- Name: index_canceled_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_canceled_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'canceled'::text);
+
+--
+-- Name: index_created_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_created_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'created'::text);
+
+--
+-- Name: index_errored_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_errored_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'errored'::text);
+
+
+--
+-- Name: index_failed_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_failed_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'failed'::text);
+
+--
+-- Name: index_passed_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_passed_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'passed'::text);
+
+--
+-- Name: index_queued_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_queued_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'queued'::text);
+
+--
+-- Name: index_started_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_started_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'started'::text);
+
+--
+-- Name: index_received_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_received_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'received'::text);
+
 
 --
 -- Name: builds set_updated_at_on_builds; Type: TRIGGER; Schema: public; Owner: -
@@ -2910,3 +3017,14 @@ INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
 
+INSERT INTO schema_migrations (version) VALUES ('20200312184018');
+
+INSERT INTO schema_migrations (version) VALUES ('20200316085738');
+
+INSERT INTO schema_migrations (version) VALUES ('20200325115329');
+
+INSERT INTO schema_migrations (version) VALUES ('20200325130013');
+
+INSERT INTO schema_migrations (version) VALUES ('20200330110527');
+
+INSERT INTO schema_migrations (version) VALUES ('20200406121218');
