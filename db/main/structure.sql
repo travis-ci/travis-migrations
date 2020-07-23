@@ -2076,6 +2076,12 @@ CREATE INDEX index_jobs_on_created_at ON jobs USING btree (created_at);
 
 CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON jobs USING btree (owner_id, owner_type, state);
 
+--
+-- Name: index_jobs_on_owner_where_state_running; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_owner_where_state_running ON jobs USING btree (owner_id, owner_type) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+
 
 --
 -- Name: index_jobs_on_source_id; Type: INDEX; Schema: public; Owner: -
@@ -3016,6 +3022,8 @@ INSERT INTO schema_migrations (version) VALUES ('20171211000000');
 INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180501000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20200312184018');
 
