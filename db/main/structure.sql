@@ -2482,6 +2482,81 @@ CREATE INDEX index_received_jobs_on_repository_id_order_by_newest ON jobs USING 
 
 
 --
+-- Name: index_repositories_on_slug_or_names; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_slug_or_names ON repositories USING btree (vcs_slug, owner_name, name) WHERE (invalidated_at IS NULL);
+
+--
+-- Name: index_repositories_on_lower_owner_name_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_lower_owner_name_and_name ON repositories USING btree (lower((owner_name)::text), lower((name)::text)) WHERE (invalidated_at IS NULL);
+
+--
+-- Name: index_repositories_on_last_build_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_last_build_id ON repositories USING btree (last_build_id);
+
+--
+-- Name: index_repositories_on_current_build_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_current_build_id ON repositories USING btree (current_build_id);
+
+--
+-- Name: index_builds_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_builds_on_updated_at ON builds USING btree (updated_at);
+
+--
+-- Name: index_users_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_updated_at ON users USING btree (updated_at);
+
+--
+-- Name: index_repositories_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_updated_at ON repositories USING btree (updated_at);
+
+--
+-- Name: index_organizations_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organizations_on_updated_at ON organizations USING btree (updated_at);
+
+--
+-- Name: index_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC);
+
+--
+-- Name: index_jobs_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_repository_id ON jobs USING btree (repository_id);
+
+
+--
+-- Name: index_jobs_on_commit_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_commit_id ON jobs USING btree (commit_id);
+
+
+--
+-- Name: index_jobs_on_repository_id_where_state_running; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_jobs_on_repository_id_where_state_running ON jobs USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+
+
+--
 -- Name: builds set_updated_at_on_builds; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3036,3 +3111,13 @@ INSERT INTO schema_migrations (version) VALUES ('20200325130013');
 INSERT INTO schema_migrations (version) VALUES ('20200330110527');
 
 INSERT INTO schema_migrations (version) VALUES ('20200406121218');
+
+INSERT INTO schema_migrations (version) VALUES ('20180321102400');
+
+INSERT INTO schema_migrations (version) VALUES ('20180417000000');
+
+INSERT INTO schema_migrations (version) VALUES ('20180606000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20190510121000');
+
+INSERT INTO schema_migrations (version) VALUES ('20200227085737');
