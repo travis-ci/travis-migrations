@@ -2480,13 +2480,6 @@ CREATE INDEX index_started_jobs_on_repository_id_order_by_newest ON jobs USING b
 
 CREATE INDEX index_received_jobs_on_repository_id_order_by_newest ON jobs USING btree (repository_id, id DESC) WHERE ((state)::text = 'received'::text);
 
-
---
--- Name: index_repositories_on_slug_or_names; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_repositories_on_slug_or_names ON repositories USING btree (vcs_slug, owner_name, name) WHERE (invalidated_at IS NULL);
-
 --
 -- Name: index_repositories_on_lower_owner_name_and_name; Type: INDEX; Schema: public; Owner: -
 --
@@ -3098,11 +3091,19 @@ INSERT INTO schema_migrations (version) VALUES ('20180212000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20180213000000');
 
+INSERT INTO schema_migrations (version) VALUES ('20180321102400');
+
+INSERT INTO schema_migrations (version) VALUES ('20180417000000');
+
 INSERT INTO schema_migrations (version) VALUES ('20180501000000');
 
 INSERT INTO schema_migrations (version) VALUES ('20200312184018');
 
 INSERT INTO schema_migrations (version) VALUES ('20200316085738');
+
+INSERT INTO schema_migrations (version) VALUES ('20180606000001');
+
+INSERT INTO schema_migrations (version) VALUES ('20190510121000');
 
 INSERT INTO schema_migrations (version) VALUES ('20200325115329');
 
@@ -3111,13 +3112,3 @@ INSERT INTO schema_migrations (version) VALUES ('20200325130013');
 INSERT INTO schema_migrations (version) VALUES ('20200330110527');
 
 INSERT INTO schema_migrations (version) VALUES ('20200406121218');
-
-INSERT INTO schema_migrations (version) VALUES ('20180321102400');
-
-INSERT INTO schema_migrations (version) VALUES ('20180417000000');
-
-INSERT INTO schema_migrations (version) VALUES ('20180606000001');
-
-INSERT INTO schema_migrations (version) VALUES ('20190510121000');
-
-INSERT INTO schema_migrations (version) VALUES ('20200227085737');
