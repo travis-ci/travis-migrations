@@ -2669,7 +2669,8 @@ CREATE TABLE public.subscriptions (
     canceled_by_id integer,
     status character varying,
     source public.source_type DEFAULT 'unknown'::public.source_type NOT NULL,
-    concurrency integer
+    concurrency integer,
+    has_local_registration boolean
 );
 
 
