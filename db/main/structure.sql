@@ -1924,7 +1924,7 @@ CREATE TABLE public.memberships (
     organization_id integer,
     user_id integer,
     role character varying,
-    build_permissioni boolean
+    build_permission boolean
 );
 
 
