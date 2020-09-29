@@ -1580,6 +1580,7 @@ CREATE TABLE public.deleted_requests (
     config_id integer,
     yaml_config_id integer,
     github_guid text,
+    pull_request_mergeable_state character varying,
     pull_request_mergeable character varying
 );
 
@@ -1935,7 +1936,8 @@ CREATE TABLE public.memberships (
     id integer NOT NULL,
     organization_id integer,
     user_id integer,
-    role character varying
+    role character varying,
+    build_permission boolean
 );
 
 
@@ -2089,7 +2091,8 @@ CREATE TABLE public.permissions (
     push boolean DEFAULT false,
     pull boolean DEFAULT false,
     org_id integer,
-    com_id integer
+    com_id integer,
+    build boolean
 );
 
 
@@ -2466,6 +2469,7 @@ CREATE TABLE public.requests (
     config_id integer,
     yaml_config_id integer,
     github_guid text,
+    pull_request_mergeable_state character varying,
     pull_request_mergeable character varying
 );
 
@@ -5789,6 +5793,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200330110527'),
 ('20200406121218'),
 ('20200424000000'),
-('20200527123653');
+('20200527123653'),
+('20200928143126'),
+('20202427123653');
 
 
