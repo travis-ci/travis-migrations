@@ -2958,7 +2958,8 @@ CREATE TABLE public.users (
     redacted_at timestamp without time zone,
     preferences jsonb DEFAULT '{}'::jsonb,
     vcs_type character varying DEFAULT 'GithubUser'::character varying,
-    vcs_id character varying
+    vcs_id character varying,
+    can_build boolean DEFAULT true
 );
 
 
@@ -5789,6 +5790,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200330110527'),
 ('20200406121218'),
 ('20200424000000'),
-('20200527123653');
+('20200527123653'),
+('20201026220757');
 
 
