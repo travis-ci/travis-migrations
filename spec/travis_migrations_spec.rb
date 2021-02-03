@@ -13,6 +13,7 @@ describe 'Rake tasks' do
       beta_migration_requests
       branches
       broadcasts
+      build_backups
       build_configs
       builds
       cancellations
