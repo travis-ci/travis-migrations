@@ -2993,7 +2993,10 @@ CREATE TABLE public.users (
     redacted_at timestamp without time zone,
     preferences jsonb DEFAULT '{}'::jsonb,
     vcs_type character varying DEFAULT 'GithubUser'::character varying,
-    vcs_id character varying
+    vcs_id character varying,
+    confirmed_at timestamp without time zone,
+    confirmation_sent_at timestamp without time zone,
+    confirmation_token character varying
 );
 
 
@@ -4995,6 +4998,13 @@ CREATE INDEX index_user_utm_params_on_user_id ON public.user_utm_params USING bt
 --
 
 CREATE UNIQUE INDEX index_users_on_com_id ON public.users USING btree (com_id);
+
+
+--
+-- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_confirmation_token ON public.users USING btree (confirmation_token);
 
 
 --
