@@ -2995,7 +2995,7 @@ CREATE TABLE public.users (
     vcs_type character varying DEFAULT 'GithubUser'::character varying,
     vcs_id character varying,
     confirmed_at timestamp without time zone,
-    confirmation_sent_at timestamp without time zone,
+    token_expires_at timestamp without time zone,
     confirmation_token character varying
 );
 
