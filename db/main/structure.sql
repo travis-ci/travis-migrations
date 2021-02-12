@@ -1037,6 +1037,37 @@ ALTER SEQUENCE public.broadcasts_id_seq OWNED BY public.broadcasts.id;
 
 
 --
+-- Name: build_backups; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.build_backups (
+    id bigint NOT NULL,
+    repository_id bigint,
+    file_name character varying,
+    created_at timestamp without time zone
+);
+
+
+--
+-- Name: build_backups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.build_backups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: build_backups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.build_backups_id_seq OWNED BY public.build_backups.id;
+
+
+--
 -- Name: build_configs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3021,6 +3052,13 @@ ALTER TABLE ONLY public.broadcasts ALTER COLUMN id SET DEFAULT nextval('public.b
 
 
 --
+-- Name: build_backups id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.build_backups ALTER COLUMN id SET DEFAULT nextval('public.build_backups_id_seq'::regclass);
+
+
+--
 -- Name: build_configs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3339,6 +3377,14 @@ ALTER TABLE ONLY public.branches
 
 ALTER TABLE ONLY public.broadcasts
     ADD CONSTRAINT broadcasts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: build_backups build_backups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.build_backups
+    ADD CONSTRAINT build_backups_pkey PRIMARY KEY (id);
 
 
 --
@@ -3766,6 +3812,13 @@ CREATE INDEX index_branches_on_repository_id_and_name_and_id ON public.branches 
 --
 
 CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON public.broadcasts USING btree (recipient_id, recipient_type);
+
+
+--
+-- Name: index_build_backups_on_repository_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_build_backups_on_repository_id ON public.build_backups USING btree (repository_id);
 
 
 --
@@ -5795,6 +5848,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200424000000'),
 ('20200527123653'),
 ('20200928143126'),
-('20202427123653');
+('20202427123653'),
+('20210203130200');
 
 
