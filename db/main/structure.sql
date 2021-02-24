@@ -2993,7 +2993,10 @@ CREATE TABLE public.users (
     redacted_at timestamp without time zone,
     preferences jsonb DEFAULT '{}'::jsonb,
     vcs_type character varying DEFAULT 'GithubUser'::character varying,
-    vcs_id character varying
+    vcs_id character varying,
+    confirmed_at timestamp without time zone,
+    token_expires_at timestamp without time zone,
+    confirmation_token character varying
 );
 
 
@@ -4998,6 +5001,13 @@ CREATE UNIQUE INDEX index_users_on_com_id ON public.users USING btree (com_id);
 
 
 --
+-- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_confirmation_token ON public.users USING btree (confirmation_token);
+
+
+--
 -- Name: index_users_on_github_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5849,6 +5859,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200527123653'),
 ('20200928143126'),
 ('20202427123653'),
-('20210203130200');
+('20210203130200'),
+('20210203143155'),
+('20210203143406');
 
 
