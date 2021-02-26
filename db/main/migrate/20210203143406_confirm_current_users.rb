@@ -9,7 +9,7 @@ class ConfirmCurrentUsers < ActiveRecord::Migration[5.2]
   def change
     time_now = Time.zone.now - 21.days
     User.all.in_batches do |users|
-      users.update_all(confirmed_at: time_now, confirmation_sent_at: time_now)
+      users.update_all(confirmed_at: time_now)
     end
   end
 end
