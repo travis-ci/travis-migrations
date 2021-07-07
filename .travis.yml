@@ -6,7 +6,7 @@ services:
 addons:
   - snaps:
     - name: docker
-      channel: latest/beta
+      channel: latest/stable
   - postgresql: "9.6"
 
 cache:
