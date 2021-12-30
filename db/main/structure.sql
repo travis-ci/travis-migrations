@@ -2996,7 +2996,8 @@ CREATE TABLE public.users (
     vcs_id character varying,
     confirmed_at timestamp without time zone,
     token_expires_at timestamp without time zone,
-    confirmation_token character varying
+    confirmation_token character varying,
+    scan_notifications boolean DEFAULT false
 );
 
 
@@ -5861,6 +5862,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20202427123653'),
 ('20210203130200'),
 ('20210203143155'),
-('20210203143406');
+('20210203143406'),
+('20211230111535');
 
 
