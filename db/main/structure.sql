@@ -2279,7 +2279,8 @@ CREATE TABLE public.repositories (
     vcs_id character varying,
     fork boolean,
     vcs_slug character varying,
-    vcs_source_host character varying
+    vcs_source_host character varying,
+    server_type character varying(20)
 );
 
 
