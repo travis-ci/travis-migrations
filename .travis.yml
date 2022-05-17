@@ -11,7 +11,7 @@ cache:
   directories:
     - vendor/bundle
 
-rvm: "2.5.3"
+rvm: "2.7.5"
 
 env:
   - RAILS_ENV=test
@@ -21,6 +21,9 @@ env:
 before_script:
   - cp db/main/structure.sql db/main/structure-original.sql
   - cp config/database.yml.travis config/database.yml
+
+before_install:
+  - gem install bundler:2.3.7
 
 after_success:
   - script/upload_structure.rb

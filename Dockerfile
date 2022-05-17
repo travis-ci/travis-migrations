@@ -24,7 +24,7 @@ RUN which ruby
 
 # gem setup
 RUN apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
-RUN gem install bundler -v 1.17.3
+RUN gem install bundler -v 2.3.7
 RUN bundle install
 
 CMD /bin/bash
