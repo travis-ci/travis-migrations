@@ -9,6 +9,7 @@ WORKDIR /travis-migrations
 RUN apt-get update
 # update to deb 10.8
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+RUN apt-get update
 RUN apt-get install -y wget build-essential bison zlib1g-dev libyaml-dev libssl1.0-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev openssl curl shared-mime-info
 
 # ruby-install
