@@ -1936,6 +1936,7 @@ CREATE TABLE public.jobs (
     com_id integer,
     config_id integer,
     restarted_at timestamp without time zone,
+    restarted_by integer DEFAULT NULL,
     priority integer
 );
 
