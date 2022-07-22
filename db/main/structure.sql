@@ -3021,6 +3021,22 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: audits; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.audits (
+    id integer NOT NULL,
+    owner_id integer NOT NULL,
+    owner_type character varying,
+    created_at timestamp without time zone NOT NULL,
+    change_source character varying,
+    changes jsonb NOT NULL,
+    source_id integer NOT NULL,
+    source_type character varying
+);
+
+
+--
 -- Name: abuses id; Type: DEFAULT; Schema: public; Owner: -
 --
 
