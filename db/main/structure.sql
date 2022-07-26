@@ -3030,7 +3030,7 @@ CREATE TABLE public.audits (
     owner_type character varying,
     created_at timestamp without time zone NOT NULL,
     change_source character varying,
-    changes jsonb NOT NULL,
+    source_changes jsonb NOT NULL,
     source_id integer NOT NULL,
     source_type character varying
 );
