@@ -5,7 +5,7 @@ class CreateAuditsTable < ActiveRecord::Migration[5.2]
       t.string   :owner_type
       t.datetime :created_at
       t.string   :change_source
-      t.json     :changes
+      t.json     :source_changes
       t.integer  :source_id
       t.string   :source_type
     end
