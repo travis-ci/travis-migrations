@@ -1,28 +1,22 @@
-FROM postgres:9.6
+FROM ruby:2.5.3
 
 LABEL maintainer Travis CI GmbH <support+travis-migrations-docker-images@travis-ci.com>
 
-RUN mkdir /travis-migrations
+RUN apt update && \
+    apt install -qq -y --no-install-recommends libgnutls30 && \
+    apt-key adv --fetch-keys 'https://www.postgresql.org/media/keys/ACCC4CF8.asc' && \
+    echo "deb http://apt.postgresql.org/pub/repos/apt stretch-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    apt update && \
+    apt install -qq -y --no-install-recommends --fix-missing \
+                libpq-dev postgresql-client-9.6 && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /travis-migrations
 
-# ruby deps
-RUN apt-get update
-RUN apt-get install -y wget build-essential bison zlib1g-dev libyaml-dev libssl1.0-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev openssl curl shared-mime-info
+COPY Gemfile Gemfile.lock ./
 
-# ruby-install
-RUN wget -O ruby-install-0.6.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.6.1.tar.gz
-RUN tar -xzvf ruby-install-0.6.1.tar.gz
-RUN cd ruby-install-0.6.1/ && make install
-RUN rm -r ruby-install-0.6.1/
-
-# ruby
-COPY . .
-RUN ruby-install --system --no-install-deps ruby `cat .ruby-version`
-RUN which ruby
-
-# gem setup
-RUN apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
-RUN gem install bundler -v 1.17.3
 RUN bundle install
+
+COPY . ./
 
 CMD /bin/bash
