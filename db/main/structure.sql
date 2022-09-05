@@ -1480,6 +1480,7 @@ CREATE TABLE public.deleted_jobs (
     com_id integer,
     config_id integer,
     restarted_at timestamp without time zone,
+    restarted_by integer DEFAULT NULL,
     priority integer
 );
 
@@ -1936,6 +1937,7 @@ CREATE TABLE public.jobs (
     com_id integer,
     config_id integer,
     restarted_at timestamp without time zone,
+    restarted_by integer DEFAULT NULL,
     priority integer
 );
 
@@ -5820,6 +5822,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200330110527'),
 ('20200406121218'),
 ('20200424000000'),
-('20200527123653');
+('20200527123653'),
+('20220610092916'),
+('20220621151453');
 
 
