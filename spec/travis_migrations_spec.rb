@@ -9,6 +9,7 @@ describe 'Rake tasks' do
   let(:expected_main_tables) do
     %w(
       abuses
+      audits
       beta_features
       beta_migration_requests
       branches

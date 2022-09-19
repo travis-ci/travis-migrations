@@ -3023,6 +3023,41 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: audits; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.audits (
+    id integer NOT NULL,
+    owner_id integer NOT NULL,
+    owner_type character varying,
+    created_at timestamp without time zone NOT NULL,
+    change_source character varying,
+    source_changes jsonb NOT NULL,
+    source_id integer NOT NULL,
+    source_type character varying
+);
+
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.audits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.audits_id_seq OWNED BY public.audits.id;
+
+
+--
 -- Name: abuses id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3336,6 +3371,12 @@ ALTER TABLE ONLY public.user_utm_params ALTER COLUMN id SET DEFAULT nextval('pub
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
+
+--
+-- Name: audits id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audits ALTER COLUMN id SET DEFAULT nextval('public.audits_id_seq'::regclass);
 
 --
 -- Name: abuses abuses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
@@ -3727,6 +3768,14 @@ ALTER TABLE ONLY public.user_utm_params
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: audits audits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audits
+    ADD CONSTRAINT audits_pkey PRIMARY KEY (id);
 
 
 --
