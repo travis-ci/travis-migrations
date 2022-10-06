@@ -5,6 +5,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -897,6 +898,41 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: audits; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.audits (
+    id bigint NOT NULL,
+    owner_id integer,
+    owner_type character varying,
+    created_at timestamp without time zone,
+    change_source character varying,
+    source_changes json,
+    source_id integer,
+    source_type character varying
+);
+
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.audits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.audits_id_seq OWNED BY public.audits.id;
+
+
+--
 -- Name: beta_features; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1041,8 +1077,8 @@ ALTER SEQUENCE public.broadcasts_id_seq OWNED BY public.broadcasts.id;
 --
 
 CREATE TABLE public.build_backups (
-    id bigint NOT NULL,
-    repository_id bigint,
+    id integer NOT NULL,
+    repository_id integer,
     file_name character varying,
     created_at timestamp without time zone
 );
@@ -1479,8 +1515,8 @@ CREATE TABLE public.deleted_jobs (
     com_id integer,
     config_id integer,
     restarted_at timestamp without time zone,
-    restarted_by integer DEFAULT NULL,
-    priority integer
+    priority integer,
+    restarted_by integer
 );
 
 
@@ -1612,7 +1648,6 @@ CREATE TABLE public.deleted_requests (
     config_id integer,
     yaml_config_id integer,
     github_guid text,
-    pull_request_mergeable_state character varying,
     pull_request_mergeable character varying
 );
 
@@ -1937,8 +1972,8 @@ CREATE TABLE public.jobs (
     com_id integer,
     config_id integer,
     restarted_at timestamp without time zone,
-    restarted_by integer DEFAULT NULL,
-    priority integer
+    priority integer,
+    restarted_by integer
 );
 
 
@@ -2503,7 +2538,6 @@ CREATE TABLE public.requests (
     config_id integer,
     yaml_config_id integer,
     github_guid text,
-    pull_request_mergeable_state character varying,
     pull_request_mergeable character varying
 );
 
@@ -3023,38 +3057,10 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: audits; Type: TABLE; Schema: public; Owner: -
+-- Name: abuses id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-CREATE TABLE public.audits (
-    id integer NOT NULL,
-    owner_id integer NOT NULL,
-    owner_type character varying,
-    created_at timestamp without time zone NOT NULL,
-    change_source character varying,
-    source_changes jsonb NOT NULL,
-    source_id integer NOT NULL,
-    source_type character varying
-);
-
-
---
--- Name: audits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.audits_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: audits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.audits_id_seq OWNED BY public.audits.id;
+ALTER TABLE ONLY public.abuses ALTER COLUMN id SET DEFAULT nextval('public.abuses_id_seq'::regclass);
 
 
 --
@@ -3921,13 +3927,6 @@ CREATE INDEX index_branches_on_repository_id_and_name_and_id ON public.branches 
 --
 
 CREATE INDEX index_broadcasts_on_recipient_id_and_recipient_type ON public.broadcasts USING btree (recipient_id, recipient_type);
-
-
---
--- Name: index_build_backups_on_repository_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_build_backups_on_repository_id ON public.build_backups USING btree (repository_id);
 
 
 --
@@ -5967,6 +5966,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20202427123653'),
 ('20210203130200'),
 ('20210203143155'),
-('20210203143406');
+('20210203143406'),
+('20210614140633'),
+('20220621151453'),
+('20220722162400');
 
 
