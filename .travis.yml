@@ -35,6 +35,7 @@ jobs:
         - bundle exec rspec spec
         - script/validate_structure_file.rb db/main/structure-original.sql
     - stage: "Ship to Quay.io"
+      language: bash
       before_script: echo skip
       after_success: echo skip
       script: make ship

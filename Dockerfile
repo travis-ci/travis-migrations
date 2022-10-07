@@ -25,6 +25,6 @@ RUN which ruby
 # gem setup
 RUN apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
 RUN gem install bundler -v 2.3.7
-RUN bundle install
+RUN bundle install && rm -f /usr/local/bin/gosu
 
 CMD /bin/bash
