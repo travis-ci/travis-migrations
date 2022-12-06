@@ -21,6 +21,7 @@ describe 'Rake tasks' do
       commits
       coupons
       crons
+      custom_keys
       deleted_builds
       deleted_stages
       deleted_jobs

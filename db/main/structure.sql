@@ -1375,6 +1375,44 @@ ALTER SEQUENCE public.crons_id_seq OWNED BY public.crons.id;
 
 
 --
+-- Name: custom_keys; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.custom_keys (
+    id integer NOT NULL,
+    owner_id integer NOT NULL,
+    owner_type character varying,
+    name character varying,
+    private_key character varying,
+    public_key character varying,
+    fingerprint character varying,
+    description text,
+    added_by integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: custom_keys_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.custom_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: custom_keys_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.custom_keys_id_seq OWNED BY public.custom_keys.id;
+
+
+--
 -- Name: deleted_build_configs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3141,6 +3179,13 @@ ALTER TABLE ONLY public.crons ALTER COLUMN id SET DEFAULT nextval('public.crons_
 
 
 --
+-- Name: custom_keys id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_keys ALTER COLUMN id SET DEFAULT nextval('public.custom_keys_id_seq'::regclass);
+
+
+--
 -- Name: email_unsubscribes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3488,6 +3533,14 @@ ALTER TABLE ONLY public.coupons
 
 ALTER TABLE ONLY public.crons
     ADD CONSTRAINT crons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: custom_keys custom_keys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_keys
+    ADD CONSTRAINT custom_keys_pkey PRIMARY KEY (id);
 
 
 --
