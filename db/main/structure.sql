@@ -2848,7 +2848,8 @@ CREATE TABLE public.tokens (
     user_id integer,
     token character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    purpose integer DEFAULT 0
 );
 
 
@@ -5962,6 +5963,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210203143406'),
 ('20210614140633'),
 ('20220621151453'),
-('20220722162400');
+('20220722162400'),
+('20220825140522'),
+('20221214171030');
 
 
