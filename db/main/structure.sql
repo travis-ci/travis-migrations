@@ -5,6 +5,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -929,6 +930,41 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: audits; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.audits (
+    id bigint NOT NULL,
+    owner_id integer,
+    owner_type character varying,
+    created_at timestamp without time zone,
+    change_source character varying,
+    source_changes json,
+    source_id integer,
+    source_type character varying
+);
+
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.audits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.audits_id_seq OWNED BY public.audits.id;
+
+
+--
 -- Name: beta_features; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1066,6 +1102,37 @@ CREATE SEQUENCE public.broadcasts_id_seq
 --
 
 ALTER SEQUENCE public.broadcasts_id_seq OWNED BY public.broadcasts.id;
+
+
+--
+-- Name: build_backups; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.build_backups (
+    id integer NOT NULL,
+    repository_id integer,
+    file_name character varying,
+    created_at timestamp without time zone
+);
+
+
+--
+-- Name: build_backups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.build_backups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: build_backups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.build_backups_id_seq OWNED BY public.build_backups.id;
 
 
 --
@@ -1969,7 +2036,8 @@ CREATE TABLE public.memberships (
     id integer NOT NULL,
     organization_id integer,
     user_id integer,
-    role character varying
+    role character varying,
+    build_permission boolean
 );
 
 
@@ -2123,7 +2191,8 @@ CREATE TABLE public.permissions (
     push boolean DEFAULT false,
     pull boolean DEFAULT false,
     org_id integer,
-    com_id integer
+    com_id integer,
+    build boolean
 );
 
 
@@ -2279,7 +2348,8 @@ CREATE TABLE public.repositories (
     vcs_id character varying,
     fork boolean,
     vcs_slug character varying,
-    vcs_source_host character varying
+    vcs_source_host character varying,
+    server_type character varying(20)
 );
 
 
@@ -2703,7 +2773,8 @@ CREATE TABLE public.subscriptions (
     canceled_by_id integer,
     status character varying,
     source public.source_type DEFAULT 'unknown'::public.source_type NOT NULL,
-    concurrency integer
+    concurrency integer,
+    has_local_registration boolean
 );
 
 
@@ -2991,7 +3062,10 @@ CREATE TABLE public.users (
     redacted_at timestamp without time zone,
     preferences jsonb DEFAULT '{}'::jsonb,
     vcs_type character varying DEFAULT 'GithubUser'::character varying,
-    vcs_id character varying
+    vcs_id character varying,
+    confirmed_at timestamp without time zone,
+    token_expires_at timestamp without time zone,
+    confirmation_token character varying
 );
 
 
@@ -3022,6 +3096,13 @@ ALTER TABLE ONLY public.abuses ALTER COLUMN id SET DEFAULT nextval('public.abuse
 
 
 --
+-- Name: audits id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audits ALTER COLUMN id SET DEFAULT nextval('public.audits_id_seq'::regclass);
+
+
+--
 -- Name: beta_features id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3047,6 +3128,13 @@ ALTER TABLE ONLY public.branches ALTER COLUMN id SET DEFAULT nextval('public.bra
 --
 
 ALTER TABLE ONLY public.broadcasts ALTER COLUMN id SET DEFAULT nextval('public.broadcasts_id_seq'::regclass);
+
+
+--
+-- Name: build_backups id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.build_backups ALTER COLUMN id SET DEFAULT nextval('public.build_backups_id_seq'::regclass);
 
 
 --
@@ -3339,6 +3427,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
+-- Name: audits audits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.audits
+    ADD CONSTRAINT audits_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: beta_features beta_features_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3368,6 +3464,14 @@ ALTER TABLE ONLY public.branches
 
 ALTER TABLE ONLY public.broadcasts
     ADD CONSTRAINT broadcasts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: build_backups build_backups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.build_backups
+    ADD CONSTRAINT build_backups_pkey PRIMARY KEY (id);
 
 
 --
@@ -4974,6 +5078,13 @@ CREATE UNIQUE INDEX index_users_on_com_id ON public.users USING btree (com_id);
 
 
 --
+-- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_confirmation_token ON public.users USING btree (confirmation_token);
+
+
+--
 -- Name: index_users_on_github_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5823,7 +5934,14 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200406121218'),
 ('20200424000000'),
 ('20200527123653'),
+('20200928143126'),
+('20202427123653'),
+('20210203130200'),
+('20210203143155'),
+('20210203143406'),
+('20210614140633'),
 ('20220610092916'),
-('20220621151453');
+('20220621151453'),
+('20220722162400');
 
 
