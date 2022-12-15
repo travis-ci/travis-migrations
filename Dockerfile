@@ -1,4 +1,4 @@
-FROM postgres:9.6
+FROM postgres:12
 
 LABEL maintainer Travis CI GmbH <support+travis-migrations-docker-images@travis-ci.com>
 
@@ -9,7 +9,7 @@ WORKDIR /travis-migrations
 RUN apt-get update
 # update to deb 10.8
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-RUN apt-get install -y wget build-essential bison zlib1g-dev libyaml-dev libssl1.0-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev openssl curl shared-mime-info
+RUN apt-get install -y wget build-essential bison zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev openssl curl shared-mime-info
 
 # ruby-install
 RUN wget -O ruby-install-0.6.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.6.1.tar.gz
