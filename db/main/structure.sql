@@ -2356,7 +2356,8 @@ CREATE TABLE public.repositories (
     vcs_slug character varying,
     vcs_source_host character varying,
     server_type character varying(20),
-    scan_failed_at timestamp without time zone
+    scan_failed_at timestamp without time zone,
+    clone_url character varying
 );
 
 
@@ -5967,6 +5968,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220722162400'),
 ('20220825140522'),
 ('20220905144600'),
-('20221214171030');
+('20221214171030'),
+('20230208161446');
 
 
