@@ -2657,7 +2657,8 @@ ALTER SEQUENCE public.requests_id_seq OWNED BY public.requests.id;
 CREATE TABLE public.role_names (
     id bigint NOT NULL,
     name character varying,
-    description character varying
+    description character varying,
+    role_type character varying
 );
 
 
