@@ -1,13 +1,14 @@
-version: '3'
-
 services:
   postgres_travis_migrations:
-    image: 'postgres:9.6-alpine'
-    environment:
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: ''
-      POSTGRES_DB: 'travis_test'
-    ports:
-      - '5431:5432'
+    image: postgres:9.6-alpine
+    restart: always
     volumes:
-      - './.db_travis_test:/var/lib/postgresql/data'
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+volumes:
+  postgres_data:
