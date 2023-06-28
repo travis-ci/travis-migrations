@@ -13,7 +13,7 @@ cache:
   directories:
     - vendor/bundle
 
-rvm: "2.5.3"
+rvm: "2.5.9"
 
 env:
   - RAILS_ENV=test
