@@ -1,4 +1,4 @@
-class AddIndexesForForeignKeys < ActiveRecord::Migration[4.2]
+class AddIndexesForForeignKeys < ActiveRecord::Migration[7.0]
   self.disable_ddl_transaction!
 
   def up
@@ -47,7 +47,7 @@ class AddIndexesForForeignKeys < ActiveRecord::Migration[4.2]
 
   def add_index(table, column, options = {})
     unless index_exists?(table, column)
-      super
+      super(table,column, **options)
     end
   end
 end

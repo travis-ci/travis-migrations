@@ -7,7 +7,7 @@ describe 'set_updated_at trigger' do
     expect($?.exitstatus).to eq 0
   end
 
-  let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result) }
+  let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result, aliases: true) }
   before(:all) do
     run 'rake db:drop db:create db:migrate'
   end

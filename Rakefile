@@ -1,11 +1,14 @@
 #!/usr/bin/env rake
 
+require 'rake/notes/rake_task'
+require 'routes'
 require "bundler/setup"
 $:.unshift 'lib'
 require 'travis/migrations'
 require 'rails/generators/active_record/migration/migration_generator'
 
-ActiveRecord::Base.schema_format = :sql
+
+ActiveRecord.schema_format = :sql
 
 Rails.application.config.paths['db'] = 'db/main'
 Rails.application.config.paths['db/migrate'] = 'db/main/migrate'

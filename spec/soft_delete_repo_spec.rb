@@ -54,7 +54,7 @@ describe 'soft delete repo' do
     SoftDeleteRepo::Table.new(table_name, fields)
   end
 
-  let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result) }
+  let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result, aliases: true) }
   before(:all) do
     run 'rake db:drop db:create db:migrate'
   end
