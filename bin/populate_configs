@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-STDOUT.sync = true
+$stdout.sync = true
 
 require 'digest/sha1'
 require 'erb'
@@ -13,13 +14,12 @@ ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
 
 start = 0
 batch = 100_000
-total = 1_000_000
 pause = nil
 
 ARGV.options do |o|
   o.on('-s', '--start=START', Integer) { |v| start = v }
   o.on('-b', '--batch=BATCH', Integer) { |v| batch = v }
-  o.on('-c', '--count=COUNT', Integer) { |v| count = v }
+  o.on('-c', '--count=COUNT', Integer) { |v| v }
   o.on('-p', '--pause=PAUSE', Integer) { |v| pause = v.to_f / 1000 }
   o.parse!
 end

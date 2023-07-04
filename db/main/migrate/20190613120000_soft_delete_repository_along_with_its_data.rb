@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SoftDeleteRepositoryAlongWithItsData < ActiveRecord::Migration[5.2]
   def up
     execute 'create table if not exists deleted_builds (like builds)'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails'
 require 'active_record/railtie'
 require 'travis/postgres_version'

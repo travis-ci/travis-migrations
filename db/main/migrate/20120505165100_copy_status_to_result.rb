@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CopyStatusToResult < ActiveRecord::Migration[4.2]
   def self.up
     add_column :builds, :result, :integer

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddMoreDeletedTables < ActiveRecord::Migration[5.2]
   def up
     execute 'create table if not exists deleted_request_raw_configs (like request_raw_configs)'

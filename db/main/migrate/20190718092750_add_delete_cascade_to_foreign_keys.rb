@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddDeleteCascadeToForeignKeys < ActiveRecord::Migration[5.2]
   def up
     execute 'ALTER TABLE builds ADD CONSTRAINT fk_new_builds_on_repository_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE NOT VALID'

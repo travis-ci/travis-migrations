@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddServerTypeToRepositories < ActiveRecord::Migration[5.2]
   def change
     add_column :repositories, :server_type, :string, limit: 20

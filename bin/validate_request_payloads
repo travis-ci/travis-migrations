@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'active_record'
 require 'erb'
 require 'yaml'
 require 'optparse'
 
-STDOUT.sync = true
+$stdout.sync = true
 
 config = YAML.load(ERB.new(File.read('config/database.yml')).result)
 ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
@@ -36,7 +37,7 @@ end
 start.step(total, batch) do |min|
   max = min + batch - 1
   print "Validating payloads for requests #{min} - #{max} ... "
-  sql = format(SQL, min, max)
+  format(SQL, min, max)
   cnt = conn.select_values(format(SQL, min, max)).first.to_i
   puts "#{cnt} requests with missing request_payloads"
 end

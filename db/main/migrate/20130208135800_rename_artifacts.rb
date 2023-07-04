@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameArtifacts < ActiveRecord::Migration[4.2]
   def change
     rename_table :artifacts, :artifacts_backup

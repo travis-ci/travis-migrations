@@ -1,14 +1,17 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'spec_helper'
 require 'yaml'
 
 describe 'soft delete repo' do
   def run(cmd)
     system "RAILS_ENV=test bundle exec #{cmd} > /dev/null"
-    expect($?.exitstatus).to eq 0
+    expect($CHILD_STATUS.exitstatus).to eq 0
   end
 
   module SoftDeleteRepo
-    class Table < Struct.new(:name, :fields)
+    Table = Struct.new(:name, :fields) do
       def matches_fields?(other)
         (fields - other.fields).empty? and (other.fields - fields).empty?
       end

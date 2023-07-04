@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddIndexJobsOnRepositoryIdOrderByNewest < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 

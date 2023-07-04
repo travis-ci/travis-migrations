@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameTasksToJobs < ActiveRecord::Migration[4.2]
   def up
     rename_table :tasks, :jobs

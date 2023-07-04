@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddConstraintsToMultipleTables < ActiveRecord::Migration[4.2]
   def up
     execute 'ALTER TABLE repositories ADD CONSTRAINT fk_repositories_on_current_build_id FOREIGN KEY (current_build_id) REFERENCES builds(id) ON DELETE SET NULL NOT VALID'

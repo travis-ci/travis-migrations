@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class CreateRepoCountsTriggers < ActiveRecord::Migration[4.2]
   FILES = %w[
     repo_counts_triggers.sql
     repo_counts_populate.sql
     repo_counts_aggregate.sql
-  ]
+  ].freeze
 
   def up
     execute with_cutoff(sql)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DropFkRepositoriesCurrentBuildId < ActiveRecord::Migration[4.2]
   def up
     execute 'ALTER TABLE repositories DROP CONSTRAINT fk_repositories_current_build_id'

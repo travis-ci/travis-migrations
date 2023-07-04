@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ValidateConstraints < ActiveRecord::Migration[4.2]
   def up
     execute 'ALTER TABLE repositories VALIDATE CONSTRAINT fk_repositories_on_current_build_id'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DropIndexOnRepositoriesBuildsAndCommits < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 

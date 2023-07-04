@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddNextRunLastRunToCrons < ActiveRecord::Migration[4.2]
   def up
     unless column_exists? :crons, :next_run

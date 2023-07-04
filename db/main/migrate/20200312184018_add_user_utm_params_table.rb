@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUserUtmParamsTable < ActiveRecord::Migration[5.2]
   def up
     create_table :user_utm_params do |t|

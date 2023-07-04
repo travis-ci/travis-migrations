@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 path_to_structure = ARGV[0] || 'db/main/structure.sql'
 path = File.expand_path("../../#{path_to_structure}", __FILE__)

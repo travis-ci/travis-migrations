@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'spec_helper'
 require 'yaml'
 require 'rake/notes/rake_task'
@@ -84,7 +87,7 @@ describe 'Rake tasks' do
 
   def run(cmd)
     system "RAILS_ENV=test bundle exec #{cmd}  > migration.log"
-    expect($?.exitstatus).to eq 0
+    expect($CHILD_STATUS.exitstatus).to eq 0
   end
 
   describe 'rake db:create' do

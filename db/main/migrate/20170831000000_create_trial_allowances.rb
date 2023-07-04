@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTrialAllowances < ActiveRecord::Migration[4.2]
   def change
     create_table :trial_allowances do |t|

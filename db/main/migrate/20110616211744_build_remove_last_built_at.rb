@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildRemoveLastBuiltAt < ActiveRecord::Migration[4.2]
   def self.up
     change_table :repositories do |t|

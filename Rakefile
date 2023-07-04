@@ -1,9 +1,10 @@
 #!/usr/bin/env rake
+# frozen_string_literal: true
 
 require 'rake/notes/rake_task'
 require 'routes'
 require 'bundler/setup'
-$:.unshift 'lib'
+$LOAD_PATH.unshift 'lib'
 require 'travis/migrations'
 require 'rails/generators/active_record/migration/migration_generator'
 

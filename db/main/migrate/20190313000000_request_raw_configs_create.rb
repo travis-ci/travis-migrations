@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RequestRawConfigsCreate < ActiveRecord::Migration[4.2]
   def change
     create_table :request_raw_configs do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateSoftDelete < ActiveRecord::Migration[5.2]
   def up
     execute 'create table deleted_request_yaml_configs (like request_yaml_configs)'

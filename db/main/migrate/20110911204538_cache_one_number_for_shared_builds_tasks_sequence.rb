@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CacheOneNumberForSharedBuildsTasksSequence < ActiveRecord::Migration[4.2]
   def up
     # From http://www.postgresql.org/docs/8.4/static/sql-createsequence.html#AEN58611

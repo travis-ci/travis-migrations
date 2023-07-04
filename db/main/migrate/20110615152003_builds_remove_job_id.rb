@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildsRemoveJobId < ActiveRecord::Migration[4.2]
   def self.up
     change_table :builds do |t|

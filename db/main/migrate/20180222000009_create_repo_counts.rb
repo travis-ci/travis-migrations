@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateRepoCounts < ActiveRecord::Migration[4.2]
   def up
     create_table :repo_counts, id: false do |t|

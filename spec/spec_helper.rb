@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV.delete('DATABASE_URL')
 
 require 'active_record'
