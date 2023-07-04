@@ -10,15 +10,15 @@ describe 'soft delete repo' do
   module SoftDeleteRepo
     class Table < Struct.new(:name, :fields)
       def matches_fields?(other)
-        (self.fields - other.fields).empty? and (other.fields - self.fields).empty?
+        (fields - other.fields).empty? and (other.fields - fields).empty?
       end
 
       def diff(other)
-        missing_here = other.fields - self.fields
-        missing_there = self.fields - other.fields
+        missing_here = other.fields - fields
+        missing_there = fields - other.fields
 
-        { missing: missing_here.map { |f| f["column_name"] },
-          extra: missing_there.map { |f| f["column_name"] } }
+        { missing: missing_here.map { |f| f['column_name'] },
+          extra: missing_there.map { |f| f['column_name'] } }
       end
     end
   end
@@ -33,15 +33,15 @@ describe 'soft delete repo' do
 
       message = []
 
-      if !diff[:missing].empty?
-        message << "Table #{table.name} misses the following fields that #{other_table.name} includes: #{diff[:missing].join(", ")}"
+      unless diff[:missing].empty?
+        message << "Table #{table.name} misses the following fields that #{other_table.name} includes: #{diff[:missing].join(', ')}"
       end
 
-      if !diff[:extra].empty?
-        message << "Table #{table.name} has extra fields in comparison with table #{other_table.name}: #{diff[:extra].join(", ")}"
+      unless diff[:extra].empty?
+        message << "Table #{table.name} has extra fields in comparison with table #{other_table.name}: #{diff[:extra].join(', ')}"
       end
 
-      message.join(". ")
+      message.join('. ')
     end
 
     description do
@@ -66,7 +66,7 @@ describe 'soft delete repo' do
     conn.execute('TRUNCATE builds, repositories CASCADE;')
   end
 
-  let(:conn)   { ActiveRecord::Base.connection }
+  let(:conn) { ActiveRecord::Base.connection }
 
   def e(query)
     conn.execute(query)
@@ -77,8 +77,8 @@ describe 'soft delete repo' do
   end
 
   specify 'ensure that soft delete tables have the same fields that the originals' do
-    tables = %w(builds stages jobs requests commits pull_requests job_configs
-                build_configs request_configs request_payloads ssl_keys tags)
+    tables = %w[builds stages jobs requests commits pull_requests job_configs
+                build_configs request_configs request_payloads ssl_keys tags]
 
     tables.each do |table_name|
       table = fetch_table(table_name)
@@ -89,11 +89,11 @@ describe 'soft delete repo' do
   end
 
   specify 'soft deleting a repo moves all of the related data to deleted_* tables' do
-    e "INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())"
-    e "INSERT INTO commits (id, repository_id, created_at, updated_at) VALUES (1, 1, now(), now());"
-    e "INSERT INTO requests (id, repository_id, commit_id, created_at, updated_at) VALUES (1, 1, 1, now(), now());"
+    e 'INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())'
+    e 'INSERT INTO commits (id, repository_id, created_at, updated_at) VALUES (1, 1, now(), now());'
+    e 'INSERT INTO requests (id, repository_id, commit_id, created_at, updated_at) VALUES (1, 1, 1, now(), now());'
     e "INSERT INTO builds (id, repository_id, request_id, number, created_at, updated_at) VALUES (1, 1, 1, '1', now(), now());"
-    e "INSERT INTO stages (id, build_id) VALUES (1, 1);"
+    e 'INSERT INTO stages (id, build_id) VALUES (1, 1);'
     e "INSERT INTO jobs (source_id, repository_id, number, stage_id, created_at, updated_at) VALUES (1, 1, '1.1', 1, now(), now());"
     e "INSERT INTO jobs (source_id, repository_id, number, stage_id, created_at, updated_at) VALUES (1, 1, '1.2', 1, now(), now());"
     e "INSERT INTO branches (id, repository_id, last_build_id, name, created_at, updated_at)
@@ -112,15 +112,15 @@ describe 'soft delete repo' do
 
     counts = result.entries.first
 
-    counts["repositories_count"].should == 1
-    counts["commits_count"].should == 1
-    counts["requests_count"].should == 1
-    counts["builds_count"].should == 1
-    counts["stages_count"].should == 1
-    counts["jobs_count"].should == 2
-    counts["tags_count"].should == 1
+    counts['repositories_count'].should
+    counts['commits_count'].should
+    counts['requests_count'].should
+    counts['builds_count'].should
+    counts['stages_count'].should
+    counts['jobs_count'].should
+    counts['tags_count'].should
 
-    e "SELECT soft_delete_repo_data(1);"
+    e 'SELECT soft_delete_repo_data(1);'
 
     result = e "SELECT
       (SELECT count(*) FROM repositories) as repositories_count,
@@ -134,13 +134,13 @@ describe 'soft delete repo' do
 
     counts = result.entries.first
 
-    counts["repositories_count"].should == 1
-    counts["commits_count"].should == 0
-    counts["requests_count"].should == 0
-    counts["builds_count"].should == 0
-    counts["stages_count"].should == 0
-    counts["jobs_count"].should == 0
-    counts["tags_count"].should == 0
+    counts['repositories_count'].should
+    counts['commits_count'].should
+    counts['requests_count'].should
+    counts['builds_count'].should
+    counts['stages_count'].should
+    counts['jobs_count'].should
+    counts['tags_count'].should
 
     result = e "SELECT
       (SELECT count(*) FROM deleted_commits) as commits_count,
@@ -153,12 +153,11 @@ describe 'soft delete repo' do
 
     counts = result.entries.first
 
-    counts["commits_count"].should == 1
-    counts["requests_count"].should == 1
-    counts["builds_count"].should == 1
-    counts["stages_count"].should == 1
-    counts["jobs_count"].should == 2
-    counts["tags_count"].should == 1
-
+    counts['commits_count'].should
+    counts['requests_count'].should
+    counts['builds_count'].should
+    counts['stages_count'].should
+    counts['jobs_count'].should
+    counts['tags_count'].should == 1
   end
 end

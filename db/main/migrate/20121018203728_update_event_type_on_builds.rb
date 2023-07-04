@@ -8,6 +8,5 @@ class UpdateEventTypeOnBuilds < ActiveRecord::Migration[4.2]
     SQL
   end
 
-  def down
-  end
+  def down; end
 end

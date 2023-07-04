@@ -1,5 +1,5 @@
 class CreateTrials < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
     create_table :trials do |t|
@@ -8,11 +8,11 @@ class CreateTrials < ActiveRecord::Migration[4.2]
       t.string :status, default: 'new'
       t.timestamps null: false
     end
-    execute "CREATE INDEX CONCURRENTLY index_trials_on_owner ON trials(owner_id, owner_type)"
+    execute 'CREATE INDEX CONCURRENTLY index_trials_on_owner ON trials(owner_id, owner_type)'
   end
 
   def down
-    execute "DROP INDEX index_trials_on_owner"
+    execute 'DROP INDEX index_trials_on_owner'
     drop_table :trials
   end
 end

@@ -6,7 +6,7 @@ class CreateBuilds < ActiveRecord::Migration[4.2]
       t.integer    :status
       t.datetime   :started_at
       t.datetime   :finished_at
-      t.text       :log, :default => ''
+      t.text       :log, default: ''
       t.string     :commit
       t.text       :message
       t.datetime   :committed_at

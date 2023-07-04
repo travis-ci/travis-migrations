@@ -11,7 +11,7 @@ config = YAML.load(ERB.new(File.read('config/database.yml')).result)
 ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
 conn = ActiveRecord::Base.connection
 
-SQL = <<~sql
+SQL = <<~SQL
   select count(r.id)
   from requests r
   left outer join request_payloads p on
@@ -20,24 +20,23 @@ SQL = <<~sql
     r.id between %i and %i and
     r.payload is not null and
     p.id is null
-sql
+SQL
 
 start = 0
 batch = 100_000
 total = 115_000_000
 
 ARGV.options do |o|
-  o.on("-s", "--start=START", Integer) { |v| start = v }
-  o.on('-b', "--batch=BATCH", Integer) { |v| batch = v }
-  o.on('-t', "--total=TOTAL", Integer) { |v| total = v }
+  o.on('-s', '--start=START', Integer) { |v| start = v }
+  o.on('-b', '--batch=BATCH', Integer) { |v| batch = v }
+  o.on('-t', '--total=TOTAL', Integer) { |v| total = v }
   o.parse!
 end
 
 start.step(total, batch) do |min|
   max = min + batch - 1
   print "Validating payloads for requests #{min} - #{max} ... "
-  sql = SQL % [min, max]
-  cnt = conn.select_values(SQL % [min, max]).first.to_i
+  sql = format(SQL, min, max)
+  cnt = conn.select_values(format(SQL, min, max)).first.to_i
   puts "#{cnt} requests with missing request_payloads"
 end
-

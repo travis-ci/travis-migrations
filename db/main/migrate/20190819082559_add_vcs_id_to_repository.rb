@@ -4,7 +4,7 @@ class AddVcsIdToRepository < ActiveRecord::Migration[5.2]
   def up
     add_column :repositories, :vcs_id, :string, default: nil
 
-    execute "CREATE INDEX CONCURRENTLY index_repositories_on_vcs_id_and_vcs_type ON repositories (vcs_id, vcs_type);"
+    execute 'CREATE INDEX CONCURRENTLY index_repositories_on_vcs_id_and_vcs_type ON repositories (vcs_id, vcs_type);'
   end
 
   def down

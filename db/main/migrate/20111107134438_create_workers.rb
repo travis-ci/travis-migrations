@@ -7,6 +7,6 @@ class CreateWorkers < ActiveRecord::Migration[4.2]
       t.datetime :last_seen_at
     end
 
-    add_index :workers, [:name, :host]
+    add_index :workers, %i[name host]
   end
 end

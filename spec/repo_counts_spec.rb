@@ -26,13 +26,13 @@ describe 'Repo counts' do
   def select_rows(sql)
     ActiveRecord::Base.connection.select_all(sql).map do |row|
       row.map do |key, value|
-        [key.to_sym, (value.nil? || !value.is_a?(Integer)) ? value.to_i : value]
+        [key.to_sym, value.nil? || !value.is_a?(Integer) ? value.to_i : value]
       end.to_h
     end
   end
 
   def delete_all
-    %w(requests commits pull_requests tags stages jobs builds branches).each do |table|
+    %w[requests commits pull_requests tags stages jobs builds branches].each do |table|
       execute "delete from #{table};"
     end
   end

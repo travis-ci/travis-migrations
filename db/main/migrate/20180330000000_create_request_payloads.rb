@@ -8,7 +8,7 @@ class CreateRequestPayloads < ActiveRecord::Migration[4.2]
     end
 
     add_index :request_payloads, :request_id
-    add_index :request_payloads, [:created_at, :archived]
+    add_index :request_payloads, %i[created_at archived]
   end
 
   def down

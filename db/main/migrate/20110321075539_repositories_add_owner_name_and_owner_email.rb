@@ -4,21 +4,41 @@ require 'json'
 
 class RepositoriesAddOwnerNameAndOwnerEmail < ActiveRecord::Migration[4.2]
   def self.up
-    change_table :repositories do |t|
-      t.string :owner_name
-      t.string :owner_email
-    end rescue nil
+    begin
+      change_table :repositories do |t|
+        t.string :owner_name
+        t.string :owner_email
+      end
+    rescue StandardError
+      nil
+    end
 
-    remove_column :repositories, :username rescue nil
+    begin
+      remove_column :repositories, :username
+    rescue StandardError
+      nil
+    end
   end
 
   def self.down
-    change_table :repositories do |t|
-      t.string :username
-    end rescue nil
+    begin
+      change_table :repositories do |t|
+        t.string :username
+      end
+    rescue StandardError
+      nil
+    end
 
-    remove_column :repositories, :owner_name  rescue nil
-    remove_column :repositories, :owner_email rescue nil
+    begin
+      remove_column :repositories, :owner_name
+    rescue StandardError
+      nil
+    end
+    begin
+      remove_column :repositories, :owner_email
+    rescue StandardError
+      nil
+    end
   end
 
   def self.fetch_owner_email(name)
@@ -34,14 +54,14 @@ class RepositoriesAddOwnerNameAndOwnerEmail < ActiveRecord::Migration[4.2]
     organization = fetch("organizations/#{name}/public_members")
     emails = organization['users'].map { |member| member['email'] }
     emails.select(&:present?).join(',')
-  rescue
+  rescue StandardError
     nil
   end
 
   def self.fetch_user_email(name)
     user = fetch("user/show/#{name}")
     user['user']['email']
-  rescue
+  rescue StandardError
     nil
   end
 
@@ -50,7 +70,7 @@ class RepositoriesAddOwnerNameAndOwnerEmail < ActiveRecord::Migration[4.2]
     puts "puts fetching #{uri}"
     response = Net::HTTP.get_response(uri)
     JSON.parse(response.body)
-  rescue
+  rescue StandardError
     {}
   end
 end

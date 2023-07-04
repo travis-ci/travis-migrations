@@ -1,12 +1,12 @@
 class AddActiveIndexToRepository < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
-    execute "DROP INDEX IF EXISTS index_repositories_on_active"
-    execute "CREATE INDEX CONCURRENTLY index_repositories_on_active ON repositories(active)"
+    execute 'DROP INDEX IF EXISTS index_repositories_on_active'
+    execute 'CREATE INDEX CONCURRENTLY index_repositories_on_active ON repositories(active)'
   end
 
   def down
-    execute "DROP INDEX IF EXISTS index_repositories_on_active"
+    execute 'DROP INDEX IF EXISTS index_repositories_on_active'
   end
 end

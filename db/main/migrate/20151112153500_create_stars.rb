@@ -9,7 +9,6 @@ class CreateStars < ActiveRecord::Migration[4.2]
     add_index :stars, :user_id
   end
 
-
   def self.down
     drop_table :stars
   end

@@ -7,4 +7,3 @@ class ArtifactPartsChangeContentToText < ActiveRecord::Migration[4.2]
     change_column :artifact_parts, :content, :string
   end
 end
-

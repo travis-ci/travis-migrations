@@ -8,7 +8,7 @@ describe 'Rake tasks' do
   let(:tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") }
 
   let(:expected_main_tables) do
-    %w(
+    %w[
       abuses
       audits
       beta_features
@@ -76,7 +76,7 @@ describe 'Rake tasks' do
       users
       ar_internal_metadata
       schema_migrations
-    )
+    ]
   end
 
   before { ActiveRecord::Base.establish_connection(config['test']) }
@@ -95,7 +95,7 @@ describe 'Rake tasks' do
   end
 
   describe 'rake db:schema:load' do
-    it 'loads the main schema'do
+    it 'loads the main schema' do
       run 'rake db:drop db:create db:schema:load'
       expect(tables.sort).to eq expected_main_tables.sort
     end

@@ -4,4 +4,3 @@ class RequestsAddResultAndMessage < ActiveRecord::Migration[4.2]
     add_column :requests, :message, :string
   end
 end
-

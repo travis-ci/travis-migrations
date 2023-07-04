@@ -14,14 +14,14 @@ class AddMultipleJobStateIndexesOrderByNewest < ActiveRecord::Migration[5.2]
   end
 
   def down
-    execute "DROP INDEX CONCURRENTLY index_booting_jobs_on_repository_id_order_by_newest"
-    execute "DROP INDEX CONCURRENTLY index_canceled_jobs_on_repository_id_order_by_newest"
-    execute "DROP INDEX CONCURRENTLY index_created_jobs_on_repository_id_order_by_newest"
-    execute "DROP INDEX CONCURRENTLY index_errored_jobs_on_repository_id_order_by_newest"
-    execute "DROP INDEX CONCURRENTLY index_failed_jobs_on_repository_id_order_by_newest"
-    execute "DROP INDEX CONCURRENTLY index_passed_jobs_on_repository_id_order_by_newest"
-    execute "DROP INDEX CONCURRENTLY index_queued_jobs_on_repository_id_order_by_newest"
-    execute "DROP INDEX CONCURRENTLY index_received_jobs_on_repository_id_order_by_newest"
-    execute "DROP INDEX CONCURRENTLY index_started_jobs_on_repository_id_order_by_newest"
+    execute 'DROP INDEX CONCURRENTLY index_booting_jobs_on_repository_id_order_by_newest'
+    execute 'DROP INDEX CONCURRENTLY index_canceled_jobs_on_repository_id_order_by_newest'
+    execute 'DROP INDEX CONCURRENTLY index_created_jobs_on_repository_id_order_by_newest'
+    execute 'DROP INDEX CONCURRENTLY index_errored_jobs_on_repository_id_order_by_newest'
+    execute 'DROP INDEX CONCURRENTLY index_failed_jobs_on_repository_id_order_by_newest'
+    execute 'DROP INDEX CONCURRENTLY index_passed_jobs_on_repository_id_order_by_newest'
+    execute 'DROP INDEX CONCURRENTLY index_queued_jobs_on_repository_id_order_by_newest'
+    execute 'DROP INDEX CONCURRENTLY index_received_jobs_on_repository_id_order_by_newest'
+    execute 'DROP INDEX CONCURRENTLY index_started_jobs_on_repository_id_order_by_newest'
   end
 end

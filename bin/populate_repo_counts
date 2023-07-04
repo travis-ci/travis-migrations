@@ -30,7 +30,7 @@ shard_start.step(max_id, shard_size) do |min|
 end
 
 now = Time.now
-print "Aggregating repo counts ... "
+print 'Aggregating repo counts ... '
 conn.execute('select agg_all_repo_counts()')
 elapsed = (Time.now - now) / 60
 puts "#{elapsed.round(2)} min"

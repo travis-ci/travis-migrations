@@ -38,4 +38,3 @@ class AddPreviousStatesTriggers < ActiveRecord::Migration[4.2]
     SQL
   end
 end
-

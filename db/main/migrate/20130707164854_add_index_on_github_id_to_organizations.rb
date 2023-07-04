@@ -1,11 +1,11 @@
 class AddIndexOnGithubIdToOrganizations < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
-    execute "CREATE UNIQUE INDEX CONCURRENTLY index_organizations_on_github_id ON organizations(github_id)"
+    execute 'CREATE UNIQUE INDEX CONCURRENTLY index_organizations_on_github_id ON organizations(github_id)'
   end
 
   def down
-    execute "DROP INDEX index_organizations_on_github_id"
+    execute 'DROP INDEX index_organizations_on_github_id'
   end
 end

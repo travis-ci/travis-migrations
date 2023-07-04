@@ -1,7 +1,7 @@
 class AddAdminFlagToUser < ActiveRecord::Migration[4.2]
   def self.up
     change_table(:users) do |t|
-      t.boolean :is_admin, :default => false, :allow_null => false
+      t.boolean :is_admin, default: false, allow_null: false
     end
 
     # User.reset_column_information

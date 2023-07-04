@@ -19,7 +19,7 @@ describe 'set_updated_at trigger' do
     conn.execute('TRUNCATE builds CASCADE;')
   end
 
-  let(:conn)   { ActiveRecord::Base.connection }
+  let(:conn) { ActiveRecord::Base.connection }
 
   def e(query)
     conn.execute(query)
@@ -30,32 +30,32 @@ describe 'set_updated_at trigger' do
   end
 
   it 'sets unique_number on INSERT' do
-    e "INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())"
+    e 'INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())'
     e "INSERT INTO builds (repository_id, number, created_at, updated_at) VALUES (1, '1', now(), now());"
-    result = s "SELECT unique_number FROM builds"
+    result = s 'SELECT unique_number FROM builds'
     expect(result['unique_number']).to eql(1)
   end
 
   it 'does not set unique_number on INSERT if 0 is given as a value' do
-    e "INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())"
+    e 'INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())'
     e "INSERT INTO builds (repository_id, number, unique_number, created_at, updated_at) VALUES (1, '1', 0, now(), now());"
-    result = s "SELECT unique_number FROM builds"
+    result = s 'SELECT unique_number FROM builds'
     expect(result['unique_number']).to eql(0)
   end
 
   it 'sets unique_number on UPDATE' do
-    e "INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())"
+    e 'INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())'
     e "INSERT INTO builds (repository_id, number, created_at, updated_at) VALUES (1, '1', now(), now());"
     e "UPDATE builds SET number = '2';"
-    result = s "SELECT unique_number FROM builds"
+    result = s 'SELECT unique_number FROM builds'
     expect(result['unique_number']).to eql(2)
   end
 
   it 'does not set unique_number on UPDATE if unique_number is 0' do
-    e "INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())"
+    e 'INSERT INTO repositories (id, created_at, updated_at) VALUES(1, now(), now())'
     e "INSERT INTO builds (repository_id, number, unique_number, created_at, updated_at) VALUES (1, '1', 0, now(), now());"
     e "UPDATE builds SET number = '2';"
-    result = s "SELECT unique_number FROM builds"
+    result = s 'SELECT unique_number FROM builds'
     expect(result['unique_number']).to eql(0)
   end
 end

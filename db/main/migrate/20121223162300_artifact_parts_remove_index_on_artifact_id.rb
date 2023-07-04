@@ -3,4 +3,3 @@ class ArtifactPartsRemoveIndexOnArtifactId < ActiveRecord::Migration[4.2]
     remove_index :artifact_parts, :artifact_id
   end
 end
-

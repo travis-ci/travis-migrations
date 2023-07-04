@@ -4,6 +4,7 @@ class AddRemovedInfoToLogs < ActiveRecord::Migration[4.2]
     # with migrations in travis-logs
     c = ActiveRecord::Base.connection
     return unless c.table_exists?(:logs)
+
     add_column :logs, :removed_at, :timestamp unless c.column_exists?(:logs, :removed_at)
     add_column :logs, :removed_by, :integer   unless c.column_exists?(:logs, :removed_by)
   end

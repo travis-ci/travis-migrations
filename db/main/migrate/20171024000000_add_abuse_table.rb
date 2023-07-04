@@ -1,5 +1,5 @@
 class AddAbuseTable < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
     create_table :abuses do |t|
@@ -9,11 +9,11 @@ class AddAbuseTable < ActiveRecord::Migration[4.2]
       t.string :reason, null: false
       t.timestamps null: false
     end
-    execute "CREATE INDEX CONCURRENTLY index_abuses_on_owner ON abuses(owner_id)"
+    execute 'CREATE INDEX CONCURRENTLY index_abuses_on_owner ON abuses(owner_id)'
   end
 
   def down
-    execute "DROP INDEX index_abuses_on_owner"
+    execute 'DROP INDEX index_abuses_on_owner'
     drop_table :abuses
   end
 end

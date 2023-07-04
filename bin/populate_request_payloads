@@ -17,31 +17,31 @@ total = 1_000_000
 pause = nil
 
 ARGV.options do |o|
-  o.on("-s", "--start=START", Integer) { |v| start = v }
-  o.on('-b', "--batch=BATCH", Integer) { |v| batch = v }
-  o.on('-t', "--total=TOTAL", Integer) { |v| total = v }
-  o.on("-p", "--pause=PAUSE", Integer) { |v| pause = v }
+  o.on('-s', '--start=START', Integer) { |v| start = v }
+  o.on('-b', '--batch=BATCH', Integer) { |v| batch = v }
+  o.on('-t', '--total=TOTAL', Integer) { |v| total = v }
+  o.on('-p', '--pause=PAUSE', Integer) { |v| pause = v }
   o.parse!
 end
 
-max_id = conn.select_values("select id from requests order by id desc limit 1").first.to_i
+max_id = conn.select_values('select id from requests order by id desc limit 1').first.to_i
 
 total = start + total
 total = max_id if total > max_id
 
-SQL = <<~sql
+SQL = <<~SQL
   insert into request_payloads (request_id, payload, created_at)
   select r.id, r.payload, r.created_at
   from requests r
   left outer join request_payloads p on p.request_id = r.id
   where r.id between %i and %i and r.payload is not null and p.id is null
-sql
+SQL
 
 start.step(total - 1, batch) do |min_id|
   now = Time.now
   max_id = min_id + batch - 1
   print "Inserting payloads from requests #{min_id} - #{max_id} ... "
-  query = SQL % [min_id, max_id]
+  query = format(SQL, min_id, max_id)
   conn.execute(query)
   elapsed = (Time.now - now)
   puts "#{elapsed.round(2)} sec"

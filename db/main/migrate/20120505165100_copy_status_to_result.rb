@@ -7,7 +7,7 @@ class CopyStatusToResult < ActiveRecord::Migration[4.2]
     queries = [
       'UPDATE builds SET result = status;',
       'UPDATE jobs SET result = status;',
-      'UPDATE repositories SET last_build_result = last_build_status;',
+      'UPDATE repositories SET last_build_result = last_build_status;'
     ]
     queries.each do |query|
       puts "Executing: #{query}"

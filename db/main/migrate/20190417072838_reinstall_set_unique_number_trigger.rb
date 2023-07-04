@@ -4,6 +4,5 @@ class ReinstallSetUniqueNumberTrigger < ActiveRecord::Migration[5.2]
     execute File.read(Rails.root.join('db/main/sql/triggers/create_set_unique_number.sql'))
   end
 
-  def down
-  end
+  def down; end
 end

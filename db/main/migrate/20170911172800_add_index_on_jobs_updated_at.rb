@@ -1,11 +1,11 @@
 class AddIndexOnJobsUpdatedAt < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
-    execute "CREATE INDEX CONCURRENTLY index_jobs_on_updated_at ON jobs (updated_at)"
+    execute 'CREATE INDEX CONCURRENTLY index_jobs_on_updated_at ON jobs (updated_at)'
   end
 
   def down
-    execute "DROP INDEX index_jobs_on_updated_at"
+    execute 'DROP INDEX index_jobs_on_updated_at'
   end
 end

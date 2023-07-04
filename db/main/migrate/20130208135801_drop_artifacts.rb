@@ -4,4 +4,3 @@ class DropArtifacts < ActiveRecord::Migration[4.2]
     drop_table :artifact_parts_backup
   end
 end
-

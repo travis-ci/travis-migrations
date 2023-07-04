@@ -4,4 +4,3 @@ class RenameArtifacts < ActiveRecord::Migration[4.2]
     rename_table :artifact_parts, :artifact_parts_backup
   end
 end
-

@@ -7,6 +7,6 @@ class CreateBetaMigrationRequestTable < ActiveRecord::Migration[4.2]
       t.datetime :created_at
       t.datetime :accepted_at
     end
-    add_index :beta_migration_requests, [:owner_type, :owner_id]
+    add_index :beta_migration_requests, %i[owner_type owner_id]
   end
 end

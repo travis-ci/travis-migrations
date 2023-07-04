@@ -3,7 +3,7 @@ class CreateGatekeeperWorkers < ActiveRecord::Migration[5.2]
     create_table :gatekeeper_workers do |t|
     end
 
-    execute "INSERT INTO gatekeeper_workers(id) SELECT generate_series(1,200) as id;"
+    execute 'INSERT INTO gatekeeper_workers(id) SELECT generate_series(1,200) as id;'
   end
 
   def down

@@ -1,5 +1,5 @@
 class AddComIdAndOrgIdIndices < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
     execute 'CREATE UNIQUE INDEX CONCURRENTLY index_branches_on_org_id ON branches USING btree (org_id)'

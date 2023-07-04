@@ -32,4 +32,3 @@ class AddUpdatedAtTriggerToBuildsAndJobs < ActiveRecord::Migration[4.2]
     SQL
   end
 end
-

@@ -3,4 +3,3 @@ class AddQueuedAtToJobs < ActiveRecord::Migration[4.2]
     add_column :jobs, :queued_at, :datetime
   end
 end
-

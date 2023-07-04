@@ -18,9 +18,9 @@ class CreateConfigs < ActiveRecord::Migration[4.2]
       t.jsonb :config
     end
 
-    add_index :request_configs, [:repository_id, :key]
-    add_index :build_configs, [:repository_id, :key]
-    add_index :job_configs, [:repository_id, :key]
+    add_index :request_configs, %i[repository_id key]
+    add_index :build_configs, %i[repository_id key]
+    add_index :job_configs, %i[repository_id key]
 
     add_column :requests, :config_id, :integer
     add_column :builds, :config_id, :integer

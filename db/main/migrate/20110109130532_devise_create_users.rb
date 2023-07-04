@@ -7,7 +7,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[4.2]
       t.timestamps null: false
     end
 
-    add_index :users, :login, :unique => true
+    add_index :users, :login, unique: true
   end
 
   def self.down

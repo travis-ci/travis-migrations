@@ -1,5 +1,5 @@
 class CreateRequestYamlConfigs < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
     create_table :request_yaml_configs do |t|
@@ -7,7 +7,7 @@ class CreateRequestYamlConfigs < ActiveRecord::Migration[4.2]
       t.integer :repository_id
       t.string :key, size: 32, null: false
     end
-    add_index :request_yaml_configs, [:repository_id, :key]
+    add_index :request_yaml_configs, %i[repository_id key]
     add_column :requests, :yaml_config_id, :integer
   end
 

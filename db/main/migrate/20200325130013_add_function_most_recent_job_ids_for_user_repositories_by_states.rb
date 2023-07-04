@@ -1,6 +1,6 @@
 class AddFunctionMostRecentJobIdsForUserRepositoriesByStates < ActiveRecord::Migration[5.2]
   def up
-    execute """
+    execute ''"
     CREATE OR REPLACE FUNCTION
       most_recent_job_ids_for_user_repositories_by_states(uid int, states varchar default '') RETURNS table (id bigint) AS
       $BODY$
@@ -36,10 +36,10 @@ class AddFunctionMostRecentJobIdsForUserRepositoriesByStates < ActiveRecord::Mig
     END
     $BODY$
     LANGUAGE plpgsql;
-    """
+    "''
   end
 
   def down
-    execute "DROP FUNCTION most_recent_job_ids_for_user_repositories_by_states(integer, varchar)"
+    execute 'DROP FUNCTION most_recent_job_ids_for_user_repositories_by_states(integer, varchar)'
   end
 end
