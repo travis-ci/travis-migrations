@@ -30,3 +30,9 @@ Lint/ConstantDefinitionInBlock:
   Enabled: false
 Naming/VariableNumber:
   Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Lint/ImplicitStringConcatenation:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
