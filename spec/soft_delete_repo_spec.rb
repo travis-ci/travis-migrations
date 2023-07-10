@@ -84,7 +84,7 @@ describe 'soft delete repo' do
       table = fetch_table(table_name)
       deleted_table = fetch_table("deleted_#{table_name}")
 
-      table.should match_fields(deleted_table)
+      expect(table).to match_fields(deleted_table)
     end
   end
 
@@ -112,13 +112,13 @@ describe 'soft delete repo' do
 
     counts = result.entries.first
 
-    counts["repositories_count"].should == 1
-    counts["commits_count"].should == 1
-    counts["requests_count"].should == 1
-    counts["builds_count"].should == 1
-    counts["stages_count"].should == 1
-    counts["jobs_count"].should == 2
-    counts["tags_count"].should == 1
+    expect(counts["repositories_count"]).to eql(1)
+    expect(counts["commits_count"]).to eql(1)
+    expect(counts["requests_count"]).to eql(1)
+    expect(counts["builds_count"]).to eql(1)
+    expect(counts["stages_count"]).to eql(1)
+    expect(counts["jobs_count"]).to eql(2)
+    expect(counts["tags_count"]).to eql(1)
 
     e "SELECT soft_delete_repo_data(1);"
 
@@ -134,13 +134,13 @@ describe 'soft delete repo' do
 
     counts = result.entries.first
 
-    counts["repositories_count"].should == 1
-    counts["commits_count"].should == 0
-    counts["requests_count"].should == 0
-    counts["builds_count"].should == 0
-    counts["stages_count"].should == 0
-    counts["jobs_count"].should == 0
-    counts["tags_count"].should == 0
+    expect(counts["repositories_count"]).to eql(1)
+    expect(counts["commits_count"]).to eql(0)
+    expect(counts["requests_count"]).to eql(0)
+    expect(counts["builds_count"]).to eql(0)
+    expect(counts["stages_count"]).to eql(0)
+    expect(counts["jobs_count"]).to eql(0)
+    expect(counts["tags_count"]).to eql(0)
 
     result = e "SELECT
       (SELECT count(*) FROM deleted_commits) as commits_count,
@@ -153,12 +153,11 @@ describe 'soft delete repo' do
 
     counts = result.entries.first
 
-    counts["commits_count"].should == 1
-    counts["requests_count"].should == 1
-    counts["builds_count"].should == 1
-    counts["stages_count"].should == 1
-    counts["jobs_count"].should == 2
-    counts["tags_count"].should == 1
-
+    expect(counts["commits_count"]).to eql(1)
+    expect(counts["requests_count"]).to eql(1)
+    expect(counts["builds_count"]).to eql(1)
+    expect(counts["stages_count"]).to eql(1)
+    expect(counts["jobs_count"]).to eql(2)
+    expect(counts["tags_count"]).to eql(1)
   end
 end
