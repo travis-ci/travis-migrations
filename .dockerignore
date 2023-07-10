@@ -1,11 +1,45 @@
-*.md
+# Ignore docker files
 .dockerignore
+Dockerfile*
+docker-compose*
+
+# Ignore .git
+/.git
+.gitignore
+
+# Ignore bundler config.
+/.bundle
+vendor/bundle
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
 .env
 .env.*
-.git
-.gitignore
+
 .travis.yml
-Dockerfile
+
+*.md
+
 spec
-#IDEs folders
-.idea
+
+migration.log
+
+# Ignore editor specific configs
+/.idea
+/.vscode
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.generators
+.rakeTasks
+
+# System Files
+.DS_Store
+Thumbs.db
