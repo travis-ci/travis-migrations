@@ -7,7 +7,7 @@ RUN apt-key adv --fetch-keys 'https://www.postgresql.org/media/keys/ACCC4CF8.asc
     apt update && \
     apt upgrade -y && \
     apt install -qq -y --no-install-recommends --fix-missing \
-                postgresql-client-9.6 && \
+                postgresql-client-11 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /travis-migrations

@@ -7,7 +7,8 @@ Any changes to this document should also be reflected in the [Travis Builders Ma
 
 In short, migrations should be run locally while standing in this repository during development. For tests (e.g. via `.travis.yml`) applications should contain their own tooling that loads the schema (e.g. see [travis-hub](https://github.com/travis-ci/travis-hub/blob/master/Rakefile#L12)).
 
-Please use Postgresql 9.6.8 for local development and testing, but note that production and enterprise environments require compatibility with both 9.3 and 9.6.
+Please use Postgresql 11 for local development and testing.
+Note that production and enterprise environments require compatibility with 11.
 
 Installing
 ----------
@@ -39,12 +40,12 @@ Please make sure your migrations are production safe as per this guide: [Safe Op
 You can run `script/dump-schema-docker.sh` to generate the schema file
 using a consistent version of postgres (running in a docker container).
 
-Using Docker to run on PostgreSQL 9.6
+Using Docker to run on PostgreSQL 11
 -------------------------------------
 
-We use PostgreSQL 9.6 on production, which is often different than the database
+We use PostgreSQL 11 on production, which is often different than the database
 installed on many operating systems by default. In order to make it easier to
-run against 9.6 you can use Docker with a supplied docker-compose.yml file.
+run against 11 you can use Docker with a supplied docker-compose.yml file.
 
 Run `docker-compose up` to start the container.
 Then you can either change settings in `config/database.yml`

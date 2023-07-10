@@ -18,26 +18,6 @@ end
 
 task :default => [:spec]
 
-if Rails.env.production?
-  puts "Running in production environment, disabling db:structure:dump task"
-  Rake::Task["db:structure:dump"].clear
-end
-
-namespace :db do
-  namespace :structure do
-    task :dump do
-      version = ActiveRecord::Base.connection.execute("SELECT current_setting('server_version')")[0]['current_setting']
-      if version.split('.').first.to_i > 9
-        puts <<-MESSAGE
-\033[0;31mYou're running PostgreSQL #{version}. We're running PostgreSQL 9.x
-on production and PostgreSQL dumps from higher versions are incompatible,
-please don't commit the structure.sql file\033[0m
-MESSAGE
-      end
-    end
-  end
-end
-
 task :gen_migration, [:name] do |t, args|
   name = args.fetch(:name)
   ActiveRecord::Generators::MigrationGenerator.new([name]).create_migration_file

@@ -7,7 +7,7 @@ addons:
   - snaps:
     - name: docker
       channel: latest/beta
-  - postgresql: "9.6"
+  - postgresql: "11"
 
 cache:
   directories:
@@ -32,7 +32,6 @@ jobs:
     - stage: "Testing time"
       script:
         - bundle exec rspec spec
-        - script/validate_structure_file.rb db/main/structure-original.sql
     - stage: "Ship to Quay.io"
       before_script: echo skip
       after_success: echo skip

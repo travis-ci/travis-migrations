@@ -10,20 +10,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
---
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -871,6 +857,7 @@ CREATE TABLE public.abuses (
 --
 
 CREATE SEQUENCE public.abuses_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -953,6 +940,7 @@ CREATE TABLE public.beta_features (
 --
 
 CREATE SEQUENCE public.beta_features_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -986,6 +974,7 @@ CREATE TABLE public.beta_migration_requests (
 --
 
 CREATE SEQUENCE public.beta_migration_requests_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1022,6 +1011,7 @@ CREATE TABLE public.branches (
 --
 
 CREATE SEQUENCE public.branches_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1058,6 +1048,7 @@ CREATE TABLE public.broadcasts (
 --
 
 CREATE SEQUENCE public.broadcasts_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1089,6 +1080,7 @@ CREATE TABLE public.build_backups (
 --
 
 CREATE SEQUENCE public.build_backups_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1122,6 +1114,7 @@ CREATE TABLE public.build_configs (
 --
 
 CREATE SEQUENCE public.build_configs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1204,6 +1197,7 @@ CREATE TABLE public.builds (
 --
 
 CREATE SEQUENCE public.builds_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1241,6 +1235,7 @@ CREATE TABLE public.cancellations (
 --
 
 CREATE SEQUENCE public.cancellations_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1286,6 +1281,7 @@ CREATE TABLE public.commits (
 --
 
 CREATE SEQUENCE public.commits_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1322,6 +1318,7 @@ CREATE TABLE public.coupons (
 --
 
 CREATE SEQUENCE public.coupons_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1360,6 +1357,7 @@ CREATE TABLE public.crons (
 --
 
 CREATE SEQUENCE public.crons_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1758,6 +1756,7 @@ CREATE TABLE public.email_unsubscribes (
 --
 
 CREATE SEQUENCE public.email_unsubscribes_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1790,6 +1789,7 @@ CREATE TABLE public.emails (
 --
 
 CREATE SEQUENCE public.emails_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1855,6 +1855,7 @@ CREATE TABLE public.installations (
 --
 
 CREATE SEQUENCE public.installations_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1890,6 +1891,7 @@ CREATE TABLE public.invoices (
 --
 
 CREATE SEQUENCE public.invoices_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1923,6 +1925,7 @@ CREATE TABLE public.job_configs (
 --
 
 CREATE SEQUENCE public.job_configs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1960,6 +1963,7 @@ CREATE TABLE public.job_versions (
 --
 
 CREATE SEQUENCE public.job_versions_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2020,6 +2024,7 @@ CREATE TABLE public.jobs (
 --
 
 CREATE SEQUENCE public.jobs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2052,6 +2057,7 @@ CREATE TABLE public.memberships (
 --
 
 CREATE SEQUENCE public.memberships_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2091,6 +2097,7 @@ CREATE TABLE public.messages (
 --
 
 CREATE SEQUENCE public.messages_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2138,6 +2145,7 @@ CREATE TABLE public.organizations (
 --
 
 CREATE SEQUENCE public.organizations_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2171,6 +2179,7 @@ CREATE TABLE public.owner_groups (
 --
 
 CREATE SEQUENCE public.owner_groups_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2207,6 +2216,7 @@ CREATE TABLE public.permissions (
 --
 
 CREATE SEQUENCE public.permissions_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2251,6 +2261,7 @@ CREATE TABLE public.pull_requests (
 --
 
 CREATE SEQUENCE public.pull_requests_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2280,6 +2291,7 @@ CREATE TABLE public.queueable_jobs (
 --
 
 CREATE SEQUENCE public.queueable_jobs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2366,6 +2378,7 @@ CREATE TABLE public.repositories (
 --
 
 CREATE SEQUENCE public.repositories_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2399,6 +2412,7 @@ CREATE TABLE public.request_configs (
 --
 
 CREATE SEQUENCE public.request_configs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2432,6 +2446,7 @@ CREATE TABLE public.request_payloads (
 --
 
 CREATE SEQUENCE public.request_payloads_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2464,6 +2479,7 @@ CREATE TABLE public.request_raw_configs (
 --
 
 CREATE SEQUENCE public.request_raw_configs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2497,6 +2513,7 @@ CREATE TABLE public.request_raw_configurations (
 --
 
 CREATE SEQUENCE public.request_raw_configurations_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2530,6 +2547,7 @@ CREATE TABLE public.request_yaml_configs (
 --
 
 CREATE SEQUENCE public.request_yaml_configs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2587,6 +2605,7 @@ CREATE TABLE public.requests (
 --
 
 CREATE SEQUENCE public.requests_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2631,6 +2650,7 @@ CREATE TABLE public.ssl_keys (
 --
 
 CREATE SEQUENCE public.ssl_keys_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2667,6 +2687,7 @@ CREATE TABLE public.stages (
 --
 
 CREATE SEQUENCE public.stages_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2699,6 +2720,7 @@ CREATE TABLE public.stars (
 --
 
 CREATE SEQUENCE public.stars_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2733,6 +2755,7 @@ CREATE TABLE public.stripe_events (
 --
 
 CREATE SEQUENCE public.stripe_events_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2791,6 +2814,7 @@ CREATE TABLE public.subscriptions (
 --
 
 CREATE SEQUENCE public.subscriptions_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2827,6 +2851,7 @@ CREATE TABLE public.tags (
 --
 
 CREATE SEQUENCE public.tags_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2860,6 +2885,7 @@ CREATE TABLE public.tokens (
 --
 
 CREATE SEQUENCE public.tokens_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2895,6 +2921,7 @@ CREATE TABLE public.trial_allowances (
 --
 
 CREATE SEQUENCE public.trial_allowances_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2929,6 +2956,7 @@ CREATE TABLE public.trials (
 --
 
 CREATE SEQUENCE public.trials_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2961,6 +2989,7 @@ CREATE TABLE public.urls (
 --
 
 CREATE SEQUENCE public.urls_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2994,6 +3023,7 @@ CREATE TABLE public.user_beta_features (
 --
 
 CREATE SEQUENCE public.user_beta_features_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3083,6 +3113,7 @@ CREATE TABLE public.users (
 --
 
 CREATE SEQUENCE public.users_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE

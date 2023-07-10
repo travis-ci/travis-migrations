@@ -1,6 +1,5 @@
 require 'rails'
 require 'active_record/railtie'
-require 'travis/postgres_version'
 
 app = Class.new(Rails::Application)
 app.config.active_support.deprecation = :log
