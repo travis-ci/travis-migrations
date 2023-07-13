@@ -2230,6 +2230,39 @@ ALTER SEQUENCE public.permissions_id_seq OWNED BY public.permissions.id;
 
 
 --
+-- Name: permissions_syncs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.permissions_syncs (
+    id bigint NOT NULL,
+    user_id bigint,
+    resource_type character varying,
+    resource_id bigint,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: permissions_syncs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.permissions_syncs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: permissions_syncs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.permissions_syncs_id_seq OWNED BY public.permissions_syncs.id;
+
+
+--
 -- Name: policy_permissions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3420,6 +3453,13 @@ ALTER TABLE ONLY public.permissions ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: permissions_syncs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.permissions_syncs ALTER COLUMN id SET DEFAULT nextval('public.permissions_syncs_id_seq'::regclass);
+
+
+--
 -- Name: policy_permissions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3816,6 +3856,14 @@ ALTER TABLE ONLY public.owner_groups
 
 ALTER TABLE ONLY public.permissions
     ADD CONSTRAINT permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: permissions_syncs permissions_syncs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.permissions_syncs
+    ADD CONSTRAINT permissions_syncs_pkey PRIMARY KEY (id);
 
 
 --
@@ -4731,6 +4779,20 @@ CREATE INDEX index_permissions_on_user_id ON public.permissions USING btree (use
 --
 
 CREATE UNIQUE INDEX index_permissions_on_user_id_and_repository_id ON public.permissions USING btree (user_id, repository_id);
+
+
+--
+-- Name: index_permissions_syncs_on_resource_type_and_resource_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_permissions_syncs_on_resource_type_and_resource_id ON public.permissions_syncs USING btree (resource_type, resource_id);
+
+
+--
+-- Name: index_permissions_syncs_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_permissions_syncs_on_user_id ON public.permissions_syncs USING btree (user_id);
 
 
 --
@@ -6239,6 +6301,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220905144600'),
 ('20221214171030'),
 ('20230505055250'),
-('20230505060110');
+('20230505060110'),
+('20230713115855');
 
 
