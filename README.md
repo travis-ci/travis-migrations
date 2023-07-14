@@ -29,7 +29,7 @@ This creates a new ActiveRecord migration file in `db/main/migrate`,
 with the current timestamp and the name `add_column_x_to_table_y`:
 
 ```
-      create  db/main/migrate/20181007154333_add_column_x_to_table_y.rb
+create  db/main/migrate/20181007154333_add_column_x_to_table_y.rb
 ```
 
 See [this guide](http://edgeguides.rubyonrails.org/active_record_migrations.html#creating-a-standalone-migration) for creating standalone migrations.
@@ -46,12 +46,13 @@ We use PostgreSQL 9.6 on production, which is often different than the database
 installed on many operating systems by default. In order to make it easier to
 run against 9.6 you can use Docker with a supplied docker-compose.yml file.
 
-Run `docker-compose up` to start the container. Then you can either change
-settings in `config/database.yml` to use `postgres` as a user and `5431` as a
-port, or run with `DATABASE_URL` specified explicitly, for example:
+Run `docker-compose up` to start the container.
+Then you can either change settings in `config/database.yml`
+to use `postgres` as a user, `postgres` as a password and `5432` as a port,
+or run with `DATABASE_URL` specified explicitly, for example:
 
 ```bash
-DATABASE_URL=postgres://postgres@localhost:5431/travis_test bundle exec rake db:migrate
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_test bundle exec rake db:migrate
 ```
 
 Running migrations locally
@@ -86,7 +87,7 @@ ActiveRecord::NoEnvironmentInSchemaError:
 
 Environment data not found in the schema. To resolve this issue, run:
 
-        bin/rails db:environment:set RAILS_ENV=test
+bin/rails db:environment:set RAILS_ENV=test
 ```
 
 The command that it outputs will not work, because we don't install rails

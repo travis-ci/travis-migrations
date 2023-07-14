@@ -2,13 +2,12 @@ FROM ruby:2.5.9
 
 LABEL maintainer Travis CI GmbH <support+travis-migrations-docker-images@travis-ci.com>
 
-RUN apt update && \
-    apt install -qq -y --no-install-recommends libgnutls30 && \
-    apt-key adv --fetch-keys 'https://www.postgresql.org/media/keys/ACCC4CF8.asc' && \
+RUN apt-key adv --fetch-keys 'https://www.postgresql.org/media/keys/ACCC4CF8.asc' && \
     echo "deb http://apt.postgresql.org/pub/repos/apt buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     apt update && \
+    apt upgrade -y && \
     apt install -qq -y --no-install-recommends --fix-missing \
-                libpq-dev postgresql-client-9.6 && \
+                postgresql-client-9.6 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /travis-migrations

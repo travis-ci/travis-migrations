@@ -5,29 +5,23 @@ defaults: &defaults
   adapter: postgresql
   encoding: unicode
   pool: 5
-  min_messages: warning
-  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_production') %>
-  eager_load: true
 
 production:
   <<: *defaults
+  url: <%= ENV.fetch('DATABASE_URL', 'postgres://postgres:postgres@localhost/travis_production') %>
 
 development:
   <<: *defaults
-  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_development') %>
-  eager_load: false
+  url: <%= ENV.fetch('DATABASE_URL', 'postgres://postgres:postgres@localhost/travis_development') %>
 
 pro_development:
   <<: *defaults
-  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_pro_development') %>
-  eager_load: false
+  url: <%= ENV.fetch('DATABASE_URL', 'postgres://postgres:postgres@localhost/travis_pro_development') %>
 
 test:
   <<: *defaults
-  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_test') %>
-  eager_load: false
+  url: <%= ENV.fetch('DATABASE_URL', 'postgres://postgres:postgres@localhost/travis_test') %>
 
 pro_test:
   <<: *defaults
-  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://localhost/travis_pro_test') %>
-  eager_load: false
+  url: <%= ENV.fetch('DATABASE_URL', 'postgres://postgres:postgres@localhost/travis_pro_test') %>
