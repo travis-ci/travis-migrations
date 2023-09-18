@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateBuildBackupsTable < ActiveRecord::Migration[4.2]
   def self.up
     create_table :build_backups do |t|

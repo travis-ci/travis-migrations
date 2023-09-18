@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FixIndexesOnBuildsAndJobsConfigId < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
@@ -9,7 +11,5 @@ class FixIndexesOnBuildsAndJobsConfigId < ActiveRecord::Migration[4.2]
     execute 'CREATE INDEX CONCURRENTLY index_jobs_on_config_id ON jobs (config_id)'
   end
 
-  def down
-  end
+  def down; end
 end
-

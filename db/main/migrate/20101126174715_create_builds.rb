@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateBuilds < ActiveRecord::Migration[4.2]
   def self.up
     create_table :builds do |t|
@@ -6,7 +8,7 @@ class CreateBuilds < ActiveRecord::Migration[4.2]
       t.integer    :status
       t.datetime   :started_at
       t.datetime   :finished_at
-      t.text       :log, :default => ''
+      t.text       :log, default: ''
       t.string     :commit
       t.text       :message
       t.datetime   :committed_at

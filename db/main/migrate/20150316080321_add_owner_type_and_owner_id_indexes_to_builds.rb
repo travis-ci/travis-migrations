@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 class AddOwnerTypeAndOwnerIdIndexesToBuilds < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
-    execute "DROP INDEX IF EXISTS index_builds_on_owner_type"
-    execute "DROP INDEX IF EXISTS index_builds_on_owner_id"
-    execute "CREATE INDEX CONCURRENTLY index_builds_on_owner_type ON builds(owner_type)"
-    execute "CREATE INDEX CONCURRENTLY index_builds_on_owner_id ON builds(owner_id)"
+    execute 'DROP INDEX IF EXISTS index_builds_on_owner_type'
+    execute 'DROP INDEX IF EXISTS index_builds_on_owner_id'
+    execute 'CREATE INDEX CONCURRENTLY index_builds_on_owner_type ON builds(owner_type)'
+    execute 'CREATE INDEX CONCURRENTLY index_builds_on_owner_id ON builds(owner_id)'
   end
 
   def down
-    execute "DROP INDEX IF EXISTS index_builds_on_owner_type"
-    execute "DROP INDEX IF EXISTS index_builds_on_owner_id"
+    execute 'DROP INDEX IF EXISTS index_builds_on_owner_type'
+    execute 'DROP INDEX IF EXISTS index_builds_on_owner_id'
   end
 end

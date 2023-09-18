@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildsAddArchivedAt < ActiveRecord::Migration[4.2]
   def up
     change_table :builds do |t|

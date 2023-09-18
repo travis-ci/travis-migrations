@@ -12,10 +12,8 @@ RUN apt-key adv --fetch-keys 'https://www.postgresql.org/media/keys/ACCC4CF8.asc
 
 WORKDIR /travis-migrations
 
-COPY Gemfile Gemfile.lock ./
+COPY . ./
 
 RUN bundle install
-
-COPY . ./
 
 CMD /bin/bash

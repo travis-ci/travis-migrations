@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class AddVcsIdToOrganization < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
     add_column :organizations, :vcs_id, :string, default: nil
 
-    execute "CREATE INDEX CONCURRENTLY index_organizations_on_vcs_id_and_vcs_type ON organizations (vcs_id, vcs_type);"
+    execute 'CREATE INDEX CONCURRENTLY index_organizations_on_vcs_id_and_vcs_type ON organizations (vcs_id, vcs_type);'
   end
 
   def down

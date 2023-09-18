@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CopyVcsIdForOrganization < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
   def up
@@ -7,11 +9,10 @@ class CopyVcsIdForOrganization < ActiveRecord::Migration[5.2]
       to_id = from_id + batch_size
 
       ActiveRecord::Base.transaction do
-        execute(%Q[UPDATE "organizations" SET vcs_id = github_id WHERE id BETWEEN #{from_id} AND #{to_id}])
+        execute(%(UPDATE "organizations" SET vcs_id = github_id WHERE id BETWEEN #{from_id} AND #{to_id}))
       end
     end
   end
 
-  def down
-  end
+  def down; end
 end

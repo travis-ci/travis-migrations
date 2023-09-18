@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RequestRawConfigsCreate < ActiveRecord::Migration[4.2]
   def change
     create_table :request_raw_configs do |t|
@@ -6,7 +8,7 @@ class RequestRawConfigsCreate < ActiveRecord::Migration[4.2]
       t.string :key, size: 32, null: false
     end
 
-    add_index :request_raw_configs, [:repository_id, :key]
+    add_index :request_raw_configs, %i[repository_id key]
 
     create_table :request_raw_configurations do |t|
       t.integer :request_id

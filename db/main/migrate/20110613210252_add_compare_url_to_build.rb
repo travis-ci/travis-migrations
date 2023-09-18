@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCompareUrlToBuild < ActiveRecord::Migration[4.2]
   def self.up
     add_column :builds, :compare_url, :string

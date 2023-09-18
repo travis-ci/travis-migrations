@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This is an irreversible migration
 class RemoveDisableByBuildFromCrons < ActiveRecord::Migration[4.2]
   def up

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateBranches < ActiveRecord::Migration[4.2]
   def up
     create_table(:branches) do |t|
@@ -7,7 +9,7 @@ class CreateBranches < ActiveRecord::Migration[4.2]
       t.boolean :exists_on_github, default: true, null: false
       t.timestamps null: false
     end
-    add_index(:branches, [:repository_id, :name], unique: true)
+    add_index(:branches, %i[repository_id name], unique: true)
   end
 
   def down

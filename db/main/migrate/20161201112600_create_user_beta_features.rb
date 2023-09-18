@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateUserBetaFeatures < ActiveRecord::Migration[4.2]
   def change
     create_table :user_beta_features do |t|
@@ -8,6 +10,6 @@ class CreateUserBetaFeatures < ActiveRecord::Migration[4.2]
       t.timestamp :last_activated_at
     end
 
-    add_index :user_beta_features, [:user_id, :beta_feature_id]
+    add_index :user_beta_features, %i[user_id beta_feature_id]
   end
 end

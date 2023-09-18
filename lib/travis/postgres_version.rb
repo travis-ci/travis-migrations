@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Travis
   # convenience method to check the Postgres version we're running against and do some things differently. Include in the migration class to call them
   module PostgresVersion

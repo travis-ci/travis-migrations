@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateSslKeys < ActiveRecord::Migration[4.2]
   def self.up
     create_table :ssl_keys do |t|
@@ -9,7 +11,7 @@ class CreateSslKeys < ActiveRecord::Migration[4.2]
       t.timestamps null: false
     end
 
-    add_index "ssl_keys", ["repository_id"], :name => "index_ssl_key_on_repository_id"
+    add_index 'ssl_keys', ['repository_id'], name: 'index_ssl_key_on_repository_id'
   end
 
   def self.down

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateInstallations < ActiveRecord::Migration[4.2]
   include Travis::PostgresVersion
 

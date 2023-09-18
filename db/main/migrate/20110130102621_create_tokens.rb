@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTokens < ActiveRecord::Migration[4.2]
   def self.up
     create_table :tokens do |t|

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class DropAnnotations < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
     drop_table :annotations
@@ -17,7 +19,7 @@ class DropAnnotations < ActiveRecord::Migration[4.2]
       t.integer :annotation_provider_id, null: false
       add_column :annotations, :status, :string
     end
-    execute "CREATE INDEX CONCURRENTLY index_annotations_on_job_id ON annotations (job_id)"
+    execute 'CREATE INDEX CONCURRENTLY index_annotations_on_job_id ON annotations (job_id)'
 
     create_table :annotation_providers do |t|
       t.string :name

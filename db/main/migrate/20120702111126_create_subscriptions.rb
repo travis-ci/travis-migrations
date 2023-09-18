@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class CreateSubscriptions < ActiveRecord::Migration[4.2]
   def change
     create_table :subscriptions do |t|
       t.string :cc_token
       t.datetime :valid_to
-      t.belongs_to :owner, :polymorphic => true
+      t.belongs_to :owner, polymorphic: true
       t.string :first_name
       t.string :last_name
       t.string :company

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPullRequestFieldsToRequest < ActiveRecord::Migration[4.2]
   def change
     add_column :requests, :event_type, :string

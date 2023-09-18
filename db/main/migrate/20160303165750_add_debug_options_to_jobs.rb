@@ -1,5 +1,6 @@
-class AddDebugOptionsToJobs < ActiveRecord::Migration[4.2]
+# frozen_string_literal: true
 
+class AddDebugOptionsToJobs < ActiveRecord::Migration[4.2]
   def up
     add_column :jobs, :debug_options, :text
   end

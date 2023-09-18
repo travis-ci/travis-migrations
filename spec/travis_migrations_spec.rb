@@ -1,13 +1,17 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'spec_helper'
 require 'yaml'
+require 'rake/notes/rake_task'
 
 describe 'Rake tasks' do
-  let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result) }
+  let(:config) { YAML.safe_load(ERB.new(File.read('config/database.yml')).result, aliases: true) }
   let(:conn)   { ActiveRecord::Base.connection }
   let(:tables) { conn.select_values("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") }
 
   let(:expected_main_tables) do
-    %w(
+    %w[
       abuses
       audits
       beta_features
@@ -75,7 +79,7 @@ describe 'Rake tasks' do
       users
       ar_internal_metadata
       schema_migrations
-    )
+    ]
   end
 
   before { ActiveRecord::Base.establish_connection(config['test']) }
@@ -83,7 +87,7 @@ describe 'Rake tasks' do
 
   def run(cmd)
     system "RAILS_ENV=test bundle exec #{cmd}  > migration.log"
-    expect($?.exitstatus).to eq 0
+    expect($CHILD_STATUS.exitstatus).to eq 0
   end
 
   describe 'rake db:create' do
@@ -93,9 +97,9 @@ describe 'Rake tasks' do
     end
   end
 
-  describe 'rake db:structure:load' do
-    it 'loads the main schema'do
-      run 'rake db:drop db:create db:structure:load'
+  describe 'rake db:schema:load' do
+    it 'loads the main schema' do
+      run 'rake db:drop db:create db:schema:load'
       expect(tables.sort).to eq expected_main_tables.sort
     end
   end
