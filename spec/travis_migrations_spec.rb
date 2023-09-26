@@ -79,6 +79,12 @@ describe 'Rake tasks' do
       users
       ar_internal_metadata
       schema_migrations
+      users_roles
+      role_names
+      policy_permissions
+      permissions_syncs
+      role_permissions
+      roles
     ]
   end
 
