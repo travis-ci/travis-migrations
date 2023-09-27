@@ -7,13 +7,13 @@ addons:
   - snaps:
     - name: docker
       channel: latest/beta
-  - postgresql: "9.6"
+  - postgresql: "11"
 
 cache:
   directories:
     - vendor/bundle
 
-rvm: "2.5.9"
+rvm: "3.2.2"
 
 env:
   - RAILS_ENV=test
