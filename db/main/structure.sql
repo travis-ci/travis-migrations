@@ -877,8 +877,8 @@ ALTER SEQUENCE public.abuses_id_seq OWNED BY public.abuses.id;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -4790,6 +4790,13 @@ CREATE INDEX index_permissions_syncs_on_resource_type_and_resource_id ON public.
 
 
 --
+-- Name: index_permissions_syncs_on_user_and_resource; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_permissions_syncs_on_user_and_resource ON public.permissions_syncs USING btree (user_id, resource_type, resource_id);
+
+
+--
 -- Name: index_permissions_syncs_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5193,6 +5200,13 @@ CREATE INDEX index_requests_on_tag_id ON public.requests USING btree (tag_id);
 --
 
 CREATE INDEX index_role_names_on_name ON public.role_names USING btree (name);
+
+
+--
+-- Name: index_role_names_on_role_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_role_names_on_role_type ON public.role_names USING btree (role_type);
 
 
 --
@@ -6304,6 +6318,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230208161446'),
 ('20230505055250'),
 ('20230505060110'),
-('20230713115855');
+('20230713115855'),
+('20231005111642');
 
 
