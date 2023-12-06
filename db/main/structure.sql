@@ -5172,6 +5172,27 @@ CREATE INDEX managed_repositories_idx ON public.repositories USING btree (manage
 
 
 --
+-- Name: index_repositories_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
+
+
+--
+-- Name: index_organizations_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
+
+
+--
+-- Name: index_users_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_vcs_id_and_vcs_type ON public.users USING btree (vcs_id, vcs_type);
+
+
+--
 -- Name: owner_installations_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5969,6 +5990,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220825140522'),
 ('20220905144600'),
 ('20221214171030'),
-('20230208161446');
+('20230208161446'),
+('20231206113245');
 
 
