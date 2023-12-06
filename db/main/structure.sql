@@ -4479,13 +4479,6 @@ CREATE INDEX index_organizations_on_updated_at ON public.organizations USING btr
 
 
 --
--- Name: index_organizations_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
-
-
---
 -- Name: index_owner_groups_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5141,13 +5134,6 @@ CREATE UNIQUE INDEX index_users_on_org_id ON public.users USING btree (org_id);
 --
 
 CREATE INDEX index_users_on_updated_at ON public.users USING btree (updated_at);
-
-
---
--- Name: index_users_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_users_on_vcs_id_and_vcs_type ON public.users USING btree (vcs_id, vcs_type);
 
 
 --
