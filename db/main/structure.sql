@@ -4731,13 +4731,6 @@ CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree
 
 
 --
--- Name: index_repositories_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
-
-
---
 -- Name: index_repositories_on_vcs_type_and_vcs_id; Type: INDEX; Schema: public; Owner: -
 --
 
