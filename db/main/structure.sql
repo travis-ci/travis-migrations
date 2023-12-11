@@ -4479,13 +4479,6 @@ CREATE INDEX index_organizations_on_updated_at ON public.organizations USING btr
 
 
 --
--- Name: index_organizations_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
-
-
---
 -- Name: index_owner_groups_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4728,13 +4721,6 @@ CREATE INDEX index_repositories_on_slug_or_names ON public.repositories USING bt
 --
 
 CREATE INDEX index_repositories_on_updated_at ON public.repositories USING btree (updated_at);
-
-
---
--- Name: index_repositories_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
 
 
 --
@@ -5151,13 +5137,6 @@ CREATE INDEX index_users_on_updated_at ON public.users USING btree (updated_at);
 
 
 --
--- Name: index_users_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_users_on_vcs_id_and_vcs_type ON public.users USING btree (vcs_id, vcs_type);
-
-
---
 -- Name: index_users_on_vcs_type_and_vcs_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5169,6 +5148,27 @@ CREATE INDEX index_users_on_vcs_type_and_vcs_id ON public.users USING btree (vcs
 --
 
 CREATE INDEX managed_repositories_idx ON public.repositories USING btree (managed_by_installation_at);
+
+
+--
+-- Name: index_repositories_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_repositories_on_vcs_id_and_vcs_type ON public.repositories USING btree (vcs_id, vcs_type);
+
+
+--
+-- Name: index_organizations_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_organizations_on_vcs_id_and_vcs_type ON public.organizations USING btree (vcs_id, vcs_type);
+
+
+--
+-- Name: index_users_on_vcs_id_and_vcs_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_vcs_id_and_vcs_type ON public.users USING btree (vcs_id, vcs_type);
 
 
 --
@@ -5969,6 +5969,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220825140522'),
 ('20220905144600'),
 ('20221214171030'),
-('20230208161446');
+('20230208161446'),
+('20231206113245');
 
 
