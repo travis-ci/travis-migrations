@@ -21,10 +21,6 @@ end
 
 task default: [:spec]
 
-if Rails.env.production?
-  puts 'Running in production environment, disabling db:structure:dump task'
-  Rake::Task['db:structure:dump'].clear
-end
 
 namespace :db do
   namespace :structure do
@@ -44,4 +40,9 @@ end
 task :gen_migration, [:name] do |_t, args|
   name = args.fetch(:name)
   ActiveRecord::Generators::MigrationGenerator.new([name]).create_migration_file
+end
+
+if Rails.env.production?
+  puts 'Running in production environment, disabling db:structure:dump task'
+  Rake::Task['db:structure:dump'].clear
 end
