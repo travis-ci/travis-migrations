@@ -1,17 +1,17 @@
+# frozen_string_literal: true
+
 class AddIndexUsersPreferencesBuildEmails < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    execute <<~sql
+    execute <<~SQL
       CREATE INDEX CONCURRENTLY user_preferences_build_emails_false ON users (id) WHERE preferences->>'build_emails' = 'false';
-    sql
+    SQL
   end
 
   def down
-    execute <<~sql
+    execute <<~SQL
       DROP INDEX CONCURRENTLY user_preferences_build_emails_false;
-    sql
+    SQL
   end
 end
-
-

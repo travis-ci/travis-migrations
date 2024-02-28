@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveUnusedBuildColumns < ActiveRecord::Migration[4.2]
   def change
     remove_column :builds, :result

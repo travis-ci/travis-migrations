@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePreviousJobStates < ActiveRecord::Migration[4.2]
   def change
     create_table :previous_job_states do |t|

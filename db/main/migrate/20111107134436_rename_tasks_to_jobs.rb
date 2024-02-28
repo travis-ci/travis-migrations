@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameTasksToJobs < ActiveRecord::Migration[4.2]
   def up
     rename_table :tasks, :jobs
@@ -7,7 +9,11 @@ class RenameTasksToJobs < ActiveRecord::Migration[4.2]
   end
 
   def down
-    rename_table :jobs, :tasks rescue nil
+    begin
+      rename_table :jobs, :tasks
+    rescue StandardError
+      nil
+    end
 
     execute "UPDATE tasks SET type = 'Task::Test' WHERE type = 'Job::Test'"
     execute "UPDATE tasks SET type = 'Task::Configure' WHERE type = 'Job::Configure'"

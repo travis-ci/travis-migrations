@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
   def self.up
     change_table :builds do |t|
@@ -6,7 +8,7 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
       t.string :state
     end
 
-    create_table :commits, :force => true do |t|
+    create_table :commits, force: true do |t|
       t.references :repository
 
       t.string   :commit # would love to call this column :hash, but apparently FactoryGirl wouldn't >:/
@@ -24,7 +26,7 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
       t.timestamps null: false
     end
 
-    create_table :requests, :force => true do |t|
+    create_table :requests, force: true do |t|
       t.references :repository
       t.references :commit
 
@@ -40,10 +42,10 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
       t.timestamps null: false
     end
 
-    create_table :tasks, :force => true do |t|
+    create_table :tasks, force: true do |t|
       t.references :repository
       t.references :commit
-      t.references :owner, :polymorphic => true
+      t.references :owner, polymorphic: true
 
       t.string   :queue
       t.string   :type
@@ -51,7 +53,7 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
       t.string   :number
       t.text     :config
       t.integer  :status
-      t.text     :log, :default => ''
+      t.text     :log, default: ''
       t.string   :job_id
       t.string   :worker
       t.string   :commit # temp, for data migrations, so we can update the commit_id
@@ -61,22 +63,22 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
       t.timestamps null: false
     end
 
-    #migrate_table :builds, :to => :commits do |t|
+    # migrate_table :builds, :to => :commits do |t|
     #  t.copy   :repository_id, :created_at, :updated_at, :commit,
     #           :ref, :branch, :message, :compare_url, :committed_at,
     #           :committer_name, :committer_email, :author_name, :author_email
     #  t.remove :ref, :branch, :message, :compare_url, :committed_at,
     #           :committer_name, :committer_email, :author_name, :author_email
-    #end
+    # end
 
-    #migrate_table :builds, :to => :requests do |t|
+    # migrate_table :builds, :to => :requests do |t|
     #  t.copy :repository_id, :config, :created_at, :updated_at, :commit, :started_at, :finished_at
     #  t.move :github_payload, :token, :to => [:payload, :token]
     #  t.set  :state, 'finished'
     #  t.set  :source, 'github'
-    #end
+    # end
 
-    #migrate_table :builds, :to => :tasks do |t|
+    # migrate_table :builds, :to => :tasks do |t|
     #  t.where  'parent_id IS NOT NULL OR parent_id IS NULL AND (SELECT COUNT(*) FROM builds AS children WHERE children.id = builds.id) = 0'
     #  t.copy   :number, :status, :started_at, :finished_at, :commit, :config, :log
     #  t.remove :log
@@ -84,7 +86,7 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
     #  t.set    :owner_type, 'Build'
     #  t.set    :type, 'Task::Test'
     #  t.set    :state, 'finished'
-    #end
+    # end
 
     add_index :commits, :commit
     add_index :builds, :commit
@@ -104,13 +106,13 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
     # Could we also just removethe STARE WITH, Do we need CACHE 30?
     #  Ask Sven
     # execute "CREATE SEQUENCE shared_builds_tasks_seq START WITH #{[Build.maximum(:id), (Task.maximum(:id) rescue 0)].compact.max.to_i + 1} CACHE 30"
-    execute "CREATE SEQUENCE shared_builds_tasks_seq CACHE 30"
-    execute "ALTER TABLE builds ALTER COLUMN id TYPE BIGINT"
+    execute 'CREATE SEQUENCE shared_builds_tasks_seq CACHE 30'
+    execute 'ALTER TABLE builds ALTER COLUMN id TYPE BIGINT'
     execute "ALTER TABLE builds ALTER COLUMN id SET DEFAULT nextval('shared_builds_tasks_seq')"
-    execute "ALTER TABLE tasks  ALTER COLUMN id TYPE BIGINT"
+    execute 'ALTER TABLE tasks  ALTER COLUMN id TYPE BIGINT'
     execute "ALTER TABLE tasks  ALTER COLUMN id SET DEFAULT nextval('shared_builds_tasks_seq')"
 
-    %w(commits requests tasks).each do |table_name|
+    %w[commits requests tasks].each do |table_name|
       execute "SELECT setval('#{table_name}_id_seq', #{select_value("SELECT max(id) FROM #{table_name}").to_i + 1})"
     end
 
@@ -121,7 +123,7 @@ class CreateRequestsCommitsAndTasks < ActiveRecord::Migration[4.2]
   end
 
   def self.down
-    # TODO complete this
+    # TODO: complete this
     #
     # change_table :builds do |t|
     #   t.text     :github_payload

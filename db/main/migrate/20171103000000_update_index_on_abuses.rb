@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 class UpdateIndexOnAbuses < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
     remove_index :abuses, :owner if index_exists?(:abuses, :owner)
-    add_index :abuses, [:owner_id, :owner_type, :level], unique: true, algorithm: :concurrently if !index_exists?(:abuses, [:owner_id, :owner_type, :level])
+    add_index :abuses, %i[owner_id owner_type level], unique: true, algorithm: :concurrently unless index_exists?(:abuses, %i[owner_id owner_type level])
   end
 
   def down
-    remove_index :abuses, [:owner_id, :owner_type, :level] if index_exists?(:abuses, [:owner_id, :owner_type, :level])
-    add_index :abuses, [:owner], algorithm: :concurrently if !index_exists?(:abuse, :owner)
+    remove_index :abuses, %i[owner_id owner_type level] if index_exists?(:abuses, %i[owner_id owner_type level])
+    add_index :abuses, [:owner], algorithm: :concurrently unless index_exists?(:abuse, :owner)
   end
 end

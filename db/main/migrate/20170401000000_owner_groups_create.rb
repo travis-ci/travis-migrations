@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OwnerGroupsCreate < ActiveRecord::Migration[4.2]
   def change
     create_table :owner_groups do |t|

@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'spec_helper'
 require 'yaml'
 
@@ -8,7 +11,7 @@ RSpec::Matchers.define :have_counts do |expected|
 end
 
 describe 'Repo counts' do
-  let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result) }
+  let(:config) { YAML.load(ERB.new(File.read('config/database.yml')).result, aliases: true) }
 
   before(:all) { run 'rake db:drop db:create db:migrate' }
   before { ActiveRecord::Base.establish_connection(config['test']) }
@@ -16,7 +19,7 @@ describe 'Repo counts' do
 
   def run(cmd)
     system "RAILS_ENV=test bundle exec #{cmd} > migration.log "
-    expect($?.exitstatus).to eq 0
+    expect($CHILD_STATUS.exitstatus).to eq 0
   end
 
   def execute(sql)
@@ -24,15 +27,15 @@ describe 'Repo counts' do
   end
 
   def select_rows(sql)
-    ActiveRecord::Base.connection.select_all(sql).to_hash.map do |row|
+    ActiveRecord::Base.connection.select_all(sql).map do |row|
       row.map do |key, value|
-        [key.to_sym, value.nil? || value =~ /^\d+$/ ? value.to_i : value]
+        [key.to_sym, value.nil? || !value.is_a?(Integer) ? value.to_i : value]
       end.to_h
     end
   end
 
   def delete_all
-    %w(requests commits pull_requests tags stages jobs builds branches).each do |table|
+    %w[requests commits pull_requests tags stages jobs builds branches].each do |table|
       execute "delete from #{table};"
     end
   end

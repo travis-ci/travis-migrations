@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateRepoCounts < ActiveRecord::Migration[4.2]
   def up
     create_table :repo_counts, id: false do |t|
@@ -19,6 +21,8 @@ class CreateRepoCounts < ActiveRecord::Migration[4.2]
   end
 
   def down
-    drop_table :repo_counts rescue nil
+    drop_table :repo_counts
+  rescue StandardError
+    nil
   end
 end

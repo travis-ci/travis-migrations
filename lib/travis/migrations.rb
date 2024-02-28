@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails'
 require 'active_record/railtie'
 require 'travis/postgres_version'
@@ -10,14 +12,13 @@ Rake::Task['environment'].enhance do
   app.initialize!
 end
 
-%w(about log:clear middleware notes notes:custom routes secret stats time:zones:all tmp:clear tmp:create).each do |task|
+%w[about log:clear middleware notes notes:custom secret stats time:zones:all tmp:clear tmp:create].each do |task|
   Rake::Task[task].clear
 end
 
 module Travis
   module Migrations
     class << self
-
     end
   end
 end

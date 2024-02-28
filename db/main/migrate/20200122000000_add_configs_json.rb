@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddConfigsJson < ActiveRecord::Migration[5.2]
   def up
     add_column :request_configs, :config_json, :json

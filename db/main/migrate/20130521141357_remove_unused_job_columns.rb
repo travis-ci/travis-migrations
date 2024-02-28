@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveUnusedJobColumns < ActiveRecord::Migration[4.2]
   def change
     remove_column :jobs, :status

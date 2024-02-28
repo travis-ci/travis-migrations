@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPreviousStatesTriggers < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
@@ -38,4 +40,3 @@ class AddPreviousStatesTriggers < ActiveRecord::Migration[4.2]
     SQL
   end
 end
-

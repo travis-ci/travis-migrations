@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 class JobsAddIndexState < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
-    execute "CREATE INDEX CONCURRENTLY index_jobs_on_state ON jobs (state)"
+    execute 'CREATE INDEX CONCURRENTLY index_jobs_on_state ON jobs (state)'
   end
 
   def down
-    execute "DROP INDEX CONCURRENTLY index_jobs_on_state"
+    execute 'DROP INDEX CONCURRENTLY index_jobs_on_state'
   end
 end
-

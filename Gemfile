@@ -1,10 +1,22 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.9'
+ruby '3.2.2'
 
-gem 'rails', '~> 5.2.8'
-gem 'pg', '>= 0.18', '< 2.0'
+gem 'aws-sdk-s3'
+gem 'pg', '~> 1'
+gem 'rails', '~> 7'
 gem 'rake'
-gem 'rspec'
-gem 's3'
+gem 'rake-notes'
+gem 'routes'
+gem 'rspec', '~>3.12'
+
+group :development, :test do
+  gem 'rubocop'
+  gem 'rubocop-performance'
+  gem 'rubocop-rspec'
+  gem 'simplecov'
+  gem 'simplecov-console'
+end
