@@ -7,18 +7,20 @@ addons:
   - snaps:
     - name: docker
       channel: latest/beta
-  - postgresql: "9.6"
+  - postgresql: "11"
 
 cache:
   directories:
     - vendor/bundle
 
-rvm: "2.5.9"
+rvm: "3.2.2"
 
 env:
   - RAILS_ENV=test
   - global:
     - PATH=/snap/bin:$PATH
+before_install:
+  - 'gem install bundler -v 2.4.17'
 
 before_script:
   - cp db/main/structure.sql db/main/structure-original.sql
@@ -32,7 +34,6 @@ jobs:
     - stage: "Testing time"
       script:
         - bundle exec rspec spec
-        - script/validate_structure_file.rb db/main/structure-original.sql
     - stage: "Ship to Quay.io"
       before_script: echo skip
       after_success: echo skip

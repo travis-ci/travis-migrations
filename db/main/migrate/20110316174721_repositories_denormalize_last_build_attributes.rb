@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # $: << 'lib' unless $:.include?('lib')
 # require 'travis/model/repository'
 

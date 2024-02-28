@@ -1,8 +1,7 @@
-
+# frozen_string_literal: true
 
 class ConfirmCurrentUsers < ActiveRecord::Migration[5.2]
   class User < ActiveRecord::Base
-
   end
   disable_ddl_transaction!
 

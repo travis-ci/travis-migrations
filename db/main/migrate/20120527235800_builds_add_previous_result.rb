@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildsAddPreviousResult < ActiveRecord::Migration[4.2]
   def change
     change_table :builds do |t|
@@ -5,4 +7,3 @@ class BuildsAddPreviousResult < ActiveRecord::Migration[4.2]
     end
   end
 end
-

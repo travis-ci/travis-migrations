@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveAnnotationImageInfo < ActiveRecord::Migration[4.2]
   def up
     remove_column :annotations, :image_url

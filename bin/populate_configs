@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-STDOUT.sync = true
+$stdout.sync = true
 
 require 'digest/sha1'
 require 'erb'
@@ -13,18 +14,17 @@ ActiveRecord::Base.establish_connection(config[ENV['RAILS_ENV'] || 'test'])
 
 start = 0
 batch = 100_000
-total = 1_000_000
 pause = nil
 
 ARGV.options do |o|
-  o.on("-s", "--start=START", Integer) { |v| start = v }
-  o.on('-b', "--batch=BATCH", Integer) { |v| batch = v }
-  o.on('-c', "--count=COUNT", Integer) { |v| count = v }
-  o.on("-p", "--pause=PAUSE", Integer) { |v| pause = v.to_f / 1000 }
+  o.on('-s', '--start=START', Integer) { |v| start = v }
+  o.on('-b', '--batch=BATCH', Integer) { |v| batch = v }
+  o.on('-c', '--count=COUNT', Integer) { |v| v }
+  o.on('-p', '--pause=PAUSE', Integer) { |v| pause = v.to_f / 1000 }
   o.parse!
 end
 
-name = ARGV.shift || fail('No model name specified (request|build|job)')
+name = ARGV.shift || raise('No model name specified (request|build|job)')
 max  = start + count - 1
 
 Model = Class.new(ActiveRecord::Base) do
@@ -45,11 +45,12 @@ configs = {}
 
 scope.find_each do |obj|
   next unless obj.config
+
   key = Digest::MD5.hexdigest(obj.config.inspect)
 
   config = configs[key]
-  config ||= Config.where(repository_id: obj.repository_id, key: key).select(:id).first
-  config ||= Config.create!(key: key, repository_id: obj.repository_id, config: obj.config)
+  config ||= Config.where(repository_id: obj.repository_id, key:).select(:id).first
+  config ||= Config.create!(key:, repository_id: obj.repository_id, config: obj.config)
   configs[key] ||= Config.new(id: config.id)
 
   obj.update_attributes!(config_id: config.id)

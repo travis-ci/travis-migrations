@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddArtifactParts < ActiveRecord::Migration[4.2]
   def change
     create_table :artifact_parts do |t|
@@ -6,6 +8,6 @@ class AddArtifactParts < ActiveRecord::Migration[4.2]
       t.integer :number
     end
 
-    add_index :artifact_parts, [:artifact_id, :number]
+    add_index :artifact_parts, %i[artifact_id number]
   end
 end

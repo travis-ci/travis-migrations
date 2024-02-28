@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAnnotations < ActiveRecord::Migration[4.2]
   def change
     create_table :annotations do |t|

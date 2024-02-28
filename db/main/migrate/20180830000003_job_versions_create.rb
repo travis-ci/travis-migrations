@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JobVersionsCreate < ActiveRecord::Migration[4.2]
   def change
     create_table :job_versions do |t|

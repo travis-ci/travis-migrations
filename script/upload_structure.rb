@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'bundler/setup'
 require 's3'
@@ -10,7 +11,7 @@ structure = File.read(path)
 service = S3::Service.new(access_key_id: ENV['ARTIFACTS_KEY'],
                           secret_access_key: ENV['ARTIFACTS_SECRET'])
 
-bucket = service.buckets.find("travis-migrations-structure-dumps")
+bucket = service.buckets.find('travis-migrations-structure-dumps')
 object = bucket.objects.build("structure-#{ENV['TRAVIS_BUILD_NUMBER']}.sql")
 object.content = structure
 object.acl = :public_read

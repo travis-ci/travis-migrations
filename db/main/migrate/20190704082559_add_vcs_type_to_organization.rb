@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class AddVcsTypeToOrganization < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
     ActiveRecord::Base.transaction do
       add_column :organizations, :vcs_type, :string, default: nil
-      execute(%Q[ALTER TABLE organizations ALTER COLUMN vcs_type SET DEFAULT 'GithubOrganization'])
+      execute(%(ALTER TABLE organizations ALTER COLUMN vcs_type SET DEFAULT 'GithubOrganization'))
     end
 
     last_id = select_value('SELECT id FROM organizations ORDER BY id DESC LIMIT 1') || 0
@@ -13,10 +15,10 @@ class AddVcsTypeToOrganization < ActiveRecord::Migration[5.2]
       to_id = from_id + batch_size
 
       ActiveRecord::Base.transaction do
-        execute %Q[UPDATE organizations SET vcs_type = 'GithubOrganization' WHERE id BETWEEN #{from_id} AND #{to_id}]
+        execute %(UPDATE organizations SET vcs_type = 'GithubOrganization' WHERE id BETWEEN #{from_id} AND #{to_id})
       end
     end
-  rescue => e
+  rescue StandardError => e
     down
     raise e
   end

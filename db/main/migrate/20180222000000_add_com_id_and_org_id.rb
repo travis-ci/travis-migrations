@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddComIdAndOrgId < ActiveRecord::Migration[4.2]
   def change
     add_column :branches, :org_id, :integer

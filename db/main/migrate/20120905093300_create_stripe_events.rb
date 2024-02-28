@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateStripeEvents < ActiveRecord::Migration[4.2]
   def change
     create_table :stripe_events do |t|

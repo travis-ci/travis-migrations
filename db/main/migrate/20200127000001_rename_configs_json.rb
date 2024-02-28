@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameConfigsJson < ActiveRecord::Migration[5.2]
   def up
     transaction do

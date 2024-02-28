@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUpdatedAtTriggerToBuildsAndJobs < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
@@ -32,4 +34,3 @@ class AddUpdatedAtTriggerToBuildsAndJobs < ActiveRecord::Migration[4.2]
     SQL
   end
 end
-

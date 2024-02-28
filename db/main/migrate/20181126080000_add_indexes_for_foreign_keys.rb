@@ -1,5 +1,7 @@
-class AddIndexesForForeignKeys < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+# frozen_string_literal: true
+
+class AddIndexesForForeignKeys < ActiveRecord::Migration[7.0]
+  disable_ddl_transaction!
 
   def up
     add_index :builds, :branch_id, algorithm: :concurrently
@@ -47,7 +49,7 @@ class AddIndexesForForeignKeys < ActiveRecord::Migration[4.2]
 
   def add_index(table, column, options = {})
     unless index_exists?(table, column)
-      super
+      super(table, column, **options)
     end
   end
 end

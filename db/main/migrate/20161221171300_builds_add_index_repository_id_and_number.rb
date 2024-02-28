@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class BuildsAddIndexRepositoryIdAndNumber < ActiveRecord::Migration[4.2]
-  self.disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
-    execute "CREATE INDEX CONCURRENTLY index_builds_on_repository_id_and_number ON builds(repository_id, (number::integer))"
+    execute 'CREATE INDEX CONCURRENTLY index_builds_on_repository_id_and_number ON builds(repository_id, (number::integer))'
   end
 
   def down
-    execute "DROP INDEX CONCURRENTLY index_builds_on_repository_id_and_number"
+    execute 'DROP INDEX CONCURRENTLY index_builds_on_repository_id_and_number'
   end
 end

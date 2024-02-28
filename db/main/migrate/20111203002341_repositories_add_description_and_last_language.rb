@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 
 class RepositoriesAddDescriptionAndLastLanguage < ActiveRecord::Migration[4.2]
