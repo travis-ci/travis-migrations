@@ -1,12 +1,10 @@
 language: ruby
+group: edge
 
 services:
   - postgresql
 
 addons:
-  - snaps:
-    - name: docker
-      channel: latest/beta
   - postgresql: "11"
 
 cache:
@@ -25,6 +23,9 @@ before_install:
 before_script:
   - cp db/main/structure.sql db/main/structure-original.sql
   - cp config/database.yml.travis config/database.yml
+
+before_install:
+  - gem install bundler:2.3.7
 
 after_success:
   - script/upload_structure.rb
