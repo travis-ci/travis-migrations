@@ -47,12 +47,10 @@ docker-push-branch:
 	$(DOCKER) run --rm -v /tmp:/root/.cache/ -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy i --ignore-unfixed $(QUAY_IMAGE):$(VERSION_VALUE)-$(BRANCH)
 
 .PHONY: ship
-ship: docker-build docker-login
-
 ifeq ($(TRAVIS_BRANCH),master)
 ifeq ($(TRAVIS_PULL_REQUEST),false)
-ship: docker-push-latest-master
+ship: docker-build docker-login docker-push-latest-master
 endif
 else
-ship: docker-push-branch
+ship: docker-build docker-login docker-push-branch
 endif
