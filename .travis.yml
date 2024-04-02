@@ -36,6 +36,7 @@ jobs:
       script:
         - bundle exec rspec spec
     - stage: "Ship to Quay.io"
+      dist: focal
       before_script: echo skip
       after_success: echo skip
       script: make ship
