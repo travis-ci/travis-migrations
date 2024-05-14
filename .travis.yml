@@ -1,5 +1,4 @@
 language: ruby
-group: edge
 
 services:
   - postgresql
