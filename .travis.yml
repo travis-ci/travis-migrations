@@ -1,10 +1,12 @@
 language: ruby
-group: edge
 
 services:
   - postgresql
 
 addons:
+  - snaps:
+    - name: docker
+      channel: latest/beta
   - postgresql: "11"
 
 cache:
