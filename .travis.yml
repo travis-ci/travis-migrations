@@ -4,10 +4,7 @@ services:
   - postgresql
 
 addons:
-  - snaps:
-    - name: docker
-      channel: latest/beta
-  - postgresql: "11"
+  postgresql: "11"
 
 cache:
   directories:
