@@ -1582,8 +1582,7 @@ CREATE TABLE public.deleted_jobs (
     config_id integer,
     restarted_at timestamp without time zone,
     restarted_by integer DEFAULT NULL,
-    priority integer,
-    restarted_by integer
+    priority integer
 );
 
 
@@ -2046,8 +2045,7 @@ CREATE TABLE public.jobs (
     config_id integer,
     restarted_at timestamp without time zone,
     restarted_by integer DEFAULT NULL,
-    priority integer,
-    restarted_by integer
+    priority integer
 );
 
 
