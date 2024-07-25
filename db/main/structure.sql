@@ -714,7 +714,7 @@ CREATE FUNCTION public.most_recent_job_ids_for_user_repositories_by_states(uid i
 -- Name: most_recent_job_ids_for_user_repositories_by_states_lw(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION most_recent_job_ids_for_user_repositories_by_states_lw(uid int, states varchar default '') RETURNS table (id bigint)
+CREATE FUNCTION public.most_recent_job_ids_for_user_repositories_by_states_lw(uid int, states varchar default '') RETURNS table (id bigint)
   LANGUAGE plpgsql
   AS $$
   DECLARE
