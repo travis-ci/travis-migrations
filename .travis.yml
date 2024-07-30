@@ -32,6 +32,7 @@ after_success:
 jobs:
   include:
     - stage: "Testing time"
+      dist: focal
       script:
         - bundle exec rspec spec
     - stage: "Ship to Quay.io"
