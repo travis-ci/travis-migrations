@@ -43,6 +43,15 @@ jobs:
           packages:
             - postgresql-11
             - postgresql-client-11
+      before_install:
+        - gem update --system
+        - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/11/main/pg_hba.conf
+        - sudo sed -i -e 's/^port = 5433/port = 5432/' /etc/postgresql/11/main/postgresql.conf
+        - sudo systemctl restart postgresql@11-main
+      before_script:
+        - psql --version
+        - psql -c 'CREATE DATABASE travis_test;'
+        - curl -fs https://raw.githubusercontent.com/travis-ci/travis-migrations/master/db/main/structure.sql | psql -v ON_ERROR_STOP=1 travis_test
       script:
         - bundle exec rspec spec
     - stage: "Ship to Quay.io"
