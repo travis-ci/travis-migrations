@@ -33,7 +33,7 @@ jobs:
   include:
     - stage: "Testing time"
       dist: focal
-      language: minimal
+      language: ruby
       script:
         - bundle exec rspec spec
     - stage: "Ship to Quay.io"
