@@ -1582,7 +1582,8 @@ CREATE TABLE public.deleted_jobs (
     config_id integer,
     restarted_at timestamp without time zone,
     priority integer,
-    restarted_by integer
+    restarted_by integer,
+    vm_size character varying
 );
 
 
