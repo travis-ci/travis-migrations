@@ -714,32 +714,32 @@ CREATE FUNCTION public.most_recent_job_ids_for_user_repositories_by_states(uid i
 -- Name: most_recent_job_ids_for_user_repositories_by_states_lw(integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.most_recent_job_ids_for_user_repositories_by_states_lw(uid int, states varchar default '') RETURNS table (id bigint)
-  LANGUAGE plpgsql
-  AS $$
-  DECLARE
-  rid int;
-    BEGIN
-      SET LOCAL work_mem = '16MB';
-      IF states <> '' THEN
-        for rid in
-          SELECT repository_id
-          FROM permissions
-          WHERE user_id = uid
-          LOOP
-            RETURN QUERY select j.id from jobs j where repository_id = rid and state in (SELECT unnest(regexp_split_to_array(states, ','))) order by j.id desc limit 100;
-          END LOOP;
-      ELSE
-        for rid in
-          SELECT repository_id
-          FROM permissions
-          WHERE user_id = uid
-          LOOP
-            RETURN QUERY select j.id from jobs j where repository_id = rid order by j.id desc limit 100;
-          END LOOP;
-      END IF;
-    END
-$$;
+CREATE FUNCTION public.most_recent_job_ids_for_user_repositories_by_states_lw(uid integer, states character varying DEFAULT ''::character varying) RETURNS TABLE(id bigint)
+    LANGUAGE plpgsql
+    AS $$
+      DECLARE
+      rid int;
+        BEGIN
+          SET LOCAL work_mem = '16MB';
+          IF states <> '' THEN
+            for rid in
+              SELECT repository_id
+              FROM permissions
+              WHERE user_id = uid
+              LOOP
+                RETURN QUERY select j.id from jobs j where repository_id = rid and state in (SELECT unnest(regexp_split_to_array(states, ','))) order by j.id desc limit 100;
+              END LOOP;
+          ELSE
+            for rid in
+              SELECT repository_id
+              FROM permissions
+              WHERE user_id = uid
+              LOOP
+                RETURN QUERY select j.id from jobs j where repository_id = rid order by j.id desc limit 100;
+              END LOOP;
+          END IF;
+        END
+    $$;
 
 
 --
@@ -1581,8 +1581,9 @@ CREATE TABLE public.deleted_jobs (
     com_id integer,
     config_id integer,
     restarted_at timestamp without time zone,
-    restarted_by integer DEFAULT NULL,
-    priority integer
+    priority integer,
+    restarted_by integer,
+    vm_size character varying
 );
 
 
@@ -1835,6 +1836,15 @@ ALTER SEQUENCE public.emails_id_seq OWNED BY public.emails.id;
 
 
 --
+-- Name: enterprise_migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.enterprise_migrations (
+    version bigint NOT NULL
+);
+
+
+--
 -- Name: gatekeeper_workers; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2044,8 +2054,9 @@ CREATE TABLE public.jobs (
     com_id integer,
     config_id integer,
     restarted_at timestamp without time zone,
-    restarted_by integer DEFAULT NULL,
-    priority integer
+    priority integer,
+    restarted_by integer,
+    vm_size character varying
 );
 
 
@@ -4293,7 +4304,7 @@ CREATE INDEX index_builds_on_repository_id ON public.builds USING btree (reposit
 -- Name: index_builds_on_repository_id_and_branch_and_event_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying])::text[]));
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text]));
 
 
 --
@@ -4335,7 +4346,7 @@ CREATE INDEX index_builds_on_repository_id_event_type_id ON public.builds USING 
 -- Name: index_builds_on_repository_id_where_state_not_finished; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
 
 
 --
@@ -4521,6 +4532,13 @@ CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
 
 
 --
+-- Name: index_enterprise_migrations; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_enterprise_migrations ON public.enterprise_migrations USING btree (version);
+
+
+--
 -- Name: index_errored_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4629,7 +4647,7 @@ CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON public.jobs USIN
 -- Name: index_jobs_on_owner_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_owner_where_state_running ON public.jobs USING btree (owner_id, owner_type) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+CREATE INDEX index_jobs_on_owner_where_state_running ON public.jobs USING btree (owner_id, owner_type) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
 
 
 --
@@ -4650,7 +4668,7 @@ CREATE INDEX index_jobs_on_repository_id_order_by_newest ON public.jobs USING bt
 -- Name: index_jobs_on_repository_id_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
 
 
 --
@@ -6342,6 +6360,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210203143155'),
 ('20210203143406'),
 ('20210614140633'),
+('20220610092916'),
 ('20220621151453'),
 ('20220722162400'),
 ('20220825140522'),
@@ -6351,5 +6370,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230505055250'),
 ('20230505060110'),
 ('20230713115855'),
-('20231005111642');
+('20231005111642'),
+('20240823085523');
+
 
