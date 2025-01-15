@@ -85,6 +85,7 @@ describe 'Rake tasks' do
       permissions_syncs
       role_permissions
       roles
+      account_env_vars
     ]
   end
 
