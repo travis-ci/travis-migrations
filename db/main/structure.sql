@@ -2145,6 +2145,70 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
+-- Name: organization_token_permissions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.organization_token_permissions (
+    id bigint NOT NULL,
+    organization_token_id bigint NOT NULL,
+    permission character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: organization_token_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.organization_token_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: organization_token_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.organization_token_permissions_id_seq OWNED BY public.organization_token_permissions.id;
+
+
+--
+-- Name: organization_tokens; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.organization_tokens (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    token character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: organization_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.organization_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: organization_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.organization_tokens_id_seq OWNED BY public.organization_tokens.id;
+
+
+--
 -- Name: organizations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3468,6 +3532,20 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 
 --
+-- Name: organization_token_permissions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organization_token_permissions ALTER COLUMN id SET DEFAULT nextval('public.organization_token_permissions_id_seq'::regclass);
+
+
+--
+-- Name: organization_tokens id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organization_tokens ALTER COLUMN id SET DEFAULT nextval('public.organization_tokens_id_seq'::regclass);
+
+
+--
 -- Name: organizations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3868,6 +3946,22 @@ ALTER TABLE ONLY public.memberships
 
 ALTER TABLE ONLY public.messages
     ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organization_token_permissions organization_token_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organization_token_permissions
+    ADD CONSTRAINT organization_token_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organization_tokens organization_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organization_tokens
+    ADD CONSTRAINT organization_tokens_pkey PRIMARY KEY (id);
 
 
 --
@@ -4296,7 +4390,7 @@ CREATE INDEX index_builds_on_repository_id ON public.builds USING btree (reposit
 -- Name: index_builds_on_repository_id_and_branch_and_event_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying])::text[]));
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text]));
 
 
 --
@@ -4338,7 +4432,7 @@ CREATE INDEX index_builds_on_repository_id_event_type_id ON public.builds USING 
 -- Name: index_builds_on_repository_id_where_state_not_finished; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
 
 
 --
@@ -4632,7 +4726,7 @@ CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON public.jobs USIN
 -- Name: index_jobs_on_owner_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_owner_where_state_running ON public.jobs USING btree (owner_id, owner_type) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+CREATE INDEX index_jobs_on_owner_where_state_running ON public.jobs USING btree (owner_id, owner_type) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
 
 
 --
@@ -4653,7 +4747,7 @@ CREATE INDEX index_jobs_on_repository_id_order_by_newest ON public.jobs USING bt
 -- Name: index_jobs_on_repository_id_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
+CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
 
 
 --
@@ -4710,6 +4804,20 @@ CREATE INDEX index_messages_on_subject_type_and_subject_id ON public.messages US
 --
 
 CREATE UNIQUE INDEX index_organization_id_and_user_id_on_memberships ON public.memberships USING btree (organization_id, user_id);
+
+
+--
+-- Name: index_organization_token_permissions_on_organization_token_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organization_token_permissions_on_organization_token_id ON public.organization_token_permissions USING btree (organization_token_id);
+
+
+--
+-- Name: index_organization_tokens_on_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organization_tokens_on_organization_id ON public.organization_tokens USING btree (organization_id);
 
 
 --
@@ -6357,6 +6465,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230713115855'),
 ('20231005111642'),
 ('20240823085523'),
-('20250206092313');
+('20250206092313'),
+('20250219095029');
 
 
