@@ -85,6 +85,8 @@ describe 'Rake tasks' do
       permissions_syncs
       role_permissions
       roles
+      organization_tokens
+      organization_token_permissions
     ]
   end
 
