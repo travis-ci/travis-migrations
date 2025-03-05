@@ -909,8 +909,8 @@ ALTER SEQUENCE public.abuses_id_seq OWNED BY public.abuses.id;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -1836,15 +1836,6 @@ ALTER SEQUENCE public.emails_id_seq OWNED BY public.emails.id;
 
 
 --
--- Name: enterprise_migrations; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.enterprise_migrations (
-    version bigint NOT NULL
-);
-
-
---
 -- Name: gatekeeper_workers; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2151,6 +2142,70 @@ CREATE SEQUENCE public.messages_id_seq
 --
 
 ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
+
+
+--
+-- Name: organization_token_permissions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.organization_token_permissions (
+    id bigint NOT NULL,
+    organization_token_id bigint NOT NULL,
+    permission character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: organization_token_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.organization_token_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: organization_token_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.organization_token_permissions_id_seq OWNED BY public.organization_token_permissions.id;
+
+
+--
+-- Name: organization_tokens; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.organization_tokens (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    token character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: organization_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.organization_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: organization_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.organization_tokens_id_seq OWNED BY public.organization_tokens.id;
 
 
 --
@@ -3287,7 +3342,8 @@ CREATE TABLE public.users (
     vcs_id character varying,
     confirmed_at timestamp without time zone,
     token_expires_at timestamp without time zone,
-    confirmation_token character varying
+    confirmation_token character varying,
+    last_activity_at timestamp without time zone
 );
 
 
@@ -3473,6 +3529,20 @@ ALTER TABLE ONLY public.memberships ALTER COLUMN id SET DEFAULT nextval('public.
 --
 
 ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.messages_id_seq'::regclass);
+
+
+--
+-- Name: organization_token_permissions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organization_token_permissions ALTER COLUMN id SET DEFAULT nextval('public.organization_token_permissions_id_seq'::regclass);
+
+
+--
+-- Name: organization_tokens id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organization_tokens ALTER COLUMN id SET DEFAULT nextval('public.organization_tokens_id_seq'::regclass);
 
 
 --
@@ -3876,6 +3946,22 @@ ALTER TABLE ONLY public.memberships
 
 ALTER TABLE ONLY public.messages
     ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organization_token_permissions organization_token_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organization_token_permissions
+    ADD CONSTRAINT organization_token_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organization_tokens organization_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organization_tokens
+    ADD CONSTRAINT organization_tokens_pkey PRIMARY KEY (id);
 
 
 --
@@ -4532,13 +4618,6 @@ CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
 
 
 --
--- Name: index_enterprise_migrations; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_enterprise_migrations ON public.enterprise_migrations USING btree (version);
-
-
---
 -- Name: index_errored_jobs_on_repository_id_order_by_newest; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4725,6 +4804,20 @@ CREATE INDEX index_messages_on_subject_type_and_subject_id ON public.messages US
 --
 
 CREATE UNIQUE INDEX index_organization_id_and_user_id_on_memberships ON public.memberships USING btree (organization_id, user_id);
+
+
+--
+-- Name: index_organization_token_permissions_on_organization_token_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organization_token_permissions_on_organization_token_id ON public.organization_token_permissions USING btree (organization_token_id);
+
+
+--
+-- Name: index_organization_tokens_on_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organization_tokens_on_organization_id ON public.organization_tokens USING btree (organization_id);
 
 
 --
@@ -6371,6 +6464,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230505060110'),
 ('20230713115855'),
 ('20231005111642'),
-('20240823085523');
+('20240823085523'),
+('20250206092313'),
+('20250219095029');
 
 
