@@ -86,6 +86,8 @@ describe 'Rake tasks' do
       role_permissions
       roles
       account_env_vars
+      organization_tokens
+      organization_token_permissions
     ]
   end
 
