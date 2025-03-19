@@ -903,6 +903,41 @@ ALTER SEQUENCE public.abuses_id_seq OWNED BY public.abuses.id;
 
 
 --
+-- Name: account_env_vars; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.account_env_vars (
+    id bigint NOT NULL,
+    owner_id integer,
+    owner_type character varying,
+    name character varying,
+    value character varying,
+    public boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: account_env_vars_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.account_env_vars_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: account_env_vars_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.account_env_vars_id_seq OWNED BY public.account_env_vars.id;
+
+
+--
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3385,6 +3420,13 @@ ALTER TABLE ONLY public.abuses ALTER COLUMN id SET DEFAULT nextval('public.abuse
 
 
 --
+-- Name: account_env_vars id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.account_env_vars ALTER COLUMN id SET DEFAULT nextval('public.account_env_vars_id_seq'::regclass);
+
+
+--
 -- Name: audits id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3754,6 +3796,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.abuses
     ADD CONSTRAINT abuses_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: account_env_vars account_env_vars_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.account_env_vars
+    ADD CONSTRAINT account_env_vars_pkey PRIMARY KEY (id);
 
 
 --
@@ -4223,6 +4273,13 @@ CREATE INDEX index_abuses_on_owner ON public.abuses USING btree (owner_id);
 --
 
 CREATE UNIQUE INDEX index_abuses_on_owner_id_and_owner_type_and_level ON public.abuses USING btree (owner_id, owner_type, level);
+
+
+--
+-- Name: index_account_env_vars_on_owner_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_account_env_vars_on_owner_id ON public.account_env_vars USING btree (owner_id);
 
 
 --
@@ -6465,6 +6522,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20230713115855'),
 ('20231005111642'),
 ('20240823085523'),
+('20250109121404'),
 ('20250206092313'),
 ('20250219095029');
 
