@@ -9,7 +9,8 @@ path = File.expand_path("../../#{path_to_structure}", __FILE__)
 structure = File.read(path)
 
 s3_client = Aws::S3::Client.new(access_key_id: ENV['ARTIFACTS_KEY'],
-                                secret_access_key: ENV['ARTIFACTS_SECRET'])
+                                secret_access_key: ENV['ARTIFACTS_SECRET'],
+                                region: ENV['AWS_REGION'])
 
 bucket_name = 'travis-migrations-structure-dumps'
 object_key = "structure-#{ENV['TRAVIS_BUILD_NUMBER']}.sql"
