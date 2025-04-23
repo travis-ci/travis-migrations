@@ -38,6 +38,42 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
+-- Name: architecture_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.architecture_type AS ENUM (
+    'x86',
+    'arm64',
+    'ppc64le'
+);
+
+
+--
+-- Name: custom_image_log_action; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.custom_image_log_action AS ENUM (
+    'created',
+    'used',
+    'deleted',
+    'other'
+);
+
+
+--
+-- Name: custom_image_state; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.custom_image_state AS ENUM (
+    'pending',
+    'creating',
+    'available',
+    'deleted',
+    'error'
+);
+
+
+--
 -- Name: source_type; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -1438,6 +1474,82 @@ ALTER SEQUENCE public.crons_id_seq OWNED BY public.crons.id;
 
 
 --
+-- Name: custom_image_logs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.custom_image_logs (
+    id bigint NOT NULL,
+    custom_images_id bigint,
+    action public.custom_image_log_action DEFAULT 'other'::public.custom_image_log_action NOT NULL,
+    sender_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    details text
+);
+
+
+--
+-- Name: custom_image_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.custom_image_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: custom_image_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.custom_image_logs_id_seq OWNED BY public.custom_image_logs.id;
+
+
+--
+-- Name: custom_images; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.custom_images (
+    id bigint NOT NULL,
+    owner_type character varying,
+    owner_id bigint,
+    name text NOT NULL,
+    usage integer DEFAULT 0,
+    architecture public.architecture_type NOT NULL,
+    google_id text,
+    state public.custom_image_state DEFAULT 'pending'::public.custom_image_state NOT NULL,
+    size_bytes bigint NOT NULL,
+    os_version text,
+    labels character varying,
+    description text,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    to_be_deleted_at timestamp without time zone
+);
+
+
+--
+-- Name: custom_images_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.custom_images_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: custom_images_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.custom_images_id_seq OWNED BY public.custom_images.id;
+
+
+--
 -- Name: custom_keys; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1618,7 +1730,9 @@ CREATE TABLE public.deleted_jobs (
     restarted_at timestamp without time zone,
     priority integer,
     restarted_by integer,
-    vm_size character varying
+    vm_size character varying,
+    created_custom_image_id integer,
+    used_custom_image_id integer
 );
 
 
@@ -2082,7 +2196,9 @@ CREATE TABLE public.jobs (
     restarted_at timestamp without time zone,
     priority integer,
     restarted_by integer,
-    vm_size character varying
+    vm_size character varying,
+    created_custom_image_id integer,
+    used_custom_image_id integer
 );
 
 
@@ -3504,6 +3620,20 @@ ALTER TABLE ONLY public.crons ALTER COLUMN id SET DEFAULT nextval('public.crons_
 
 
 --
+-- Name: custom_image_logs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_image_logs ALTER COLUMN id SET DEFAULT nextval('public.custom_image_logs_id_seq'::regclass);
+
+
+--
+-- Name: custom_images id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_images ALTER COLUMN id SET DEFAULT nextval('public.custom_images_id_seq'::regclass);
+
+
+--
 -- Name: custom_keys id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3908,6 +4038,22 @@ ALTER TABLE ONLY public.coupons
 
 ALTER TABLE ONLY public.crons
     ADD CONSTRAINT crons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: custom_image_logs custom_image_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_image_logs
+    ADD CONSTRAINT custom_image_logs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: custom_images custom_images_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_images
+    ADD CONSTRAINT custom_images_pkey PRIMARY KEY (id);
 
 
 --
@@ -4447,7 +4593,7 @@ CREATE INDEX index_builds_on_repository_id ON public.builds USING btree (reposit
 -- Name: index_builds_on_repository_id_and_branch_and_event_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text]));
+CREATE INDEX index_builds_on_repository_id_and_branch_and_event_type ON public.builds USING btree (repository_id, branch, event_type) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying])::text[]));
 
 
 --
@@ -4489,7 +4635,7 @@ CREATE INDEX index_builds_on_repository_id_event_type_id ON public.builds USING 
 -- Name: index_builds_on_repository_id_where_state_not_finished; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('created'::character varying)::text, ('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
+CREATE INDEX index_builds_on_repository_id_where_state_not_finished ON public.builds USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['created'::character varying, 'queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
 
 
 --
@@ -4630,6 +4776,48 @@ CREATE INDEX index_crons_on_next_run ON public.crons USING btree (next_run) WHER
 --
 
 CREATE UNIQUE INDEX index_crons_on_org_id ON public.crons USING btree (org_id);
+
+
+--
+-- Name: index_custom_image_logs_on_action; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_custom_image_logs_on_action ON public.custom_image_logs USING btree (action);
+
+
+--
+-- Name: index_custom_image_logs_on_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_custom_image_logs_on_created_at ON public.custom_image_logs USING btree (created_at);
+
+
+--
+-- Name: index_custom_image_logs_on_custom_images_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_custom_image_logs_on_custom_images_id ON public.custom_image_logs USING btree (custom_images_id);
+
+
+--
+-- Name: index_custom_images_on_owner; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_custom_images_on_owner ON public.custom_images USING btree (owner_type, owner_id);
+
+
+--
+-- Name: index_custom_images_on_owner_id_and_owner_type_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_custom_images_on_owner_id_and_owner_type_and_name ON public.custom_images USING btree (owner_id, owner_type, name);
+
+
+--
+-- Name: index_custom_images_on_owner_id_and_owner_type_and_state; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_custom_images_on_owner_id_and_owner_type_and_state ON public.custom_images USING btree (owner_id, owner_type, state);
 
 
 --
@@ -4783,7 +4971,7 @@ CREATE INDEX index_jobs_on_owner_id_and_owner_type_and_state ON public.jobs USIN
 -- Name: index_jobs_on_owner_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_owner_where_state_running ON public.jobs USING btree (owner_id, owner_type) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
+CREATE INDEX index_jobs_on_owner_where_state_running ON public.jobs USING btree (owner_id, owner_type) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
 
 
 --
@@ -4804,7 +4992,7 @@ CREATE INDEX index_jobs_on_repository_id_order_by_newest ON public.jobs USING bt
 -- Name: index_jobs_on_repository_id_where_state_running; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('received'::character varying)::text, ('started'::character varying)::text]));
+CREATE INDEX index_jobs_on_repository_id_where_state_running ON public.jobs USING btree (repository_id) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'received'::character varying, 'started'::character varying])::text[]));
 
 
 --
@@ -6018,6 +6206,14 @@ ALTER TABLE ONLY public.pull_requests
 
 
 --
+-- Name: jobs fk_rails_14330d07e9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.jobs
+    ADD CONSTRAINT fk_rails_14330d07e9 FOREIGN KEY (created_custom_image_id) REFERENCES public.custom_images(id);
+
+
+--
 -- Name: installations fk_rails_2d567d406d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -6026,11 +6222,35 @@ ALTER TABLE ONLY public.installations
 
 
 --
+-- Name: deleted_jobs fk_rails_3fc8354920; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.deleted_jobs
+    ADD CONSTRAINT fk_rails_3fc8354920 FOREIGN KEY (used_custom_image_id) REFERENCES public.custom_images(id);
+
+
+--
+-- Name: jobs fk_rails_63adaa538b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.jobs
+    ADD CONSTRAINT fk_rails_63adaa538b FOREIGN KEY (used_custom_image_id) REFERENCES public.custom_images(id);
+
+
+--
 -- Name: installations fk_rails_75a0a2a3b4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.installations
     ADD CONSTRAINT fk_rails_75a0a2a3b4 FOREIGN KEY (removed_by_id) REFERENCES public.users(id);
+
+
+--
+-- Name: deleted_jobs fk_rails_7c2fc6d5cf; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.deleted_jobs
+    ADD CONSTRAINT fk_rails_7c2fc6d5cf FOREIGN KEY (created_custom_image_id) REFERENCES public.custom_images(id);
 
 
 --
@@ -6524,6 +6744,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240823085523'),
 ('20250109121404'),
 ('20250206092313'),
-('20250219095029');
+('20250219095029'),
+('20250416102048');
 
 
