@@ -46,6 +46,16 @@ class CustomImages < ActiveRecord::Migration[7.0]
     add_column :deleted_jobs, :used_custom_image_id, :integer
     add_foreign_key :deleted_jobs, :custom_images, column: :created_custom_image_id
     add_foreign_key :deleted_jobs, :custom_images, column: :used_custom_image_id
+
+    create_table :custom_image_storages do |t|
+      t.references :owner, polymorphic: true
+      t.column :current_aggregated_storage, :decimal, precision: 10, scale: 2
+      t.timestamps
+      t.timestamp :end_date
+    end
+
+    add_index :custom_image_storages, %i[owner_id owner_type], name: 'idx_active_entry', where: 'end_date IS NULL'
+    add_index :custom_image_storages, :created_at, name: 'idx_created_at'
   end
 
   def down
@@ -55,6 +65,7 @@ class CustomImages < ActiveRecord::Migration[7.0]
     remove_column :deleted_jobs, :used_custom_image_id
     drop_table :custom_images
     drop_table :custom_image_logs
+    drop_table :custom_image_storages
 
     execute 'DROP TYPE custom_image_state'
     execute 'DROP TYPE architecture_type'

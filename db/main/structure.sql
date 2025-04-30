@@ -1508,6 +1508,40 @@ ALTER SEQUENCE public.custom_image_logs_id_seq OWNED BY public.custom_image_logs
 
 
 --
+-- Name: custom_image_storages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.custom_image_storages (
+    id bigint NOT NULL,
+    owner_type character varying,
+    owner_id bigint,
+    current_aggregated_storage numeric(10,2),
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    end_date timestamp without time zone
+);
+
+
+--
+-- Name: custom_image_storages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.custom_image_storages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: custom_image_storages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.custom_image_storages_id_seq OWNED BY public.custom_image_storages.id;
+
+
+--
 -- Name: custom_images; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3627,6 +3661,13 @@ ALTER TABLE ONLY public.custom_image_logs ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: custom_image_storages id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_image_storages ALTER COLUMN id SET DEFAULT nextval('public.custom_image_storages_id_seq'::regclass);
+
+
+--
 -- Name: custom_images id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -4049,6 +4090,14 @@ ALTER TABLE ONLY public.custom_image_logs
 
 
 --
+-- Name: custom_image_storages custom_image_storages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_image_storages
+    ADD CONSTRAINT custom_image_storages_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: custom_images custom_images_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4405,6 +4454,20 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE UNIQUE INDEX github_id_installations_idx ON public.installations USING btree (github_id);
+
+
+--
+-- Name: idx_active_entry; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_active_entry ON public.custom_image_storages USING btree (owner_id, owner_type) WHERE (end_date IS NULL);
+
+
+--
+-- Name: idx_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_created_at ON public.custom_image_storages USING btree (created_at);
 
 
 --
@@ -4797,6 +4860,13 @@ CREATE INDEX index_custom_image_logs_on_created_at ON public.custom_image_logs U
 --
 
 CREATE INDEX index_custom_image_logs_on_custom_images_id ON public.custom_image_logs USING btree (custom_images_id);
+
+
+--
+-- Name: index_custom_image_storages_on_owner; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_custom_image_storages_on_owner ON public.custom_image_storages USING btree (owner_type, owner_id);
 
 
 --
