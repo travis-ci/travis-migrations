@@ -27,6 +27,7 @@ describe 'Rake tasks' do
       crons
       custom_images
       custom_image_logs
+      custom_image_storages
       custom_keys
       deleted_builds
       deleted_stages
