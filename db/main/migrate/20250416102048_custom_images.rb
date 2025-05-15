@@ -52,6 +52,7 @@ class CustomImages < ActiveRecord::Migration[7.0]
       t.column :current_aggregated_storage, :decimal, precision: 10, scale: 2
       t.timestamps
       t.timestamp :end_date
+      t.timestamp :limit_exceeded_send_at
     end
 
     add_index :custom_image_storages, %i[owner_id owner_type], name: 'idx_active_entry', where: 'end_date IS NULL'

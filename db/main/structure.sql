@@ -1518,7 +1518,8 @@ CREATE TABLE public.custom_image_storages (
     current_aggregated_storage numeric(10,2),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    end_date timestamp without time zone
+    end_date timestamp without time zone,
+    limit_exceeded_send_at timestamp without time zone
 );
 
 
