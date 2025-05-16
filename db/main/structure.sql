@@ -1479,7 +1479,7 @@ ALTER SEQUENCE public.crons_id_seq OWNED BY public.crons.id;
 
 CREATE TABLE public.custom_image_logs (
     id bigint NOT NULL,
-    custom_images_id bigint,
+    custom_image_id bigint,
     action public.custom_image_log_action DEFAULT 'other'::public.custom_image_log_action NOT NULL,
     sender_id integer,
     created_at timestamp(6) without time zone NOT NULL,
@@ -4856,10 +4856,10 @@ CREATE INDEX index_custom_image_logs_on_created_at ON public.custom_image_logs U
 
 
 --
--- Name: index_custom_image_logs_on_custom_images_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_custom_image_logs_on_custom_image_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_custom_image_logs_on_custom_images_id ON public.custom_image_logs USING btree (custom_images_id);
+CREATE INDEX index_custom_image_logs_on_custom_image_id ON public.custom_image_logs USING btree (custom_image_id);
 
 
 --
@@ -6297,6 +6297,14 @@ ALTER TABLE ONLY public.installations
 
 ALTER TABLE ONLY public.deleted_jobs
     ADD CONSTRAINT fk_rails_3fc8354920 FOREIGN KEY (used_custom_image_id) REFERENCES public.custom_images(id);
+
+
+--
+-- Name: custom_image_logs fk_rails_52f6e26f16; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_image_logs
+    ADD CONSTRAINT fk_rails_52f6e26f16 FOREIGN KEY (custom_image_id) REFERENCES public.custom_images(id);
 
 
 --

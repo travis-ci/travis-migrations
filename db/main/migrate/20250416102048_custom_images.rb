@@ -27,15 +27,17 @@ class CustomImages < ActiveRecord::Migration[7.0]
     add_index :custom_images, %i[owner_id owner_type state]
 
     create_table :custom_image_logs do |t|
-      t.references :custom_images
+      t.bigint :custom_image_id
       t.column :action, :custom_image_log_action, null: false, default: 'other'
       t.integer :sender_id
       t.timestamps
       t.text :details
     end
 
+    add_index :custom_image_logs, :custom_image_id
     add_index :custom_image_logs, :action
     add_index :custom_image_logs, :created_at
+    add_foreign_key :custom_image_logs, :custom_images, column: :custom_image_id
 
     add_column :jobs, :created_custom_image_id, :integer
     add_column :jobs, :used_custom_image_id, :integer
@@ -63,9 +65,9 @@ class CustomImages < ActiveRecord::Migration[7.0]
     remove_column :jobs, :used_custom_image_id
     remove_column :deleted_jobs, :created_custom_image_id
     remove_column :deleted_jobs, :used_custom_image_id
-    drop_table :custom_images
     drop_table :custom_image_logs
     drop_table :custom_image_storages
+    drop_table :custom_images
 
     execute 'DROP TYPE custom_image_state'
     execute 'DROP TYPE architecture_type'
