@@ -16,6 +16,7 @@ class CustomImages < ActiveRecord::Migration[7.0]
       t.text :google_id
       t.column :state, :custom_image_state, null: false, default: 'pending'
       t.bigint :size_bytes, null: false
+      t.text :os
       t.text :os_version
       t.string :labels
       t.text :description
