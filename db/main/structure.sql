@@ -2419,7 +2419,8 @@ CREATE TABLE public.organizations (
     preferences jsonb DEFAULT '{}'::jsonb,
     beta_migration_request_id integer,
     vcs_type character varying DEFAULT 'GithubOrganization'::character varying,
-    vcs_id character varying
+    vcs_id character varying,
+    excluded_from_cleanup boolean DEFAULT false
 );
 
 
@@ -3530,7 +3531,8 @@ CREATE TABLE public.users (
     confirmed_at timestamp without time zone,
     token_expires_at timestamp without time zone,
     confirmation_token character varying,
-    last_activity_at timestamp without time zone
+    last_activity_at timestamp without time zone,
+    excluded_from_cleanup boolean DEFAULT false
 );
 
 
@@ -6825,6 +6827,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20250109121404'),
 ('20250206092313'),
 ('20250219095029'),
-('20250416102048');
+('20250416102048'),
+('20250921164419');
 
 
