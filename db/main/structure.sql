@@ -2420,7 +2420,8 @@ CREATE TABLE public.organizations (
     beta_migration_request_id integer,
     vcs_type character varying DEFAULT 'GithubOrganization'::character varying,
     vcs_id character varying,
-    excluded_from_cleanup boolean DEFAULT false
+    excluded_from_cleanup boolean DEFAULT false,
+    deleted_at timestamp(6) without time zone
 );
 
 
@@ -2719,7 +2720,8 @@ CREATE TABLE public.repositories (
     vcs_source_host character varying,
     server_type character varying(20),
     scan_failed_at timestamp without time zone,
-    clone_url character varying
+    clone_url character varying,
+    deleted_at timestamp(6) without time zone
 );
 
 
@@ -5147,6 +5149,13 @@ CREATE UNIQUE INDEX index_organizations_on_com_id ON public.organizations USING 
 
 
 --
+-- Name: index_organizations_on_deleted_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organizations_on_deleted_at ON public.organizations USING btree (deleted_at);
+
+
+--
 -- Name: index_organizations_on_github_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5354,6 +5363,13 @@ CREATE UNIQUE INDEX index_repositories_on_com_id ON public.repositories USING bt
 --
 
 CREATE INDEX index_repositories_on_current_build_id ON public.repositories USING btree (current_build_id);
+
+
+--
+-- Name: index_repositories_on_deleted_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_repositories_on_deleted_at ON public.repositories USING btree (deleted_at) WHERE ((deleted_at IS NOT NULL) AND ((vcs_type)::text = 'AssemblaOrganization'::text));
 
 
 --
@@ -6828,6 +6844,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20250206092313'),
 ('20250219095029'),
 ('20250416102048'),
-('20250921164419');
+('20250921164419'),
+('20251014214728'),
+('20251014214812');
 
 
