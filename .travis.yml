@@ -2,7 +2,7 @@ language: ruby
 
 services:
   - postgresql
-  
+
 cache:
   directories:
     - vendor/bundle
@@ -31,10 +31,8 @@ jobs:
     - stage: "Testing time"
       dist: focal
       language: ruby
-      services: 
+      services:
         - postgresql
-      before_install:
-        - gem update --system
       before_script:
         - psql --version
         - psql -c 'CREATE DATABASE travis_test;'
