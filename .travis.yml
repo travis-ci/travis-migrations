@@ -23,6 +23,7 @@ after_success:
 
 before_install:
   - gem install rubygems-update -v 3.7.2
+  - gem install bundler -v 2.4.14
 
 jobs:
   include:
