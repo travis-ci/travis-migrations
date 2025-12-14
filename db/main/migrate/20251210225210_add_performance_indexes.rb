@@ -65,11 +65,6 @@ class AddPerformanceIndexes < ActiveRecord::Migration[7.0]
               name: 'idx_requests_repo_created_config',
               if_not_exists: true
 
-    # Child record tables
-    add_index :job_states, [:job_id],
-              algorithm: :concurrently,
-              name: 'idx_job_states_job',
-              if_not_exists: true
 
     add_index :job_versions, [:job_id],
               algorithm: :concurrently,
@@ -118,7 +113,6 @@ class AddPerformanceIndexes < ActiveRecord::Migration[7.0]
     
     remove_index :stages, name: 'idx_stages_build', if_exists: true
     remove_index :job_versions, name: 'idx_job_versions_job', if_exists: true
-    remove_index :job_states, name: 'idx_job_states_job', if_exists: true
     
     remove_index :requests, name: 'idx_requests_repo_created_config', if_exists: true
     remove_index :builds, name: 'idx_builds_repo_created_config', if_exists: true
