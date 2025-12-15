@@ -4473,28 +4473,28 @@ CREATE INDEX idx_active_entry ON public.custom_image_storages USING btree (owner
 -- Name: idx_build_backups_repo_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_build_backups_repo_created ON public.build_backups USING btree (repository_id, created_at);
+CREATE INDEX CONCURRENTLY idx_build_backups_repo_created ON public.build_backups USING btree (repository_id, created_at);
 
 
 --
 -- Name: idx_builds_owner_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_builds_owner_created ON public.builds USING btree (owner_type, owner_id, created_at);
+CREATE INDEX CONCURRENTLY idx_builds_owner_created ON public.builds USING btree (owner_type, owner_id, created_at);
 
 
 --
 -- Name: idx_builds_repo_created_config; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_builds_repo_created_config ON public.builds USING btree (repository_id, created_at, config_id);
+CREATE INDEX CONCURRENTLY idx_builds_repo_created_config ON public.builds USING btree (repository_id, created_at, config_id);
 
 
 --
 -- Name: idx_commits_repo_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_commits_repo_created ON public.commits USING btree (repository_id, created_at);
+CREATE INDEX CONCURRENTLY idx_commits_repo_created ON public.commits USING btree (repository_id, created_at);
 
 
 --
@@ -4508,112 +4508,112 @@ CREATE INDEX idx_created_at ON public.custom_image_storages USING btree (created
 -- Name: idx_custom_image_logs_image_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_custom_image_logs_image_created ON public.custom_image_logs USING btree (custom_image_id, created_at);
+CREATE INDEX CONCURRENTLY idx_custom_image_logs_image_created ON public.custom_image_logs USING btree (custom_image_id, created_at);
 
 
 --
 -- Name: idx_deleted_builds_owner_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_deleted_builds_owner_created ON public.deleted_builds USING btree (owner_type, owner_id, created_at);
+CREATE INDEX CONCURRENTLY idx_deleted_builds_owner_created ON public.deleted_builds USING btree (owner_type, owner_id, created_at);
 
 
 --
 -- Name: idx_deleted_commits_repo_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_deleted_commits_repo_created ON public.deleted_commits USING btree (repository_id, created_at);
+CREATE INDEX CONCURRENTLY idx_deleted_commits_repo_created ON public.deleted_commits USING btree (repository_id, created_at);
 
 
 --
 -- Name: idx_deleted_jobs_owner_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_deleted_jobs_owner_created ON public.deleted_jobs USING btree (owner_type, owner_id, created_at);
+CREATE INDEX CONCURRENTLY idx_deleted_jobs_owner_created ON public.deleted_jobs USING btree (owner_type, owner_id, created_at);
 
 
 --
 -- Name: idx_deleted_pull_requests_repo_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_deleted_pull_requests_repo_created ON public.deleted_pull_requests USING btree (repository_id, created_at);
+CREATE INDEX CONCURRENTLY idx_deleted_pull_requests_repo_created ON public.deleted_pull_requests USING btree (repository_id, created_at);
 
 
 --
 -- Name: idx_deleted_requests_owner_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_deleted_requests_owner_created ON public.deleted_requests USING btree (owner_type, owner_id, created_at);
+CREATE INDEX CONCURRENTLY idx_deleted_requests_owner_created ON public.deleted_requests USING btree (owner_type, owner_id, created_at);
 
 
 --
 -- Name: idx_job_versions_job; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_job_versions_job ON public.job_versions USING btree (job_id);
+CREATE INDEX CONCURRENTLY idx_job_versions_job ON public.job_versions USING btree (job_id);
 
 
 --
 -- Name: idx_jobs_owner_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_jobs_owner_created ON public.jobs USING btree (owner_type, owner_id, created_at);
+CREATE INDEX CONCURRENTLY idx_jobs_owner_created ON public.jobs USING btree (owner_type, owner_id, created_at);
 
 
 --
 -- Name: idx_jobs_repo_created_config; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_jobs_repo_created_config ON public.jobs USING btree (repository_id, created_at, config_id);
+CREATE INDEX CONCURRENTLY idx_jobs_repo_created_config ON public.jobs USING btree (repository_id, created_at, config_id);
 
 
 --
 -- Name: idx_pull_requests_repo_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_pull_requests_repo_created ON public.pull_requests USING btree (repository_id, created_at);
+CREATE INDEX CONCURRENTLY idx_pull_requests_repo_created ON public.pull_requests USING btree (repository_id, created_at);
 
 
 --
 -- Name: idx_repositories_owner; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_repositories_owner ON public.repositories USING btree (owner_type, owner_id);
+CREATE INDEX CONCURRENTLY idx_repositories_owner ON public.repositories USING btree (owner_type, owner_id);
 
 
 --
 -- Name: idx_request_payloads_request_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_request_payloads_request_created ON public.request_payloads USING btree (request_id, created_at);
+CREATE INDEX CONCURRENTLY idx_request_payloads_request_created ON public.request_payloads USING btree (request_id, created_at);
 
 
 --
 -- Name: idx_requests_owner_created; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_requests_owner_created ON public.requests USING btree (owner_type, owner_id, created_at);
+CREATE INDEX CONCURRENTLY idx_requests_owner_created ON public.requests USING btree (owner_type, owner_id, created_at);
 
 
 --
 -- Name: idx_requests_repo_created_config; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_requests_repo_created_config ON public.requests USING btree (repository_id, created_at, config_id);
+CREATE INDEX CONCURRENTLY idx_requests_repo_created_config ON public.requests USING btree (repository_id, created_at, config_id);
 
 
 --
 -- Name: idx_stages_build; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stages_build ON public.stages USING btree (build_id);
+CREATE INDEX CONCURRENTLY idx_stages_build ON public.stages USING btree (build_id);
 
 
 --
 -- Name: index_abuses_on_owner; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_abuses_on_owner ON public.abuses USING btree (owner_id);
+CREATE INDEX CONCURRENTLY index_abuses_on_owner ON public.abuses USING btree (owner_id);
 
 
 --
