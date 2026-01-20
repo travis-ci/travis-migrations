@@ -2396,6 +2396,39 @@ ALTER SEQUENCE public.organization_tokens_id_seq OWNED BY public.organization_to
 
 
 --
+-- Name: migration_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE migration_requests (
+    id integer DEFAULT nextval('migration_requests_id_seq'::regclass) NOT NULL,
+    owner_name character varying NOT NULL,
+    owner_type character varying NOT NULL,
+    accepted_at date,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: migration_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE migration_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: migration_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE migration_requests_id_seq OWNED BY migration_requests.id;
+
+
+--
 -- Name: organizations; Type: TABLE; Schema: public; Owner: -
 --
 
