@@ -4582,6 +4582,13 @@ CREATE INDEX CONCURRENTLY idx_repositories_owner ON public.repositories USING bt
 
 
 --
+-- Name: idx_repositories_owner_id_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_repositories_owner_id_type ON public.repositories USING btree (owner_id, owner_type);
+
+
+--
 -- Name: idx_request_payloads_request_created; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4593,6 +4600,13 @@ CREATE INDEX CONCURRENTLY idx_request_payloads_request_created ON public.request
 --
 
 CREATE INDEX CONCURRENTLY idx_requests_owner_created ON public.requests USING btree (owner_type, owner_id, created_at);
+
+
+--
+-- Name: idx_requests_owner_id_type_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_requests_owner_id_type_created_at ON public.requests USING btree (owner_id, owner_type, created_at);
 
 
 --
@@ -6999,6 +7013,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20251210225226'),
 ('20251210225227'),
 ('20251210225228'),
-('20251210225229');
+('20251210225229'),
+('20260606060158'),
+('20260606060159');
 
 
